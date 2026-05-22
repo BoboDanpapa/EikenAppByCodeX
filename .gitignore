@@ -1,0 +1,17 @@
+.DS_Store
+
+# Local Android build tools and caches
+.android-build-tools/
+android-app/.gradle/
+android-app/app/build/
+android-app/local.properties
+
+# Signing material must stay local
+android-app/keystore/
+*.jks
+*.keystore
+
+# Build outputs
+*.apk
+*.aab
+

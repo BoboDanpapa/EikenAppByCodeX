@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英検 魔法の単語帳 Preview</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Comic Sans MS', 'Nunito', 'Segoe UI', sans-serif; background-color: #f7f1fa; margin: 0; color: #4a235a; }
+        header { background: linear-gradient(135deg, #ba68c8, #9c27b0); color: white; text-align: center; padding: 20px 16px 22px; font-size: 24px; font-weight: bold; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 5px 15px rgba(156, 39, 176, 0.3); }
+        .sub-header { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 10px 12px 0; min-height: 54px; }
+        .pill { background: #fff; border: 2px dashed #ce93d8; border-radius: 999px; color: #8e24aa; font-size: 13px; font-weight: bold; padding: 8px 12px; }
+        .nav { display: flex; justify-content: center; gap: 10px; padding: 10px; flex-wrap: wrap; }
+        .jelly-btn { background-color: #ce93d8; color: white; border: none; font-size: 15px; font-weight: bold; cursor: pointer; padding: 12px 18px; border-radius: 25px; box-shadow: 0 6px 0 #ab47bc; transition: all 0.1s; font-family: inherit; }
+        .jelly-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #ab47bc; }
+        .jelly-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+        .nav .jelly-btn { background-color: #b39ddb; box-shadow: 0 6px 0 #7e57c2; }
+        .container { max-width: 540px; margin: 10px auto 30px; background: white; padding: 28px; border-radius: 30px; border: 4px solid #e1bee7; box-shadow: 0 10px 25px rgba(206, 147, 216, 0.3); text-align: center; }
+        .wide-container { max-width: 760px; }
+        .hidden { display: none !important; }
+        .screen-title { color: #8e24aa; margin: 0 0 8px; }
+        .muted { color: #777; font-size: 14px; }
+        .row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .input-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin: 20px 0 8px; }
+        input { width: 100%; border: 3px solid #e1bee7; border-radius: 20px; color: #6a1b9a; font-family: inherit; font-weight: bold; font-size: 16px; padding: 12px 14px; outline: none; }
+        input:focus { border-color: #ba68c8; box-shadow: 0 0 0 4px #f3e5f5; }
+        .user-list { display: grid; gap: 12px; margin-top: 20px; }
+        .user-item { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; background: #fafafa; border: 2px dashed #ce93d8; border-radius: 22px; padding: 14px; }
+        .user-name-btn { text-align: left; background: #f3e5f5; color: #6a1b9a; border: none; border-radius: 18px; padding: 14px 16px; font-family: inherit; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .danger-btn { background-color: #ffcdd2; color: #c62828; box-shadow: 0 5px 0 #ef9a9a; }
+        .danger-btn:active { box-shadow: 0 0 0 #ef9a9a; }
+        .secondary-btn { background-color: #64b5f6; box-shadow: 0 6px 0 #1e88e5; }
+        .home-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 22px 0; }
+        .level-card { border: 3px dashed #ce93d8; border-radius: 26px; padding: 24px 14px; background: linear-gradient(135deg, #fff, #f3e5f5); cursor: pointer; color: #6a1b9a; min-height: 178px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
+        .level-card:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 8px 18px rgba(206, 147, 216, 0.35); }
+        .level-card strong { font-size: 28px; display: block; margin-bottom: 10px; }
+        .level-card span { color: #d81b60; font-weight: bold; font-size: 14px; }
+        .toolbar { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 0 10px 8px; }
+        .card { background: linear-gradient(135deg, #f3e5f5, #e1bee7); color: #6a1b9a; padding: 40px 20px; border-radius: 25px; margin: 20px 0; cursor: pointer; font-size: 32px; font-weight: bold; border: 3px dashed #ce93d8; box-shadow: 0 8px 15px rgba(206, 147, 216, 0.4); transition: transform 0.3s; }
+        .card:hover { transform: scale(1.03) rotate(1deg); }
+        .details { font-size: 18px; margin-top: 20px; font-weight: normal; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 15px; }
+        .sentence { font-style: italic; margin-top: 10px; color: #4a235a; font-weight: bold; }
+        .btn-speak { background-color: #ffd54f; color: #d84315; box-shadow: 0 5px 0 #ffb300; }
+        .btn-star { background-color: #fff59d; color: #f57f17; box-shadow: 0 5px 0 #fbc02d; margin-top: 10px; font-size: 14px; }
+        .btn-starred { background-color: #ffcc80; color: #e65100; box-shadow: 0 5px 0 #ef6c00; }
+        .options { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
+        .option-btn { background-color: white; border: 3px solid #e1bee7; color: #6a1b9a; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 20px; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .option-btn:hover { background-color: #f3e5f5; transform: scale(1.02); }
+        .status-box { background-color: #f3e5f5; border: 2px dashed #ce93d8; border-radius: 20px; padding: 15px; margin-bottom: 20px; text-align: center; }
+        .level-title { font-size: 16px; color: #666; font-weight: bold; margin-bottom: 8px; }
+        .level-title span { color: #d81b60; font-size: 20px; }
+        .streak-bar { font-size: 24px; color: #9c27b0; font-weight: bold; }
+        .review-list { text-align: left; margin-top: 20px; max-height: 450px; overflow-y: auto; padding-right: 5px; }
+        .review-item { background: #fafafa; border: 2px dashed #ce93d8; border-radius: 20px; margin-bottom: 15px; text-align: left; overflow: hidden; }
+        .review-header { padding: 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; background: #fafafa; transition: background 0.2s; gap: 10px; }
+        .review-header:hover { background: #f3e5f5; }
+        .review-item-en { font-size: 22px; font-weight: bold; color: #6a1b9a; margin-right: 8px; }
+        .review-item-jp { font-size: 15px; color: #d81b60; font-weight: bold; margin-top: 2px; }
+        .review-body { padding: 0 18px 18px; border-top: 2px dashed #e1bee7; background: #fafafa; }
+        .review-item-sent-en { font-style: italic; color: #4a235a; font-weight: bold; font-size: 14px; flex-grow: 1; display: inline-block; margin-top: 10px; }
+        .review-item-sent-jp { font-size: 13px; color: #666; margin-top: 4px; }
+        .small-btn-speak { background-color: #ffd54f; color: #d84315; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; box-shadow: 0 4px 0 #ffb300; display: inline-flex; justify-content: center; align-items: center; font-size: 14px; margin-left: 5px; transition: 0.1s; }
+        .btn-remove { background-color: #ffcdd2; color: #c62828; border: none; padding: 8px 12px; border-radius: 15px; cursor: pointer; font-weight: bold; font-family: inherit; box-shadow: 0 4px 0 #ef9a9a; transition: 0.1s; font-size: 13px; height: fit-content; }
+        .gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+        .character-card { width: 100px; height: 140px; background-color: #f5f5f5; border: 3px dashed #ccc; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #999; text-align: center; padding: 5px; font-size: 14px; transition: transform 0.2s; white-space: pre-line; }
+        .character-card.unlocked { cursor: pointer; border: 3px solid #ff758c; box-shadow: 0 4px 10px rgba(255,117,140,0.4); animation: pop 0.5s ease-out; }
+        .character-card.unlocked:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(255,117,140,0.6); }
+        @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes scaleIn { 0% { transform: translate(-50%,-50%) scale(0.5); opacity: 0; } 70% { transform: translate(-50%,-50%) scale(1.1); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(1); opacity: 1; } }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 999; display: none; backdrop-filter: blur(5px); }
+        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 34px; border-radius: 30px; box-shadow: 0 10px 40px rgba(156, 39, 176, 0.5); z-index: 1000; display: none; text-align: center; border: 5px solid #ce93d8; width: min(88vw, 390px); animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .fullscreen-view { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .fullscreen-view.active { opacity: 1; pointer-events: auto; }
+        .fullscreen-img { max-width: 90%; max-height: 70vh; border-radius: 20px; border: 5px solid white; box-shadow: 0 0 30px rgba(255,255,255,0.5); }
+        .fullscreen-text { color: white; text-align: center; margin-top: 20px; }
+        .fs-title { font-size: 20px; color: #ffb74d; font-weight: bold; }
+        .fs-name { font-size: 36px; font-weight: bold; margin-top: 5px; text-shadow: 2px 2px 4px black; }
+        @media (max-width: 560px) {
+            header { font-size: 20px; }
+            .container { margin: 8px 10px 24px; padding: 22px 16px; }
+            .home-grid, .input-row { grid-template-columns: 1fr; }
+            .level-card { min-height: 138px; }
+            .card { font-size: 28px; padding: 34px 14px; }
+            .jelly-btn { font-size: 14px; padding: 11px 14px; }
+        }
+    </style>
+</head>
+<body>
+<header id="app-title">英検 魔法の単語帳 Preview</header>
+<div class="sub-header">
+    <span class="pill" id="current-user-pill">ユーザー未選択</span>
+    <span class="pill hidden" id="current-course-pill">コース未選択</span>
+</div>
+
+<div id="user-screen" class="container wide-container">
+    <h2 class="screen-title">ユーザーを選んでね</h2>
+    <p class="muted">名前だけで使えるよ</p>
+    <div class="input-row">
+        <input id="new-user-name" type="text" maxlength="16" placeholder="なまえ">
+        <button class="jelly-btn" onclick="addUser()">新しく作る</button>
+    </div>
+    <div id="user-list" class="user-list"></div>
+</div>
+
+<div id="home-screen" class="container wide-container hidden">
+    <h2 class="screen-title"><span id="home-user-name">...</span> さんの単語帳</h2>
+    <p class="muted">コースを選んでね</p>
+    <div class="home-grid">
+        <div class="level-card" onclick="enterCourse('pre2')">
+            <strong>英検準2級</strong>
+            <span>Preview用テスト単語入り</span>
+        </div>
+        <div class="level-card" onclick="enterCourse('level2')">
+            <strong>英検2級</strong>
+            <span>現在の単語データ</span>
+        </div>
+    </div>
+    <div class="row">
+        <button class="jelly-btn secondary-btn" onclick="goUserScreen()">ユーザー切替</button>
+        <button class="jelly-btn danger-btn" onclick="confirmResetCurrentUser()">進度をリセット</button>
+    </div>
+</div>
+
+<div id="course-shell" class="hidden">
+    <div class="toolbar">
+        <button class="jelly-btn secondary-btn" onclick="goHome()">コース選択へ</button>
+        <button class="jelly-btn danger-btn" onclick="confirmResetCurrentUser()">進度をリセット</button>
+    </div>
+    <div class="nav">
+        <button class="jelly-btn" onclick="switchTab('study')">魔法のカード</button>
+        <button class="jelly-btn" onclick="switchTab('review')">復習ノート</button>
+        <button class="jelly-btn" onclick="switchTab('quiz')">鬼殺隊の試練</button>
+        <button class="jelly-btn" onclick="switchTab('collection')">絆の図鑑</button>
+    </div>
+
+    <div id="study" class="container">
+        <h2 class="screen-title">新しい呪文</h2>
+        <p class="muted">カードをタップして、翻訳魔法を使おう！</p>
+        <div class="row">
+            <button class="jelly-btn btn-speak" onclick="speakWord()">発音を聞く</button>
+            <button id="btn-star" class="jelly-btn btn-star" onclick="toggleReview()">復習に追加</button>
+        </div>
+        <div class="card" onclick="toggleCard()">
+            <span id="study-word">Loading...</span>
+            <div id="study-details" class="details hidden">
+                <div id="study-jp" style="font-size: 22px; color: #d81b60;">...</div>
+                <hr style="border-top:2px dashed #ce93d8; margin: 15px 0;">
+                <div class="sentence" id="study-en-sent">...</div>
+                <button class="jelly-btn btn-speak" style="padding: 6px 12px; font-size: 14px; margin-top:10px;" onclick="speakSentence(event)">例文を聞く</button>
+                <div id="study-jp-sent" style="font-size: 15px; margin-top: 10px; color: #555;">...</div>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+            <button class="jelly-btn" style="background-color: #f48fb1; box-shadow: 0 6px 0 #d81b60;" onclick="nextStudyWord(-1)">前へ</button>
+            <button class="jelly-btn secondary-btn" onclick="nextStudyWord(1)">次へ</button>
+        </div>
+    </div>
+
+    <div id="review" class="container hidden">
+        <h2 class="screen-title">復習ノート</h2>
+        <p class="muted">タップすると例文が開くよ！</p>
+        <div id="review-list" class="review-list"></div>
+    </div>
+
+    <div id="quiz" class="container hidden">
+        <h2 class="screen-title">鬼殺隊入隊試験</h2>
+        <div class="status-box">
+            <div class="level-title" id="current-title">現在の階級：<span id="display-title">訓練生</span></div>
+            <div class="streak-bar">連撃: <span id="streak" style="font-size: 32px;">0</span> / <span id="target">3</span></div>
+            <div style="font-size:12px; color:#666; margin-top: 5px;">クリアで <b id="next-reward" style="color:#d81b60;">...</b> が仲間に！</div>
+        </div>
+        <h1 id="quiz-word" style="font-size: 42px; color: #4a235a; margin: 10px 0;">Loading...</h1>
+        <button class="jelly-btn btn-speak" onclick="speakQuizWord()">発音のヒント</button>
+        <div class="options" id="quiz-options"></div>
+    </div>
+
+    <div id="collection" class="container hidden">
+        <h2 class="screen-title">絆の図鑑</h2>
+        <p class="muted">カードをタップすると大きく表示されるよ！</p>
+        <div class="gallery" id="gallery"></div>
+    </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="modal" id="modal">
+    <h2 style="color: #d81b60;" id="modal-title">確認</h2>
+    <p style="color: #666; font-weight: bold; font-size: 16px;" id="modal-desc">...</p>
+    <div id="modal-body"></div>
+    <div class="row" id="modal-actions" style="margin-top: 18px;"></div>
+</div>
+
+<div id="fullscreen-view" class="fullscreen-view" onclick="closeFullscreen()">
+    <img id="fs-img" class="fullscreen-img" src="" alt="character">
+    <div class="fullscreen-text">
+        <div id="fs-title" class="fs-title">階級</div>
+        <div id="fs-name" class="fs-name">名前</div>
+        <div style="font-size:14px;color:#aaa;margin-top:15px;">画面をタップして閉じる</div>
+    </div>
+</div>
+
+<script src="android-app/app/src/main/assets/words.js"></script>
+<script>
+const pre2VocabData = [
+    { en: "Abroad", jp: "海外へ / 海外で", enSent: "My sister wants to study abroad.", jpSent: "姉は海外で勉強したがっています。" },
+    { en: "Advantage", jp: "利点 / 有利な点", enSent: "This plan has one big advantage.", jpSent: "この計画には大きな利点が一つあります。" },
+    { en: "Avoid", jp: "避ける", enSent: "You should avoid eating too much sugar.", jpSent: "砂糖を取りすぎるのは避けるべきです。" },
+    { en: "Borrow", jp: "借りる", enSent: "Can I borrow your notebook?", jpSent: "あなたのノートを借りてもいいですか。" },
+    { en: "Crowded", jp: "混雑した", enSent: "The train was crowded this morning.", jpSent: "今朝、電車は混雑していました。" },
+    { en: "Depend on", jp: "に頼る / 次第である", enSent: "The picnic depends on the weather.", jpSent: "ピクニックは天気次第です。" },
+    { en: "Explain", jp: "説明する", enSent: "Please explain the rule again.", jpSent: "もう一度ルールを説明してください。" },
+    { en: "Improve", jp: "上達する / 改善する", enSent: "Practice will improve your speaking.", jpSent: "練習すれば話す力が上達します。" },
+    { en: "Look after", jp: "の世話をする", enSent: "I look after my little brother.", jpSent: "私は弟の世話をしています。" },
+    { en: "Take part in", jp: "に参加する", enSent: "She will take part in the contest.", jpSent: "彼女はコンテストに参加します。" },
+    { en: "Be interested in", jp: "に興味がある", enSent: "He is interested in science.", jpSent: "彼は科学に興味があります。" },
+    { en: "For example", jp: "例えば", enSent: "For example, carrots are healthy.", jpSent: "例えば、にんじんは健康に良いです。" }
+];
+
+const courses = {
+    pre2: { label: "英検準2級", storageKey: "pre2", words: pre2VocabData },
+    level2: { label: "英検2級", storageKey: "level2", words: vocabData }
+};
+
+const challengeLevels = [
+    { level: 1,  target: 3,  title: "癸 (みずのと)",  reward: "竈門 炭治郎" },
+    { level: 2,  target: 4,  title: "壬 (みずのえ)",  reward: "竈門 禰豆子" },
+    { level: 3,  target: 5,  title: "辛 (かのと)",   reward: "我妻 善逸" },
+    { level: 4,  target: 5,  title: "庚 (かのえ)",   reward: "嘴平 伊之助" },
+    { level: 5,  target: 6,  title: "己 (つちのと)",  reward: "栗花落 カナヲ" },
+    { level: 6,  target: 7,  title: "戊 (つちのえ)",  reward: "不死川 玄弥" },
+    { level: 7,  target: 8,  title: "丁 (ひのと)",   reward: "神崎 アオイ" },
+    { level: 8,  target: 10, title: "丙 (ひのえ)",   reward: "鱗滝 左近次" },
+    { level: 9,  target: 12, title: "乙 (きのと)",   reward: "胡蝶 カナエ" },
+    { level: 10, target: 15, title: "甲 (きのえ)",   reward: "錆兎" },
+    { level: 11, target: 18, title: "水柱",          reward: "冨岡 義勇" },
+    { level: 12, target: 20, title: "蟲柱",          reward: "胡蝶 しのぶ" },
+    { level: 13, target: 22, title: "炎柱",          reward: "煉獄 杏寿郎" },
+    { level: 14, target: 25, title: "音柱",          reward: "宇髄 天元" },
+    { level: 15, target: 28, title: "霞柱",          reward: "時透 無一郎" },
+    { level: 16, target: 30, title: "恋柱",          reward: "甘露寺 蜜璃" },
+    { level: 17, target: 35, title: "蛇柱",          reward: "伊黒 小芭内" },
+    { level: 18, target: 40, title: "風柱",          reward: "不死川 実弥" },
+    { level: 19, target: 45, title: "岩柱",          reward: "悲鳴嶼 行冥" },
+    { level: 20, target: 50, title: "鬼殺隊当主",     reward: "産屋敷 耀哉" }
+];
+
+const STORE_KEY = "eikenPreviewUsersV1";
+let appState = { users: [], currentUserId: null };
+let currentCourseId = null;
+let currentQuizWord = null;
+
+function defaultCourseProgress() {
+    return {
+        currentStudyIndex: 0,
+        streak: 0,
+        currentLevelIndex: 0,
+        reviewWordsList: [],
+        unlocked: challengeLevels.map(() => false)
+    };
+}
+
+function defaultUser(name) {
+    return {
+        id: String(Date.now()) + Math.random().toString(16).slice(2),
+        name,
+        progress: {
+            pre2: defaultCourseProgress(),
+            level2: defaultCourseProgress()
+        }
+    };
+}
+
+function ensureUserShape(user) {
+    user.progress = user.progress || {};
+    Object.keys(courses).forEach(id => {
+        user.progress[id] = Object.assign(defaultCourseProgress(), user.progress[id] || {});
+        user.progress[id].unlocked = Array.isArray(user.progress[id].unlocked) ? user.progress[id].unlocked.slice(0, challengeLevels.length) : challengeLevels.map(() => false);
+        while (user.progress[id].unlocked.length < challengeLevels.length) user.progress[id].unlocked.push(false);
+        user.progress[id].reviewWordsList = Array.isArray(user.progress[id].reviewWordsList) ? user.progress[id].reviewWordsList : [];
+    });
+}
+
+function loadAppState() {
+    try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (raw) appState = JSON.parse(raw);
+    } catch (e) {
+        appState = { users: [], currentUserId: null };
+    }
+    appState.users = Array.isArray(appState.users) ? appState.users : [];
+    appState.users.forEach(ensureUserShape);
+    if (!appState.users.some(u => u.id === appState.currentUserId)) appState.currentUserId = null;
+}
+
+function saveAppState() {
+    localStorage.setItem(STORE_KEY, JSON.stringify(appState));
+}
+
+function getCurrentUser() {
+    return appState.users.find(u => u.id === appState.currentUserId) || null;
+}
+
+function getCourse() {
+    return courses[currentCourseId];
+}
+
+function getProgress() {
+    const user = getCurrentUser();
+    if (!user || !currentCourseId) return null;
+    ensureUserShape(user);
+    return user.progress[currentCourseId];
+}
+
+function showOnly(screenId) {
+    ["user-screen", "home-screen", "course-shell"].forEach(id => document.getElementById(id).classList.add("hidden"));
+    document.getElementById(screenId).classList.remove("hidden");
+    renderHeader();
+}
+
+function renderHeader() {
+    const user = getCurrentUser();
+    const course = getCourse();
+    document.getElementById("current-user-pill").innerText = user ? `${user.name} さん` : "ユーザー未選択";
+    document.getElementById("current-course-pill").classList.toggle("hidden", !course);
+    if (course) document.getElementById("current-course-pill").innerText = course.label;
+    document.getElementById("app-title").innerText = course ? `${course.label} 魔法の単語帳` : "英検 魔法の単語帳 Preview";
+}
+
+function renderUsers() {
+    const list = document.getElementById("user-list");
+    list.innerHTML = "";
+    if (appState.users.length === 0) {
+        list.innerHTML = '<p class="muted" style="font-size:18px;">まだユーザーがいないよ</p>';
+        return;
+    }
+    appState.users.forEach(user => {
+        const item = document.createElement("div");
+        item.className = "user-item";
+        item.innerHTML = `
+            <button class="user-name-btn">${escapeHtml(user.name)} さん</button>
+            <button class="jelly-btn danger-btn">削除</button>
+        `;
+        item.querySelector(".user-name-btn").onclick = () => selectUser(user.id);
+        item.querySelector(".danger-btn").onclick = () => confirmDeleteUser(user.id);
+        list.appendChild(item);
+    });
+}
+
+function addUser() {
+    const input = document.getElementById("new-user-name");
+    const name = input.value.trim();
+    if (!name) {
+        openModal("名前を入れてね", "ユーザー名を入力してから作成できます。", "", [{ label: "OK", action: closeModal }]);
+        return;
+    }
+    if (appState.users.some(u => u.name === name)) {
+        openModal("同じ名前があります", "別の名前を入れてね。", "", [{ label: "OK", action: closeModal }]);
+        return;
+    }
+    const user = defaultUser(name);
+    appState.users.push(user);
+    appState.currentUserId = user.id;
+    input.value = "";
+    saveAppState();
+    renderUsers();
+    renderHome();
+    showOnly("home-screen");
+}
+
+function selectUser(id) {
+    appState.currentUserId = id;
+    currentCourseId = null;
+    saveAppState();
+    renderHome();
+    showOnly("home-screen");
+}
+
+function confirmDeleteUser(id) {
+    const user = appState.users.find(u => u.id === id);
+    if (!user) return;
+    openModal(
+        "ユーザーを削除しますか？",
+        `${escapeHtml(user.name)} さんの準2級・2級の進度も削除されます。`,
+        "",
+        [
+            { label: "キャンセル", action: closeModal, type: "secondary" },
+            { label: "削除する", action: () => deleteUser(id), type: "danger" }
+        ]
+    );
+}
+
+function deleteUser(id) {
+    appState.users = appState.users.filter(u => u.id !== id);
+    if (appState.currentUserId === id) {
+        appState.currentUserId = null;
+        currentCourseId = null;
+    }
+    saveAppState();
+    closeModal();
+    renderUsers();
+    showOnly("user-screen");
+}
+
+function renderHome() {
+    const user = getCurrentUser();
+    if (!user) return;
+    document.getElementById("home-user-name").innerText = user.name;
+    renderHeader();
+}
+
+function goUserScreen() {
+    currentCourseId = null;
+    renderUsers();
+    showOnly("user-screen");
+}
+
+function goHome() {
+    currentCourseId = null;
+    renderHome();
+    showOnly("home-screen");
+}
+
+function enterCourse(courseId) {
+    currentCourseId = courseId;
+    showOnly("course-shell");
+    switchTab("study");
+}
+
+function switchTab(t) {
+    ["study", "review", "quiz", "collection"].forEach(id => document.getElementById(id).classList.add("hidden"));
+    document.getElementById(t).classList.remove("hidden");
+    if (t === "study") loadStudyWord();
+    if (t === "review") renderReviewList();
+    if (t === "quiz") { updateQuizUI(); loadQuizWord(); }
+    if (t === "collection") renderGallery();
+}
+
+function getWords() {
+    return getCourse().words;
+}
+
+function speak(t) {
+    if ("speechSynthesis" in window) {
+        const u = new SpeechSynthesisUtterance(t);
+        u.lang = "en-US";
+        u.rate = 0.85;
+        window.speechSynthesis.speak(u);
+    }
+}
+
+function loadStudyWord() {
+    const progress = getProgress();
+    const words = getWords();
+    if (!progress || words.length === 0) return;
+    if (progress.currentStudyIndex >= words.length) progress.currentStudyIndex = 0;
+    const w = words[progress.currentStudyIndex];
+    document.getElementById("study-word").innerText = w.en;
+    document.getElementById("study-jp").innerText = w.jp;
+    document.getElementById("study-en-sent").innerText = w.enSent;
+    document.getElementById("study-jp-sent").innerText = w.jpSent;
+    document.getElementById("study-details").classList.add("hidden");
+    updateStarButton();
+}
+
+function toggleCard() {
+    document.getElementById("study-details").classList.toggle("hidden");
+}
+
+function nextStudyWord(d) {
+    const progress = getProgress();
+    const words = getWords();
+    progress.currentStudyIndex += d;
+    if (progress.currentStudyIndex >= words.length) progress.currentStudyIndex = 0;
+    if (progress.currentStudyIndex < 0) progress.currentStudyIndex = words.length - 1;
+    saveAppState();
+    loadStudyWord();
+}
+
+function speakWord() {
+    const w = getWords()[getProgress().currentStudyIndex];
+    speak(w.en);
+}
+
+function speakSentence(e) {
+    e.stopPropagation();
+    const w = getWords()[getProgress().currentStudyIndex];
+    speak(w.enSent);
+}
+
+function toggleReview() {
+    const progress = getProgress();
+    const en = getWords()[progress.currentStudyIndex].en;
+    const idx = progress.reviewWordsList.indexOf(en);
+    if (idx > -1) progress.reviewWordsList.splice(idx, 1);
+    else progress.reviewWordsList.push(en);
+    saveAppState();
+    updateStarButton();
+}
+
+function updateStarButton() {
+    const progress = getProgress();
+    const en = getWords()[progress.currentStudyIndex].en;
+    const btn = document.getElementById("btn-star");
+    if (progress.reviewWordsList.includes(en)) {
+        btn.innerText = "復習から外す";
+        btn.classList.add("btn-starred");
+    } else {
+        btn.innerText = "復習に追加";
+        btn.classList.remove("btn-starred");
+    }
+}
+
+function renderReviewList() {
+    const progress = getProgress();
+    const words = getWords();
+    const list = document.getElementById("review-list");
+    list.innerHTML = "";
+    if (progress.reviewWordsList.length === 0) {
+        list.innerHTML = '<p style="text-align:center; color:#999; margin-top:40px; font-size:18px;">ノートは空っぽだよ！<br><br>全部覚えたね！</p>';
+        return;
+    }
+    progress.reviewWordsList.forEach((en, index) => {
+        const w = words.find(x => x.en === en);
+        if (!w) return;
+        const div = document.createElement("div");
+        div.className = "review-item";
+        div.innerHTML = `
+            <div class="review-header">
+                <div>
+                    <div style="display:flex; align-items:center;">
+                        <span class="review-item-en">${escapeHtml(w.en)}</span>
+                        <button class="small-btn-speak" data-action="word">♪</button>
+                    </div>
+                    <div class="review-item-jp">${escapeHtml(w.jp)}</div>
+                </div>
+                <button class="btn-remove">覚えた！</button>
+            </div>
+            <div class="review-body hidden">
+                <div style="display:flex; align-items:center;">
+                    <span class="review-item-sent-en">${escapeHtml(w.enSent)}</span>
+                    <button class="small-btn-speak" data-action="sent" style="margin-top:10px;">♪</button>
+                </div>
+                <div class="review-item-sent-jp">${escapeHtml(w.jpSent)}</div>
+            </div>
+        `;
+        div.querySelector(".review-header").onclick = () => div.querySelector(".review-body").classList.toggle("hidden");
+        div.querySelector('[data-action="word"]').onclick = e => { e.stopPropagation(); speak(w.en); };
+        div.querySelector('[data-action="sent"]').onclick = e => { e.stopPropagation(); speak(w.enSent); };
+        div.querySelector(".btn-remove").onclick = e => {
+            e.stopPropagation();
+            progress.reviewWordsList.splice(index, 1);
+            saveAppState();
+            renderReviewList();
+        };
+        list.appendChild(div);
+    });
+}
+
+function updateQuizUI() {
+    const progress = getProgress();
+    if (progress.currentLevelIndex >= challengeLevels.length) {
+        document.getElementById("current-title").innerHTML = 'あなたはすでに <span style="font-size:24px; color:#ff9800;">伝説の柱</span> です！';
+        document.getElementById("streak").innerText = progress.streak;
+        document.getElementById("target").innerText = "∞";
+        document.getElementById("next-reward").innerText = "すべて収集済み";
+        return;
+    }
+    const info = challengeLevels[progress.currentLevelIndex];
+    const title = progress.currentLevelIndex === 0 ? "訓練生" : challengeLevels[progress.currentLevelIndex - 1].title;
+    document.getElementById("display-title").innerText = title;
+    document.getElementById("target").innerText = info.target;
+    document.getElementById("next-reward").innerText = info.reward;
+    document.getElementById("streak").innerText = progress.streak;
+}
+
+function loadQuizWord() {
+    const words = getWords();
+    currentQuizWord = words[Math.floor(Math.random() * words.length)];
+    document.getElementById("quiz-word").innerText = currentQuizWord.en;
+    const opts = [currentQuizWord.jp];
+    while (opts.length < Math.min(4, words.length)) {
+        const jp = words[Math.floor(Math.random() * words.length)].jp;
+        if (!opts.includes(jp)) opts.push(jp);
+    }
+    opts.sort(() => Math.random() - 0.5);
+    const div = document.getElementById("quiz-options");
+    div.innerHTML = "";
+    opts.forEach(o => {
+        const b = document.createElement("button");
+        b.className = "option-btn";
+        b.innerText = o;
+        b.onclick = () => checkAnswer(o, b);
+        div.appendChild(b);
+    });
+}
+
+function speakQuizWord() {
+    if (currentQuizWord) speak(currentQuizWord.en);
+}
+
+function checkAnswer(sel, btn) {
+    const progress = getProgress();
+    document.querySelectorAll(".option-btn").forEach(b => b.disabled = true);
+    if (sel === currentQuizWord.jp) {
+        btn.style.backgroundColor = "#a5d6a7";
+        btn.style.borderColor = "#4caf50";
+        btn.style.color = "#1b5e20";
+        progress.streak++;
+        document.getElementById("streak").innerText = progress.streak;
+        saveAppState();
+        setTimeout(() => {
+            if (progress.currentLevelIndex < challengeLevels.length && progress.streak >= challengeLevels[progress.currentLevelIndex].target) levelUp();
+            else loadQuizWord();
+        }, 500);
+    } else {
+        btn.style.backgroundColor = "#ef9a9a";
+        btn.style.borderColor = "#f44336";
+        btn.style.color = "#b71c1c";
+        progress.streak = 0;
+        document.getElementById("streak").innerText = progress.streak;
+        saveAppState();
+        setTimeout(loadQuizWord, 700);
+    }
+}
+
+function levelUp() {
+    const progress = getProgress();
+    progress.streak = 0;
+    const lvl = challengeLevels[progress.currentLevelIndex];
+    progress.unlocked[progress.currentLevelIndex] = true;
+    progress.currentLevelIndex++;
+    saveAppState();
+    updateQuizUI();
+    openModal(
+        `階級昇格：【${lvl.title}】！`,
+        "新しい仲間が駆けつけた！",
+        `<img src="images/char_${progress.currentLevelIndex - 1}.jpg" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:4px solid #ce93d8; box-shadow:0 5px 15px rgba(0,0,0,0.3); margin-bottom:10px;" alt="character"><br><span style="font-size:28px; color:#4a235a;">${escapeHtml(lvl.reward)}</span>`,
+        [{ label: "次の試練へ", action: () => { closeModal(); loadQuizWord(); } }]
+    );
+}
+
+function renderGallery() {
+    const progress = getProgress();
+    const gallery = document.getElementById("gallery");
+    gallery.innerHTML = "";
+    challengeLevels.forEach((c, idx) => {
+        const d = document.createElement("div");
+        d.className = "character-card " + (progress.unlocked[idx] ? "unlocked" : "");
+        if (progress.unlocked[idx]) {
+            d.style.backgroundImage = `url('images/char_${idx}.jpg')`;
+            d.style.backgroundSize = "cover";
+            d.style.backgroundPosition = "center";
+            d.innerHTML = `
+                <div style="background:rgba(0,0,0,0.5); width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:12px; color:white; text-shadow:1px 1px 3px black; padding:5px;">
+                    <span style="font-size:12px;">${escapeHtml(c.title)}</span>
+                    <strong style="font-size:14px; margin-top:5px; white-space:pre-line">${escapeHtml(c.reward)}</strong>
+                </div>
+            `;
+            d.onclick = () => showFullscreen(idx, c.title, c.reward);
+        } else {
+            d.innerText = "ロック中\n未知の仲間";
+        }
+        gallery.appendChild(d);
+    });
+}
+
+function showFullscreen(idx, title, name) {
+    document.getElementById("fs-img").src = `images/char_${idx}.jpg`;
+    document.getElementById("fs-title").innerText = title;
+    document.getElementById("fs-name").innerText = name;
+    document.getElementById("fullscreen-view").classList.add("active");
+}
+
+function closeFullscreen() {
+    document.getElementById("fullscreen-view").classList.remove("active");
+}
+
+function confirmResetCurrentUser() {
+    const user = getCurrentUser();
+    if (!user) return;
+    openModal(
+        "進度をリセットしますか？",
+        `${escapeHtml(user.name)} さんの準2級・2級の進度、復習ノート、階級、図鑑をリセットします。`,
+        "",
+        [
+            { label: "キャンセル", action: closeModal, type: "secondary" },
+            { label: "リセットする", action: resetCurrentUserProgress, type: "danger" }
+        ]
+    );
+}
+
+function resetCurrentUserProgress() {
+    const user = getCurrentUser();
+    if (!user) return;
+    user.progress = { pre2: defaultCourseProgress(), level2: defaultCourseProgress() };
+    saveAppState();
+    closeModal();
+    if (currentCourseId) switchTab("study");
+    renderHome();
+}
+
+function openModal(title, desc, body, actions) {
+    document.getElementById("modal-title").innerHTML = title;
+    document.getElementById("modal-desc").innerHTML = desc;
+    document.getElementById("modal-body").innerHTML = body || "";
+    const actionBox = document.getElementById("modal-actions");
+    actionBox.innerHTML = "";
+    actions.forEach(a => {
+        const btn = document.createElement("button");
+        btn.className = "jelly-btn " + (a.type === "danger" ? "danger-btn" : a.type === "secondary" ? "secondary-btn" : "");
+        btn.innerText = a.label;
+        btn.onclick = a.action;
+        actionBox.appendChild(btn);
+    });
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("modal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("modal").style.display = "none";
+}
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+}
+
+window.onload = function() {
+    loadAppState();
+    renderUsers();
+    if (getCurrentUser()) {
+        renderHome();
+        showOnly("home-screen");
+    } else {
+        showOnly("user-screen");
+    }
+};
+</script>
+</body>
+</html>

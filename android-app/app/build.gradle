@@ -1,0 +1,33 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "com.eiken.magicwords"
+    compileSdk 35
+
+    signingConfigs {
+        release {
+            storeFile file("../keystore/eiken-magicwords.jks")
+            storePassword "eiken-magicwords"
+            keyAlias "eiken-magicwords"
+            keyPassword "eiken-magicwords"
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.eiken.magicwords"
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
+        }
+    }
+}

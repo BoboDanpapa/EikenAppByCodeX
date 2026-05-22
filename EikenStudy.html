@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 英検2級 魔法の単語帳 🌟</title>
+    <style>
+        body { font-family: 'Comic Sans MS', 'Nunito', 'Segoe UI', sans-serif; background-color: #f7f1fa; margin: 0; padding: 0; color: #4a235a; }
+        header { background: linear-gradient(135deg, #ba68c8, #9c27b0); color: white; text-align: center; padding: 20px; font-size: 24px; font-weight: bold; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 5px 15px rgba(156, 39, 176, 0.3); margin-bottom: 10px; }
+        .nav { display: flex; justify-content: center; gap: 10px; padding: 10px; flex-wrap: wrap;}
+        .jelly-btn { background-color: #ce93d8; color: white; border: none; font-size: 15px; font-weight: bold; cursor: pointer; padding: 12px 18px; border-radius: 25px; box-shadow: 0 6px 0 #ab47bc; transition: all 0.1s; font-family: inherit; }
+        .jelly-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #ab47bc; }
+        .nav .jelly-btn { background-color: #b39ddb; box-shadow: 0 6px 0 #7e57c2; }
+        .nav .jelly-btn:active { box-shadow: 0 0 0 #7e57c2; }
+        .container { max-width: 500px; margin: 10px auto 30px auto; background: white; padding: 30px; border-radius: 30px; border: 4px solid #e1bee7; box-shadow: 0 10px 25px rgba(206, 147, 216, 0.3); text-align: center; }
+        .hidden { display: none !important; }
+        
+        .card { background: linear-gradient(135deg, #f3e5f5, #e1bee7); color: #6a1b9a; padding: 40px 20px; border-radius: 25px; margin: 20px 0; cursor: pointer; font-size: 32px; font-weight: bold; border: 3px dashed #ce93d8; box-shadow: 0 8px 15px rgba(206, 147, 216, 0.4); transition: transform 0.3s; }
+        .card:hover { transform: scale(1.03) rotate(1deg); }
+        .details { font-size: 18px; margin-top: 20px; font-weight: normal; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 15px; }
+        .sentence { font-style: italic; margin-top: 10px; color: #4a235a; font-weight: bold;}
+        
+        .btn-speak { background-color: #ffd54f; color: #d84315; box-shadow: 0 5px 0 #ffb300; }
+        .btn-speak:active { box-shadow: 0 0 0 #ffb300; }
+        .btn-star { background-color: #fff59d; color: #f57f17; box-shadow: 0 5px 0 #fbc02d; margin-top: 10px; font-size: 14px;}
+        .btn-star:active { box-shadow: 0 0 0 #fbc02d; }
+        .btn-starred { background-color: #ffcc80; color: #e65100; box-shadow: 0 5px 0 #ef6c00; }
+        .btn-starred:active { box-shadow: 0 0 0 #ef6c00; }
+
+        .options { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
+        .option-btn { background-color: white; border: 3px solid #e1bee7; color: #6a1b9a; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 20px; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .option-btn:hover { background-color: #f3e5f5; transform: scale(1.02); }
+        
+        /* 状态条样式 */
+        .status-box { background-color: #f3e5f5; border: 2px dashed #ce93d8; border-radius: 20px; padding: 15px; margin-bottom: 20px; text-align: center;}
+        .level-title { font-size: 16px; color: #666; font-weight: bold; margin-bottom: 8px;}
+        .level-title span { color: #d81b60; font-size: 20px;}
+        .streak-bar { font-size: 24px; color: #9c27b0; font-weight: bold; }
+        
+        /* 复习本样式 */
+        .review-list { text-align: left; margin-top: 20px; max-height: 450px; overflow-y: auto; padding-right: 5px; }
+        .review-item { background: #fafafa; border: 2px dashed #ce93d8; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; text-align: left; overflow: hidden;}
+        .review-header { padding: 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; background: #fafafa; transition: background 0.2s;}
+        .review-header:hover { background: #f3e5f5; }
+        .review-item-en { font-size: 22px; font-weight: bold; color: #6a1b9a; margin-right: 8px; }
+        .review-item-jp { font-size: 15px; color: #d81b60; font-weight: bold; margin-top: 2px; }
+        .review-body { padding: 0 18px 18px 18px; border-top: 2px dashed #e1bee7; background: #fafafa; }
+        .review-item-sent-en { font-style: italic; color: #4a235a; font-weight: bold; font-size: 14px; flex-grow: 1; display: inline-block; margin-top:10px;}
+        .review-item-sent-jp { font-size: 13px; color: #666; margin-top: 4px; }
+        .small-btn-speak { background-color: #ffd54f; color: #d84315; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; box-shadow: 0 4px 0 #ffb300; display: inline-flex; justify-content: center; align-items: center; font-size: 14px; margin-left: 5px; transition: 0.1s; }
+        .small-btn-speak:active { transform: translateY(4px); box-shadow: 0 0 0 #ffb300; }
+        .btn-remove { background-color: #ffcdd2; color: #c62828; border: none; padding: 8px 12px; border-radius: 15px; cursor: pointer; font-weight: bold; font-family: inherit; box-shadow: 0 4px 0 #ef9a9a; transition: 0.1s; font-size: 13px; height: fit-content; z-index: 10;}
+        .btn-remove:active { transform: translateY(4px); box-shadow: 0 0 0 #ef9a9a; }
+
+        /* 图鉴样式 */
+        .gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px;}
+        .character-card { width: 100px; height: 140px; background-color: #f5f5f5; border: 3px dashed #ccc; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #999; text-align: center; padding: 5px; font-size: 14px; transition: transform 0.2s; }
+        .character-card.unlocked { cursor: pointer; border: 3px solid #ff758c; box-shadow: 0 4px 10px rgba(255,117,140,0.4); animation: pop 0.5s ease-out; }
+        .character-card.unlocked:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(255,117,140,0.6); }
+        @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        /* 🔥 升级弹窗华丽动画 */
+        @keyframes scaleIn { 0% { transform: translate(-50%,-50%) scale(0.5); opacity: 0; } 70% { transform: translate(-50%,-50%) scale(1.1); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(1); opacity: 1; } }
+        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(156, 39, 176, 0.5); z-index: 1000; display: none; text-align: center; border: 5px solid #ce93d8; width: 80%; max-width: 350px; animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; display: none; backdrop-filter: blur(5px); }
+        
+        /* 🔥 图鉴全屏大图展示蒙版 */
+        .fullscreen-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .fullscreen-view.active { opacity: 1; pointer-events: auto; }
+        .fullscreen-img { max-width: 90%; max-height: 70vh; border-radius: 20px; border: 5px solid white; box-shadow: 0 0 30px rgba(255,255,255,0.5); }
+        .fullscreen-text { color: white; text-align: center; margin-top: 20px; }
+        .fs-title { font-size: 20px; color: #ffb74d; font-weight: bold; }
+        .fs-name { font-size: 36px; font-weight: bold; margin-top: 5px; text-shadow: 2px 2px 4px black; }
+    </style>
+</head>
+<body>
+
+<header>✨ 英検2級 魔法の単語帳 ✨</header>
+<div class="nav">
+    <button class="jelly-btn" onclick="switchTab('study')">📖 魔法のカード</button>
+    <button class="jelly-btn" onclick="switchTab('review')">📓 復習ノート</button>
+    <button class="jelly-btn" onclick="switchTab('quiz')">🎯 鬼殺隊の試練</button>
+    <button class="jelly-btn" onclick="switchTab('collection')">🎴 絆の図鑑</button>
+</div>
+
+<!-- 学習モード -->
+<div id="study" class="container">
+    <h2 style="color: #8e24aa;">🪄 新しい呪文（単語）</h2>
+    <p style="color: #999; font-size: 14px;">カードをタップして、翻訳魔法を使おう！</p>
+    <div style="display: flex; justify-content: center; gap: 10px;">
+        <button class="jelly-btn btn-speak" onclick="speakWord()">📢 発音を聞く</button>
+        <button id="btn-star" class="jelly-btn btn-star" onclick="toggleReview()">⭐ 復習に追加</button>
+    </div>
+    <div class="card" onclick="toggleCard()">
+        <span id="study-word">Loading...</span>
+        <div id="study-details" class="details hidden">
+            <div id="study-jp" style="font-size: 22px; color: #d81b60;">...</div>
+            <hr style="border-top:2px dashed #ce93d8; margin: 15px 0;">
+            <div class="sentence" id="study-en-sent">...</div>
+            <button class="jelly-btn btn-speak" style="padding: 6px 12px; font-size: 14px; margin-top:10px;" onclick="speakSentence(event)">📢 例文を聞く</button>
+            <div id="study-jp-sent" style="font-size: 15px; margin-top: 10px; color: #555;">...</div>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+        <button class="jelly-btn" style="background-color: #f48fb1; box-shadow: 0 6px 0 #d81b60;" onclick="nextStudyWord(-1)">⬅️ 前へ</button>
+        <button class="jelly-btn" style="background-color: #64b5f6; box-shadow: 0 6px 0 #1e88e5;" onclick="nextStudyWord(1)">次へ ➡️</button>
+    </div>
+</div>
+
+<!-- 復習ノート -->
+<div id="review" class="container hidden">
+    <h2 style="color: #8e24aa;">📓 復習ノート</h2>
+    <p style="color: #777; font-size: 14px;">タップすると例文が開くよ！</p>
+    <div id="review-list" class="review-list"></div>
+</div>
+
+<!-- クイズモード -->
+<div id="quiz" class="container hidden">
+    <h2 style="color: #8e24aa;">⚔️ 鬼殺隊入隊試験</h2>
+    <div class="status-box">
+        <div class="level-title" id="current-title">現在の階級：<span id="display-title">訓練生</span></div>
+        <div class="streak-bar">🔥 連撃: <span id="streak" style="font-size: 32px;">0</span> / <span id="target">3</span></div>
+        <div style="font-size:12px; color:#666; margin-top: 5px;">クリアで <b id="next-reward" style="color:#d81b60;">...</b> が仲間に！</div>
+    </div>
+    <h1 id="quiz-word" style="font-size: 42px; color: #4a235a; margin: 10px 0;">Loading...</h1>
+    <button class="jelly-btn btn-speak" onclick="speakQuizWord()">📢 発音のヒント</button>
+    <div class="options" id="quiz-options"></div>
+</div>
+
+<!-- コレクションモード -->
+<div id="collection" class="container hidden">
+    <h2 style="color: #8e24aa;">🎴 絆の図鑑</h2>
+    <p style="color: #777;">カードをタップすると大きく表示されるよ！</p>
+    <div class="gallery" id="gallery"></div>
+</div>
+
+<!-- 弹窗 -->
+<div class="overlay" id="overlay"></div>
+<div class="modal" id="modal">
+    <h2 style="color: #d81b60;" id="modal-title">🎉 昇格おめでとう！</h2>
+    <p style="color: #666; font-weight: bold; font-size: 16px;" id="modal-desc">新しい仲間が駆けつけた！</p>
+    <div id="unlocked-character">...</div>
+    <button class="jelly-btn" style="background-color: #ffb74d; box-shadow: 0 6px 0 #f57c00; font-size: 18px; padding: 10px 30px; margin-top: 15px;" onclick="closeModal()">次の試練へ ⚔️</button>
+</div>
+
+<!-- 图鉴大图展示区 -->
+<div id="fullscreen-view" class="fullscreen-view" onclick="closeFullscreen()">
+    <img id="fs-img" class="fullscreen-img" src="" alt="character">
+    <div class="fullscreen-text">
+        <div id="fs-title" class="fs-title">階級</div>
+        <div id="fs-name" class="fs-name">名前</div>
+        <div style="font-size:14px;color:#aaa;margin-top:15px;">(画面をタップして閉じる)</div>
+    </div>
+</div>
+
+<script src="words.js"></script>
+
+<script>
+const challengeLevels = [
+    { level: 1,  target: 3,  title: "癸 (みずのと)",  reward: "竈門 炭治郎" },
+    { level: 2,  target: 4,  title: "壬 (みずのえ)",  reward: "竈門 禰豆子" },
+    { level: 3,  target: 5,  title: "辛 (かのと)",   reward: "我妻 善逸" },
+    { level: 4,  target: 5,  title: "庚 (かのえ)",   reward: "嘴平 伊之助" },
+    { level: 5,  target: 6,  title: "己 (つちのと)",  reward: "栗花落 カナヲ" },
+    { level: 6,  target: 7,  title: "戊 (つちのえ)",  reward: "不死川 玄弥" },
+    { level: 7,  target: 8,  title: "丁 (ひのと)",   reward: "神崎 アオイ" },
+    { level: 8,  target: 10, title: "丙 (ひのえ)",   reward: "鱗滝 左近次" },
+    { level: 9,  target: 12, title: "乙 (きのと)",   reward: "胡蝶 カナエ" },
+    { level: 10, target: 15, title: "甲 (きのえ)",   reward: "錆兎" },
+    { level: 11, target: 18, title: "水柱",          reward: "冨岡 義勇" },
+    { level: 12, target: 20, title: "蟲柱",          reward: "胡蝶 しのぶ" },
+    { level: 13, target: 22, title: "炎柱",          reward: "煉獄 杏寿郎" },
+    { level: 14, target: 25, title: "音柱",          reward: "宇髄 天元" },
+    { level: 15, target: 28, title: "霞柱",          reward: "時透 無一郎" },
+    { level: 16, target: 30, title: "恋柱",          reward: "甘露寺 蜜璃" },
+    { level: 17, target: 35, title: "蛇柱",          reward: "伊黒 小芭内" },
+    { level: 18, target: 40, title: "風柱",          reward: "不死川 実弥" },
+    { level: 19, target: 45, title: "岩柱",          reward: "悲鳴嶼 行冥" },
+    { level: 20, target: 50, title: "鬼殺隊当主",     reward: "産屋敷 耀哉" }
+];
+
+let characters = challengeLevels.map(c => ({ name: c.reward, unlocked: false, title: c.title }));
+let currentStudyIndex = 0, currentQuizWord = null, streak = 0, currentLevelIndex = 0, reviewWordsList = [];
+
+function switchTab(t) {
+    ['study', 'review', 'quiz', 'collection'].forEach(id => document.getElementById(id).classList.add('hidden'));
+    document.getElementById(t).classList.remove('hidden');
+    if (t === 'study') loadStudyWord();
+    if (t === 'review') renderReviewList();
+    if (t === 'quiz') { updateQuizUI(); loadQuizWord(); }
+    if (t === 'collection') renderGallery();
+}
+
+function speak(t) {
+    if ('speechSynthesis' in window) {
+        let u = new SpeechSynthesisUtterance(t);
+        u.lang = 'en-US';
+        u.rate = 0.85;
+        window.speechSynthesis.speak(u);
+    }
+}
+
+function loadStudyWord() {
+    if (typeof vocabData === 'undefined' || vocabData.length === 0) return;
+    let w = vocabData[currentStudyIndex];
+    document.getElementById('study-word').innerText = w.en;
+    document.getElementById('study-jp').innerText = w.jp;
+    document.getElementById('study-en-sent').innerText = w.enSent;
+    document.getElementById('study-jp-sent').innerText = w.jpSent;
+    document.getElementById('study-details').classList.add('hidden');
+    updateStarButton();
+}
+
+function toggleCard() { document.getElementById('study-details').classList.toggle('hidden'); }
+
+function nextStudyWord(d) {
+    currentStudyIndex += d;
+    if (currentStudyIndex >= vocabData.length) currentStudyIndex = 0;
+    if (currentStudyIndex < 0) currentStudyIndex = vocabData.length - 1;
+    loadStudyWord();
+}
+
+function speakWord() { speak(vocabData[currentStudyIndex].en); }
+function speakSentence(e) { e.stopPropagation(); speak(vocabData[currentStudyIndex].enSent); }
+
+function toggleReview() {
+    let en = vocabData[currentStudyIndex].en;
+    let idx = reviewWordsList.indexOf(en);
+    if (idx > -1) reviewWordsList.splice(idx, 1);
+    else reviewWordsList.push(en);
+    updateStarButton();
+}
+
+function updateStarButton() {
+    let en = vocabData[currentStudyIndex].en;
+    let btn = document.getElementById('btn-star');
+    if (reviewWordsList.includes(en)) {
+        btn.innerText = "🌟 復習から外す";
+        btn.classList.add('btn-starred');
+    } else {
+        btn.innerText = "⭐ 復習に追加";
+        btn.classList.remove('btn-starred');
+    }
+}
+
+function renderReviewList() {
+    let list = document.getElementById('review-list');
+    list.innerHTML = '';
+    if (reviewWordsList.length === 0) {
+        list.innerHTML = '<p style="text-align:center; color:#999; margin-top:40px; font-size:18px;">ノートは空っぽだよ！<br><br>全部覚えたね！🎉</p>';
+        return;
+    }
+    reviewWordsList.forEach(en => {
+        let w = vocabData.find(x => x.en === en);
+        if (!w) return;
+        let sid = w.en.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+        let div = document.createElement('div');
+        div.className = 'review-item';
+        div.innerHTML = `
+            <div class="review-header" id="h-${sid}">
+                <div>
+                    <div style="display:flex; align-items:center;">
+                        <span class="review-item-en">${w.en}</span>
+                        <button class="small-btn-speak" id="sw-${sid}">📢</button>
+                    </div>
+                    <div class="review-item-jp">${w.jp}</div>
+                </div>
+                <button class="btn-remove" id="rm-${sid}">🗑️ 覚えた！</button>
+            </div>
+            <div class="review-body hidden" id="b-${sid}">
+                <div style="display:flex; align-items:center;">
+                    <span class="review-item-sent-en">${w.enSent}</span>
+                    <button class="small-btn-speak" style="margin-top:10px;" id="ss-${sid}">📢</button>
+                </div>
+                <div class="review-item-sent-jp">${w.jpSent}</div>
+            </div>
+        `;
+        list.appendChild(div);
+        
+        document.getElementById(`h-${sid}`).onclick = () => { document.getElementById(`b-${sid}`).classList.toggle('hidden'); };
+        document.getElementById(`sw-${sid}`).onclick = (e) => { e.stopPropagation(); speak(w.en); };
+        document.getElementById(`ss-${sid}`).onclick = (e) => { e.stopPropagation(); speak(w.enSent); };
+        document.getElementById(`rm-${sid}`).onclick = (e) => { e.stopPropagation(); reviewWordsList = reviewWordsList.filter(x => x !== en); renderReviewList(); };
+    });
+}
+
+function updateQuizUI() {
+    if (currentLevelIndex >= challengeLevels.length) {
+        document.getElementById('current-title').innerHTML = `あなたはすでに <span style="font-size:24px; color:#ff9800;">伝説の柱</span> です！`;
+        document.getElementById('streak').innerText = streak;
+        document.getElementById('target').innerText = "∞";
+        document.getElementById('next-reward').innerText = "すべて収集済み";
+        return;
+    }
+    let info = challengeLevels[currentLevelIndex];
+    let t = currentLevelIndex === 0 ? "訓練生" : challengeLevels[currentLevelIndex - 1].title;
+    document.getElementById('display-title').innerText = t;
+    document.getElementById('target').innerText = info.target;
+    document.getElementById('next-reward').innerText = info.reward;
+    document.getElementById('streak').innerText = streak;
+}
+
+function loadQuizWord() {
+    let idx = Math.floor(Math.random() * vocabData.length);
+    currentQuizWord = vocabData[idx];
+    document.getElementById('quiz-word').innerText = currentQuizWord.en;
+    let opts = [currentQuizWord.jp];
+    while (opts.length < 4) {
+        let r = Math.floor(Math.random() * vocabData.length);
+        let jp = vocabData[r].jp;
+        if (!opts.includes(jp)) opts.push(jp);
+    }
+    opts.sort(() => Math.random() - 0.5);
+    let div = document.getElementById('quiz-options');
+    div.innerHTML = '';
+    opts.forEach(o => {
+        let b = document.createElement('button');
+        b.className = 'option-btn';
+        b.innerText = o;
+        b.onclick = () => checkAnswer(o, b);
+        div.appendChild(b);
+    });
+}
+
+function speakQuizWord() { speak(currentQuizWord.en); }
+
+function checkAnswer(sel, btn) {
+    document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+    if (sel === currentQuizWord.jp) {
+        btn.style.backgroundColor = '#a5d6a7';
+        btn.style.borderColor = '#4caf50';
+        btn.style.color = '#1b5e20';
+        streak++;
+        document.getElementById('streak').innerText = streak;
+        setTimeout(() => {
+            if (currentLevelIndex < challengeLevels.length && streak >= challengeLevels[currentLevelIndex].target) {
+                levelUp();
+            } else {
+                loadQuizWord();
+            }
+        }, 800);
+    } else {
+        btn.style.backgroundColor = '#ef9a9a';
+        btn.style.borderColor = '#f44336';
+        btn.style.color = '#b71c1c';
+        streak = 0;
+        document.getElementById('streak').innerText = streak;
+        speak(currentQuizWord.en);
+        setTimeout(loadQuizWord, 1200);
+    }
+}
+
+/* 🔥 升级弹窗：带头像圆框展示 */
+function levelUp() {
+    streak = 0;
+    let lvl = challengeLevels[currentLevelIndex];
+    characters[currentLevelIndex].unlocked = true;
+    document.getElementById('modal-title').innerText = `🎉 階級昇格：【${lvl.title}】！`;
+    
+    let cName = document.getElementById('unlocked-character');
+    // 如果 images 文件夹里没有图片，会显示默认的灰色 No Image
+    cName.innerHTML = `
+        <img src="images/char_${currentLevelIndex}.jpg" 
+             onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'120\\' height=\\'120\\'><rect width=\\'120\\' height=\\'120\\' fill=\\'#eee\\'/><text x=\\'50%\\' y=\\'50%\\' dominant-baseline=\\'middle\\' text-anchor=\\'middle\\' font-size=\\'14\\'>No Image</text></svg>'" 
+             style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:4px solid #ce93d8; box-shadow:0 5px 15px rgba(0,0,0,0.3); margin-bottom:10px;" 
+             alt="character">
+        <br>
+        <span style="font-size:28px; color:#4a235a;">${lvl.reward}</span>
+    `;
+    
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('modal').style.display = 'block';
+    currentLevelIndex++;
+    updateQuizUI();
+}
+
+function closeModal() {
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('modal').style.display = 'none';
+    loadQuizWord();
+}
+
+/* 🔥 图鉴：点击卡片全屏放大 */
+function renderGallery() {
+    let g = document.getElementById('gallery');
+    g.innerHTML = '';
+    characters.forEach((c, idx) => {
+        let d = document.createElement('div');
+        d.className = 'character-card ' + (c.unlocked ? 'unlocked' : '');
+        
+        if (c.unlocked) {
+            d.style.backgroundImage = `url('images/char_${idx}.jpg')`;
+            d.style.backgroundSize = 'cover';
+            d.style.backgroundPosition = 'center';
+            d.innerHTML = `
+                <div style="background:rgba(0,0,0,0.5); width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:12px; color:white; text-shadow:1px 1px 3px black; box-sizing:border-box; padding:5px;">
+                    <span style="font-size:12px;">${c.title}</span>
+                    <strong style="font-size:14px; margin-top:5px; white-space:pre-line">${c.name}</strong>
+                </div>
+            `;
+            // 点击绑定放大函数
+            d.onclick = () => showFullscreen(idx, c.title, c.name);
+        } else {
+            d.style.backgroundImage = 'none';
+            d.innerText = "🔒\n未知の仲間";
+        }
+        g.appendChild(d);
+    });
+}
+
+function showFullscreen(idx, title, name) {
+    document.getElementById('fs-img').src = `images/char_${idx}.jpg`;
+    // 如果找不到图片，提供一个友好的默认显示
+    document.getElementById('fs-img').onerror = function() {
+        this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect width='300' height='400' fill='#333'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='white'>Image Not Found</text></svg>";
+    };
+    document.getElementById('fs-title').innerText = title;
+    document.getElementById('fs-name').innerText = name;
+    document.getElementById('fullscreen-view').classList.add('active');
+}
+
+function closeFullscreen() {
+    document.getElementById('fullscreen-view').classList.remove('active');
+}
+
+window.onload = function() { loadStudyWord(); updateQuizUI(); };
+</script>
+</body>
+</html>
