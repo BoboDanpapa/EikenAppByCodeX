@@ -3,7 +3,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="英検2級 魔法の単語帳"
+        android:label="英検 魔法の単語帳"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity

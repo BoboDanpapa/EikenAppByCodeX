@@ -12,12 +12,17 @@
 
 ## Current APK Features
 
+- Multiple local users without passwords
+- Separate user progress
+- 英検準2級 / 英検2級 course selection
 - 英検2級単語カード
+- 英検準2級 test vocabulary structure
 - 復習ノート
 - 四択クイズ
 - 階級アップと図鑑解放
 - ローカル進度保存
 - Android Text-to-Speech based pronunciation
+- English TTS engine fallback and failure messaging
 
 ## Preview Page
 
@@ -45,23 +50,21 @@ Do not commit:
 
 To build locally, install Android SDK/JDK/Gradle or recreate local build tooling, then configure `android-app/local.properties` with your local SDK path.
 
-## Release
+## Releases
 
-The first APK is distributed as a GitHub Release asset:
+APK files are distributed as GitHub Release assets:
 
+- `EikenMagicWords-v1.1.0.apk`
 - `EikenMagicWords-v1.0.0.apk`
 
-The APK is not stored in Git history.
+APK files are not stored in Git history.
 
 ## Next Version TODO
 
-- Integrate the previewed multi-user flow into the Android app
-- Add a dedicated 英検準2級 vocabulary file
 - Prepare an original 500-entry 英検準2級 word/phrase set
-- Improve Android TTS handling for China mainland Xiaomi devices
-- Add TTS engine/language availability checks and fallback messages
+- Replace temporary 英検準2級 test entries with the full original vocabulary set
+- Continue testing Android TTS behavior on Japan and China mainland Xiaomi devices
 
 ## Important Note
 
 The current character images and 鬼殺隊-themed reward labels are intended for personal learning use only. Review asset rights before any public distribution.
-
