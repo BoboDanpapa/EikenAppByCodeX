@@ -442,11 +442,15 @@ function speak(t) {
     if (window.AndroidTTS && typeof window.AndroidTTS.speak === "function") {
         const result = window.AndroidTTS.speak(t);
         if (result === "ok") return;
+        const debugInfo = window.AndroidTTS.getDebugInfo ? window.AndroidTTS.getDebugInfo() : result;
         openModal(
             "発音を使えません",
-            "この端末で英語の音声が使えるTTSエンジンが見つかりませんでした。Androidの音声読み上げ設定を確認してください。",
+            "この端末で英語の音声が使えるTTSエンジンが見つかりませんでした。Androidの音声読み上げ設定を確認してください。<br><br>Debug: " + escapeHtml(debugInfo),
             "",
-            [{ label: "OK", action: closeModal }]
+            [
+                { label: "TTS設定", action: openAndroidTtsSettings },
+                { label: "OK", action: closeModal, type: "secondary" }
+            ]
         );
         return;
     }
@@ -455,6 +459,13 @@ function speak(t) {
         u.lang = "en-US";
         u.rate = 0.85;
         window.speechSynthesis.speak(u);
+    }
+}
+
+function openAndroidTtsSettings() {
+    closeModal();
+    if (window.AndroidTTS && typeof window.AndroidTTS.openTtsSettings === "function") {
+        window.AndroidTTS.openTtsSettings();
     }
 }
 
