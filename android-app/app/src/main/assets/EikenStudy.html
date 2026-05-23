@@ -6,21 +6,24 @@
     <title>英検 魔法の単語帳</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Comic Sans MS', 'Nunito', 'Segoe UI', sans-serif; background-color: #f7f1fa; margin: 0; color: #4a235a; }
-        header { background: linear-gradient(135deg, #ba68c8, #9c27b0); color: white; text-align: center; padding: 20px 16px 22px; font-size: 24px; font-weight: bold; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 5px 15px rgba(156, 39, 176, 0.3); }
-        .sub-header { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 10px 12px 0; min-height: 54px; }
-        .pill { background: #fff; border: 2px dashed #ce93d8; border-radius: 999px; color: #8e24aa; font-size: 13px; font-weight: bold; padding: 8px 12px; }
-        .nav { display: flex; justify-content: center; gap: 10px; padding: 10px; flex-wrap: wrap; }
-        .jelly-btn { background-color: #ce93d8; color: white; border: none; font-size: 15px; font-weight: bold; cursor: pointer; padding: 12px 18px; border-radius: 25px; box-shadow: 0 6px 0 #ab47bc; transition: all 0.1s; font-family: inherit; }
+        html { min-height: 100%; -webkit-text-size-adjust: 100%; }
+        body { font-family: 'Comic Sans MS', 'Nunito', 'Segoe UI', sans-serif; background-color: #f7f1fa; margin: 0; color: #4a235a; min-height: 100vh; overflow-x: hidden; padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+        button, input { -webkit-tap-highlight-color: transparent; }
+        header { position: relative; background: linear-gradient(135deg, #ba68c8, #9c27b0); color: white; text-align: center; padding: clamp(15px, 4vw, 20px) 16px clamp(17px, 4vw, 22px); font-size: clamp(20px, 5.2vw, 24px); line-height: 1.25; font-weight: bold; border-bottom-left-radius: clamp(18px, 6vw, 30px); border-bottom-right-radius: clamp(18px, 6vw, 30px); box-shadow: 0 5px 15px rgba(156, 39, 176, 0.3); }
+        #app-title { display: inline-block; max-width: 100%; }
+        .header-user { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); max-width: 30%; background: rgba(255,255,255,0.18); border: 2px dashed rgba(255,255,255,0.5); border-radius: 999px; color: white; font-size: 13px; line-height: 1.2; font-weight: bold; padding: 7px 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .header-user.hidden { display: none; }
+        .nav { display: flex; justify-content: center; gap: 10px; padding: 10px 12px; flex-wrap: wrap; }
+        .jelly-btn { background-color: #ce93d8; color: white; border: none; font-size: 15px; line-height: 1.2; font-weight: bold; cursor: pointer; padding: 12px 18px; border-radius: 25px; box-shadow: 0 6px 0 #ab47bc; transition: all 0.1s; font-family: inherit; min-height: 44px; touch-action: manipulation; white-space: normal; overflow-wrap: anywhere; }
         .jelly-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #ab47bc; }
         .jelly-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
         .nav .jelly-btn { background-color: #b39ddb; box-shadow: 0 6px 0 #7e57c2; }
-        .container { max-width: 540px; margin: 10px auto 30px; background: white; padding: 28px; border-radius: 30px; border: 4px solid #e1bee7; box-shadow: 0 10px 25px rgba(206, 147, 216, 0.3); text-align: center; }
-        .wide-container { max-width: 760px; }
+        .container { width: min(540px, calc(100% - 24px)); margin: 10px auto 30px; background: white; padding: clamp(18px, 5vw, 28px); border-radius: clamp(22px, 6vw, 30px); border: 4px solid #e1bee7; box-shadow: 0 10px 25px rgba(206, 147, 216, 0.3); text-align: center; }
+        .wide-container { width: min(760px, calc(100% - 24px)); }
         .hidden { display: none !important; }
         .screen-title { color: #8e24aa; margin: 0 0 8px; }
         .muted { color: #777; font-size: 14px; }
-        .row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; align-items: stretch; }
         .input-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin: 20px 0 8px; }
         input { width: 100%; border: 3px solid #e1bee7; border-radius: 20px; color: #6a1b9a; font-family: inherit; font-weight: bold; font-size: 16px; padding: 12px 14px; outline: none; }
         input:focus { border-color: #ba68c8; box-shadow: 0 0 0 4px #f3e5f5; }
@@ -31,38 +34,39 @@
         .danger-btn:active { box-shadow: 0 0 0 #ef9a9a; }
         .secondary-btn { background-color: #64b5f6; box-shadow: 0 6px 0 #1e88e5; }
         .home-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 22px 0; }
-        .level-card { border: 3px dashed #ce93d8; border-radius: 26px; padding: 24px 14px; background: linear-gradient(135deg, #fff, #f3e5f5); cursor: pointer; color: #6a1b9a; min-height: 178px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
+        .level-card { border: 3px dashed #ce93d8; border-radius: 26px; padding: 24px 14px; background: linear-gradient(135deg, #fff, #f3e5f5); cursor: pointer; color: #6a1b9a; min-height: 178px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; overflow-wrap: anywhere; }
         .level-card:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 8px 18px rgba(206, 147, 216, 0.35); }
         .level-card strong { font-size: 28px; display: block; margin-bottom: 10px; }
         .level-card span { color: #d81b60; font-weight: bold; font-size: 14px; }
-        .toolbar { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 0 10px 8px; }
-        .card { background: linear-gradient(135deg, #f3e5f5, #e1bee7); color: #6a1b9a; padding: 40px 20px; border-radius: 25px; margin: 20px 0; cursor: pointer; font-size: 32px; font-weight: bold; border: 3px dashed #ce93d8; box-shadow: 0 8px 15px rgba(206, 147, 216, 0.4); transition: transform 0.3s; }
+        .toolbar { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 0 12px 8px; }
+        .card { background: linear-gradient(135deg, #f3e5f5, #e1bee7); color: #6a1b9a; padding: clamp(28px, 8vw, 40px) clamp(14px, 5vw, 20px); border-radius: 25px; margin: 18px 0; cursor: pointer; font-size: clamp(26px, 8vw, 32px); line-height: 1.15; font-weight: bold; border: 3px dashed #ce93d8; box-shadow: 0 8px 15px rgba(206, 147, 216, 0.4); transition: transform 0.3s; overflow-wrap: anywhere; word-break: break-word; }
         .card:hover { transform: scale(1.03) rotate(1deg); }
-        .details { font-size: 18px; margin-top: 20px; font-weight: normal; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 15px; }
-        .sentence { font-style: italic; margin-top: 10px; color: #4a235a; font-weight: bold; }
+        .details { font-size: clamp(16px, 4.4vw, 18px); margin-top: 20px; font-weight: normal; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 15px; }
+        .sentence { font-style: italic; margin-top: 10px; color: #4a235a; font-weight: bold; line-height: 1.45; overflow-wrap: anywhere; }
         .btn-speak { background-color: #ffd54f; color: #d84315; box-shadow: 0 5px 0 #ffb300; }
         .btn-star { background-color: #fff59d; color: #f57f17; box-shadow: 0 5px 0 #fbc02d; margin-top: 10px; font-size: 14px; }
         .btn-starred { background-color: #ffcc80; color: #e65100; box-shadow: 0 5px 0 #ef6c00; }
         .options { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
-        .option-btn { background-color: white; border: 3px solid #e1bee7; color: #6a1b9a; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 20px; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .option-btn { background-color: white; border: 3px solid #e1bee7; color: #6a1b9a; padding: 15px; font-size: clamp(16px, 4.5vw, 18px); line-height: 1.25; font-weight: bold; border-radius: 20px; cursor: pointer; transition: 0.2s; font-family: inherit; min-height: 52px; overflow-wrap: anywhere; }
         .option-btn:hover { background-color: #f3e5f5; transform: scale(1.02); }
         .status-box { background-color: #f3e5f5; border: 2px dashed #ce93d8; border-radius: 20px; padding: 15px; margin-bottom: 20px; text-align: center; }
         .level-title { font-size: 16px; color: #666; font-weight: bold; margin-bottom: 8px; }
         .level-title span { color: #d81b60; font-size: 20px; }
-        .streak-bar { font-size: 24px; color: #9c27b0; font-weight: bold; }
+        .streak-bar { font-size: clamp(20px, 6vw, 24px); color: #9c27b0; font-weight: bold; }
         .review-list { text-align: left; margin-top: 20px; max-height: 450px; overflow-y: auto; padding-right: 5px; }
         .review-item { background: #fafafa; border: 2px dashed #ce93d8; border-radius: 20px; margin-bottom: 15px; text-align: left; overflow: hidden; }
-        .review-header { padding: 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; background: #fafafa; transition: background 0.2s; gap: 10px; }
+        .review-header { padding: 18px; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: flex-start; background: #fafafa; transition: background 0.2s; gap: 10px; }
         .review-header:hover { background: #f3e5f5; }
-        .review-item-en { font-size: 22px; font-weight: bold; color: #6a1b9a; margin-right: 8px; }
+        .review-header > div { min-width: 0; }
+        .review-item-en { font-size: clamp(19px, 5.5vw, 22px); line-height: 1.2; font-weight: bold; color: #6a1b9a; margin-right: 8px; overflow-wrap: anywhere; }
         .review-item-jp { font-size: 15px; color: #d81b60; font-weight: bold; margin-top: 2px; }
         .review-body { padding: 0 18px 18px; border-top: 2px dashed #e1bee7; background: #fafafa; }
-        .review-item-sent-en { font-style: italic; color: #4a235a; font-weight: bold; font-size: 14px; flex-grow: 1; display: inline-block; margin-top: 10px; }
+        .review-item-sent-en { font-style: italic; color: #4a235a; font-weight: bold; font-size: 14px; line-height: 1.45; flex-grow: 1; display: inline-block; margin-top: 10px; overflow-wrap: anywhere; }
         .review-item-sent-jp { font-size: 13px; color: #666; margin-top: 4px; }
         .small-btn-speak { background-color: #ffd54f; color: #d84315; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; box-shadow: 0 4px 0 #ffb300; display: inline-flex; justify-content: center; align-items: center; font-size: 14px; margin-left: 5px; transition: 0.1s; }
         .btn-remove { background-color: #ffcdd2; color: #c62828; border: none; padding: 8px 12px; border-radius: 15px; cursor: pointer; font-weight: bold; font-family: inherit; box-shadow: 0 4px 0 #ef9a9a; transition: 0.1s; font-size: 13px; height: fit-content; }
-        .gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
-        .character-card { width: 100px; height: 140px; background-color: #f5f5f5; border: 3px dashed #ccc; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #999; text-align: center; padding: 5px; font-size: 14px; transition: transform 0.2s; white-space: pre-line; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 10px; justify-content: center; margin-top: 20px; }
+        .character-card { width: 100%; max-width: 118px; height: 140px; justify-self: center; background-color: #f5f5f5; border: 3px dashed #ccc; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #999; text-align: center; padding: 5px; font-size: 14px; transition: transform 0.2s; white-space: pre-line; overflow: hidden; }
         .character-card.unlocked { cursor: pointer; border: 3px solid #ff758c; box-shadow: 0 4px 10px rgba(255,117,140,0.4); animation: pop 0.5s ease-out; }
         .character-card.unlocked:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(255,117,140,0.6); }
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -75,22 +79,44 @@
         .fullscreen-text { color: white; text-align: center; margin-top: 20px; }
         .fs-title { font-size: 20px; color: #ffb74d; font-weight: bold; }
         .fs-name { font-size: 36px; font-weight: bold; margin-top: 5px; text-shadow: 2px 2px 4px black; }
+        #quiz-word { font-size: clamp(30px, 10vw, 42px) !important; line-height: 1.08; overflow-wrap: anywhere; word-break: break-word; }
+        .pager { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
+        @media (min-width: 768px) {
+            #course-shell:not(.hidden) { display: grid; grid-template-columns: 170px minmax(0, 1fr); grid-template-areas: "toolbar nav" "toolbar content"; column-gap: 18px; align-items: start; width: min(960px, calc(100% - 32px)); margin: 10px auto 30px; }
+            #course-shell .toolbar { grid-area: toolbar; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 14px; padding: 12px 0; position: sticky; top: 82px; }
+            #course-shell .toolbar .jelly-btn { width: 100%; padding-left: 12px; padding-right: 12px; }
+            #course-shell .nav { grid-area: nav; padding: 0 0 12px; }
+            #course-shell > .container { grid-column: 2; width: min(540px, 100%); margin-top: 0; }
+        }
         @media (max-width: 560px) {
-            header { font-size: 20px; }
-            .container { margin: 8px 10px 24px; padding: 22px 16px; }
+            .header-user { left: 10px; max-width: 26%; font-size: 12px; padding: 6px 9px; }
+            #app-title { max-width: calc(100% - 170px); }
+            .nav, .toolbar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+            .toolbar { padding-top: 2px; }
+            .nav .jelly-btn, .toolbar .jelly-btn { width: 100%; padding-left: 8px; padding-right: 8px; }
+            .container { margin-top: 8px; margin-bottom: 24px; }
             .home-grid, .input-row { grid-template-columns: 1fr; }
             .level-card { min-height: 138px; }
-            .card { font-size: 28px; padding: 34px 14px; }
             .jelly-btn { font-size: 14px; padding: 11px 14px; }
+            .row .jelly-btn, .input-row .jelly-btn { flex: 1 1 150px; }
+            .pager .jelly-btn { flex: 1 1 0; }
+            .review-list { max-height: none; }
+            .modal { padding: 24px 16px; border-width: 4px; }
+            .fs-name { font-size: 30px; }
+        }
+        @media (max-width: 380px) {
+            .nav, .toolbar { grid-template-columns: 1fr; }
+            .review-header { grid-template-columns: 1fr; }
+            .btn-remove { justify-self: end; }
+            .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
     </style>
 </head>
 <body>
-<header id="app-title">英検 魔法の単語帳</header>
-<div class="sub-header">
-    <span class="pill" id="current-user-pill">ユーザー未選択</span>
-    <span class="pill hidden" id="current-course-pill">コース未選択</span>
-</div>
+<header>
+    <span class="header-user hidden" id="current-user-pill">ユーザー未選択</span>
+    <span id="app-title">英検 魔法の単語帳</span>
+</header>
 
 <div id="user-screen" class="container wide-container">
     <h2 class="screen-title">ユーザーを選んでね</h2>
@@ -150,7 +176,7 @@
                 <div id="study-jp-sent" style="font-size: 15px; margin-top: 10px; color: #555;">...</div>
             </div>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+        <div class="pager">
             <button class="jelly-btn" style="background-color: #f48fb1; box-shadow: 0 6px 0 #d81b60;" onclick="nextStudyWord(-1)">前へ</button>
             <button class="jelly-btn secondary-btn" onclick="nextStudyWord(1)">次へ</button>
         </div>
@@ -279,20 +305,36 @@ function ensureUserShape(user) {
     });
 }
 
-function loadAppState() {
+function readStoredState() {
     try {
-        const raw = localStorage.getItem(STORE_KEY);
-        if (raw) appState = JSON.parse(raw);
+        const raw = window.localStorage ? window.localStorage.getItem(STORE_KEY) : null;
+        return raw ? JSON.parse(raw) : null;
     } catch (e) {
-        appState = { users: [], currentUserId: null };
+        console.warn("Could not read saved progress. Continuing with temporary state.", e);
+        return null;
     }
+}
+
+function writeStoredState(state) {
+    try {
+        if (!window.localStorage) return false;
+        window.localStorage.setItem(STORE_KEY, JSON.stringify(state));
+        return true;
+    } catch (e) {
+        console.warn("Could not save progress. Continuing with temporary state.", e);
+        return false;
+    }
+}
+
+function loadAppState() {
+    appState = readStoredState() || { users: [], currentUserId: null };
     appState.users = Array.isArray(appState.users) ? appState.users : [];
     appState.users.forEach(ensureUserShape);
     if (!appState.users.some(u => u.id === appState.currentUserId)) appState.currentUserId = null;
 }
 
 function saveAppState() {
-    localStorage.setItem(STORE_KEY, JSON.stringify(appState));
+    writeStoredState(appState);
 }
 
 function getCurrentUser() {
@@ -319,9 +361,9 @@ function showOnly(screenId) {
 function renderHeader() {
     const user = getCurrentUser();
     const course = getCourse();
-    document.getElementById("current-user-pill").innerText = user ? `${user.name} さん` : "ユーザー未選択";
-    document.getElementById("current-course-pill").classList.toggle("hidden", !course);
-    if (course) document.getElementById("current-course-pill").innerText = course.label;
+    const userPill = document.getElementById("current-user-pill");
+    userPill.innerText = user ? `${user.name} さん` : "";
+    userPill.classList.toggle("hidden", !user);
     document.getElementById("app-title").innerText = course ? `${course.label} 魔法の単語帳` : "英検 魔法の単語帳";
 }
 
