@@ -134,7 +134,7 @@
     <div class="home-grid">
         <div class="level-card" onclick="enterCourse('pre2')">
             <strong>英検準2級</strong>
-            <span>Preview用テスト単語入り</span>
+            <span>重要単語・熟語 500</span>
         </div>
         <div class="level-card" onclick="enterCourse('level2')">
             <strong>英検2級</strong>
@@ -224,23 +224,9 @@
     </div>
 </div>
 
+<script src="pre2_words.js"></script>
 <script src="android-app/app/src/main/assets/words.js"></script>
 <script>
-const pre2VocabData = [
-    { en: "Abroad", jp: "海外へ / 海外で", enSent: "My sister wants to study abroad.", jpSent: "姉は海外で勉強したがっています。" },
-    { en: "Advantage", jp: "利点 / 有利な点", enSent: "This plan has one big advantage.", jpSent: "この計画には大きな利点が一つあります。" },
-    { en: "Avoid", jp: "避ける", enSent: "You should avoid eating too much sugar.", jpSent: "砂糖を取りすぎるのは避けるべきです。" },
-    { en: "Borrow", jp: "借りる", enSent: "Can I borrow your notebook?", jpSent: "あなたのノートを借りてもいいですか。" },
-    { en: "Crowded", jp: "混雑した", enSent: "The train was crowded this morning.", jpSent: "今朝、電車は混雑していました。" },
-    { en: "Depend on", jp: "に頼る / 次第である", enSent: "The picnic depends on the weather.", jpSent: "ピクニックは天気次第です。" },
-    { en: "Explain", jp: "説明する", enSent: "Please explain the rule again.", jpSent: "もう一度ルールを説明してください。" },
-    { en: "Improve", jp: "上達する / 改善する", enSent: "Practice will improve your speaking.", jpSent: "練習すれば話す力が上達します。" },
-    { en: "Look after", jp: "の世話をする", enSent: "I look after my little brother.", jpSent: "私は弟の世話をしています。" },
-    { en: "Take part in", jp: "に参加する", enSent: "She will take part in the contest.", jpSent: "彼女はコンテストに参加します。" },
-    { en: "Be interested in", jp: "に興味がある", enSent: "He is interested in science.", jpSent: "彼は科学に興味があります。" },
-    { en: "For example", jp: "例えば", enSent: "For example, carrots are healthy.", jpSent: "例えば、にんじんは健康に良いです。" }
-];
-
 const courses = {
     pre2: { label: "英検準2級", storageKey: "pre2", words: pre2VocabData },
     level2: { label: "英検2級", storageKey: "level2", words: vocabData }
@@ -279,6 +265,8 @@ function defaultCourseProgress() {
         currentStudyIndex: 0,
         streak: 0,
         currentLevelIndex: 0,
+        quizWordEn: null,
+        quizOptions: [],
         reviewWordsList: [],
         unlocked: challengeLevels.map(() => false)
     };
@@ -302,6 +290,8 @@ function ensureUserShape(user) {
         user.progress[id].unlocked = Array.isArray(user.progress[id].unlocked) ? user.progress[id].unlocked.slice(0, challengeLevels.length) : challengeLevels.map(() => false);
         while (user.progress[id].unlocked.length < challengeLevels.length) user.progress[id].unlocked.push(false);
         user.progress[id].reviewWordsList = Array.isArray(user.progress[id].reviewWordsList) ? user.progress[id].reviewWordsList : [];
+        user.progress[id].quizWordEn = typeof user.progress[id].quizWordEn === "string" ? user.progress[id].quizWordEn : null;
+        user.progress[id].quizOptions = Array.isArray(user.progress[id].quizOptions) ? user.progress[id].quizOptions : [];
     });
 }
 
@@ -472,7 +462,7 @@ function switchTab(t) {
     document.getElementById(t).classList.remove("hidden");
     if (t === "study") loadStudyWord();
     if (t === "review") renderReviewList();
-    if (t === "quiz") { updateQuizUI(); loadQuizWord(); }
+    if (t === "quiz") { updateQuizUI(); loadQuizWord(false); }
     if (t === "collection") renderGallery();
 }
 
@@ -614,16 +604,43 @@ function updateQuizUI() {
     document.getElementById("streak").innerText = progress.streak;
 }
 
-function loadQuizWord() {
+function loadQuizWord(forceNew) {
     const words = getWords();
-    currentQuizWord = words[Math.floor(Math.random() * words.length)];
+    const progress = getProgress();
+    if (!progress) return;
+    if (forceNew || !progress.quizWordEn || !words.some(w => w.en === progress.quizWordEn)) {
+        const nextWord = words[Math.floor(Math.random() * words.length)];
+        progress.quizWordEn = nextWord.en;
+        progress.quizOptions = buildQuizOptions(nextWord, words);
+        saveAppState();
+    }
+    currentQuizWord = words.find(w => w.en === progress.quizWordEn);
+    if (!currentQuizWord) {
+        progress.quizWordEn = null;
+        progress.quizOptions = [];
+        loadQuizWord(true);
+        return;
+    }
     document.getElementById("quiz-word").innerText = currentQuizWord.en;
-    const opts = [currentQuizWord.jp];
+    const opts = Array.isArray(progress.quizOptions) && progress.quizOptions.includes(currentQuizWord.jp)
+        ? progress.quizOptions.slice()
+        : buildQuizOptions(currentQuizWord, words);
+    progress.quizOptions = opts.slice();
+    saveAppState();
+    renderQuizOptions(opts);
+}
+
+function buildQuizOptions(word, words) {
+    const opts = [word.jp];
     while (opts.length < Math.min(4, words.length)) {
         const jp = words[Math.floor(Math.random() * words.length)].jp;
         if (!opts.includes(jp)) opts.push(jp);
     }
     opts.sort(() => Math.random() - 0.5);
+    return opts;
+}
+
+function renderQuizOptions(opts) {
     const div = document.getElementById("quiz-options");
     div.innerHTML = "";
     opts.forEach(o => {
@@ -651,7 +668,11 @@ function checkAnswer(sel, btn) {
         saveAppState();
         setTimeout(() => {
             if (progress.currentLevelIndex < challengeLevels.length && progress.streak >= challengeLevels[progress.currentLevelIndex].target) levelUp();
-            else loadQuizWord();
+            else {
+                progress.quizWordEn = null;
+                progress.quizOptions = [];
+                loadQuizWord(true);
+            }
         }, 500);
     } else {
         btn.style.backgroundColor = "#ef9a9a";
@@ -660,7 +681,11 @@ function checkAnswer(sel, btn) {
         progress.streak = 0;
         document.getElementById("streak").innerText = progress.streak;
         saveAppState();
-        setTimeout(loadQuizWord, 700);
+        setTimeout(() => {
+            progress.quizWordEn = null;
+            progress.quizOptions = [];
+            loadQuizWord(true);
+        }, 700);
     }
 }
 
@@ -676,7 +701,7 @@ function levelUp() {
         `階級昇格：【${lvl.title}】！`,
         "新しい仲間が駆けつけた！",
         `<img src="images/char_${progress.currentLevelIndex - 1}.jpg" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:4px solid #ce93d8; box-shadow:0 5px 15px rgba(0,0,0,0.3); margin-bottom:10px;" alt="character"><br><span style="font-size:28px; color:#4a235a;">${escapeHtml(lvl.reward)}</span>`,
-        [{ label: "次の試練へ", action: () => { closeModal(); loadQuizWord(); } }]
+        [{ label: "次の試練へ", action: () => { closeModal(); progress.quizWordEn = null; progress.quizOptions = []; loadQuizWord(true); } }]
     );
 }
 

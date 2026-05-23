@@ -9,6 +9,7 @@
 - Vocabulary data: `words.js` and Android asset copy
 - Character image assets: `images/`
 - Browser preview for next-version UI flow: `EikenStudyPreview.html`
+- Durable project notes for future work: `PROJECT_MEMORY.md`
 
 ## Current APK Features
 
@@ -16,7 +17,7 @@
 - Separate user progress
 - 英検準2級 / 英検2級 course selection
 - 英検2級単語カード
-- 英検準2級 test vocabulary structure
+- 英検準2級 500-entry vocabulary and phrase set
 - 復習ノート
 - 四択クイズ
 - 階級アップと図鑑解放
@@ -59,10 +60,18 @@ APK files are distributed as GitHub Release assets:
 
 APK files are not stored in Git history.
 
+## Local Release Convention
+
+When generating a new APK, always:
+
+- Increase `versionCode` and `versionName` in `android-app/app/build.gradle`
+- Build the release APK
+- Copy the generated APK into the project `releases/` directory
+- Name the copied APK with the new version number and a short change description, for example:
+  `releases/eiken-magicwords-v1.1.5-pre2-500-quiz-lock.apk`
+
 ## Next Version TODO
 
-- Prepare an original 500-entry 英検準2級 word/phrase set
-- Replace temporary 英検準2級 test entries with the full original vocabulary set
 - Continue testing Android TTS behavior on Japan and China mainland Xiaomi devices
 
 ## Important Note
