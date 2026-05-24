@@ -13,10 +13,10 @@ This file records durable project context for future Codex sessions. Read this b
 
 ## Current Stable Version
 
-- Current version after the Pre-2 natural sentence revision: `1.1.6`
-- Current `versionCode`: `8`
+- Current version after the Gemini Live teacher integration: `1.1.9`
+- Current `versionCode`: `11`
 - Latest local release APK:
-  `releases/eiken-magicwords-v1.1.6-pre2-natural-sentences.apk`
+  `releases/eiken-magicwords-v1.1.9-gemini-live-teacher.apk`
 
 ## Major Version History
 
@@ -28,6 +28,9 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.4`: Responsive layout release.
 - `v1.1.5`: Added separate 500-entry Eiken Pre-2 vocabulary/phrase set and fixed the quiz tab-switch cheating issue.
 - `v1.1.6`: Revised Eiken Pre-2 entries into study-priority order and replaced template examples with original textbook-style natural sentences.
+- `v1.1.7`: Added an independent quiz deck order so challenges are not alphabetical and do not follow the magic-card study order.
+- `v1.1.8`: Added a Japanese UI layout demo for the English teacher question button and five-turn teacher panel.
+- `v1.1.9`: Integrated Android Gemini Live teacher bridge, microphone permission flow, and five-turn word-question session handling.
 
 ## Important Behavior
 
@@ -37,6 +40,18 @@ This file records durable project context for future Codex sessions. Read this b
 - Review notes, streak, rank progress, and unlocked gallery entries are course-specific.
 - In `鬼殺隊の試練`, the current unanswered quiz word and answer options must persist when switching tabs. Do not regenerate a quiz question merely because the user leaves and returns to the quiz tab.
 - Generate a new quiz question only after the user answers, after a level-up continuation, or when the saved quiz word is invalid for the current course data.
+
+## Vocabulary Ordering Rule
+
+This rule applies to every current and future Eiken level, not only Eiken Pre-2:
+
+- Vocabulary files must not be arranged alphabetically for learner-facing study order.
+- Magic cards should appear in study-priority order: more important, common, and exam-relevant words/phrases first.
+- Study order should mix single words and useful phrases naturally instead of grouping all words first and all phrases later.
+- Quiz/challenge order must be independent from magic-card order.
+- Quiz/challenge order must not be alphabetical and must not match the vocabulary file or magic-card order.
+- Quiz/challenge order should mix words and phrases within priority bands, so children cannot easily switch tabs and locate answers by sequence.
+- When adding a new level, include tests or manual checks that confirm the study order and quiz order differ.
 
 ## Release Convention
 
@@ -72,6 +87,7 @@ GRADLE_USER_HOME=$PWD/../.android-build-tools/gradle-home JAVA_HOME=$PWD/../.and
 - `android-app/local.properties`, `android-app/keystore/`, and `.android-build-tools/` should not be committed.
 - Local release APKs may exist in `releases/` for handoff, but project docs say official GitHub Release assets are the distribution channel.
 - Character images and 鬼殺隊-themed reward labels are for personal learning use; review rights before public distribution.
+- Gemini Live builds require a local `android-app/app/google-services.json` from Firebase AI Logic. This file must not be committed. Enable Firebase App Check before public distribution.
 
 ## Open TODO
 

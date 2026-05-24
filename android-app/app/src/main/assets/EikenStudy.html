@@ -24,6 +24,9 @@
         .screen-title { color: #8e24aa; margin: 0 0 8px; }
         .muted { color: #777; font-size: 14px; }
         .row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; align-items: stretch; }
+        .study-actions { align-items: center; row-gap: 10px; }
+        .study-actions .jelly-btn { margin-top: 0; }
+        .teacher-action-spacer { flex-basis: 30px; width: 30px; height: 1px; }
         .input-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin: 20px 0 8px; }
         input { width: 100%; border: 3px solid #e1bee7; border-radius: 20px; color: #6a1b9a; font-family: inherit; font-weight: bold; font-size: 16px; padding: 12px 14px; outline: none; }
         input:focus { border-color: #ba68c8; box-shadow: 0 0 0 4px #f3e5f5; }
@@ -46,6 +49,19 @@
         .btn-speak { background-color: #ffd54f; color: #d84315; box-shadow: 0 5px 0 #ffb300; }
         .btn-star { background-color: #fff59d; color: #f57f17; box-shadow: 0 5px 0 #fbc02d; margin-top: 10px; font-size: 14px; }
         .btn-starred { background-color: #ffcc80; color: #e65100; box-shadow: 0 5px 0 #ef6c00; }
+        .btn-teacher-toggle { background-color: #d7ecff; color: #1565c0; box-shadow: 0 4px 0 #90caf9; min-height: 36px; padding: 8px 12px; border-radius: 18px; font-size: 12px; margin-top: 10px; }
+        .btn-teacher-toggle:active { box-shadow: 0 0 0 #90caf9; }
+        .teacher-panel { background: #fff; border: 2px dashed #ce93d8; border-radius: 18px; margin: -2px 0 18px; padding: 14px; text-align: left; box-shadow: 0 5px 12px rgba(206, 147, 216, 0.18); }
+        .teacher-panel-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; }
+        .teacher-title { color: #6a1b9a; font-size: 17px; line-height: 1.2; font-weight: bold; margin-bottom: 3px; }
+        .teacher-subtitle { color: #777; font-size: 13px; line-height: 1.35; font-weight: bold; }
+        .teacher-meta { display: grid; gap: 5px; margin: 12px 0; color: #555; font-size: 13px; font-weight: bold; }
+        .teacher-meta span { color: #1565c0; }
+        .teacher-status { background: #f7f1fa; border-radius: 14px; color: #5d326d; font-size: 13px; line-height: 1.35; font-weight: bold; padding: 10px 12px; margin-bottom: 12px; }
+        .teacher-controls { justify-content: flex-start; gap: 8px; }
+        .btn-teacher-mic, .btn-teacher-stop { min-height: 38px; padding: 8px 14px; border-radius: 18px; font-size: 13px; }
+        .btn-teacher-mic { background-color: #b3e5fc; color: #0277bd; box-shadow: 0 4px 0 #4fc3f7; }
+        .btn-teacher-stop { background-color: #eeeeee; color: #666; box-shadow: 0 4px 0 #cfcfcf; }
         .options { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
         .option-btn { background-color: white; border: 3px solid #e1bee7; color: #6a1b9a; padding: 15px; font-size: clamp(16px, 4.5vw, 18px); line-height: 1.25; font-weight: bold; border-radius: 20px; cursor: pointer; transition: 0.2s; font-family: inherit; min-height: 52px; overflow-wrap: anywhere; }
         .option-btn:hover { background-color: #f3e5f5; transform: scale(1.02); }
@@ -99,6 +115,12 @@
             .level-card { min-height: 138px; }
             .jelly-btn { font-size: 14px; padding: 11px 14px; }
             .row .jelly-btn, .input-row .jelly-btn { flex: 1 1 150px; }
+            .study-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; }
+            .study-actions .jelly-btn { width: 100%; }
+            .teacher-action-spacer { display: none; }
+            .btn-teacher-toggle { grid-column: 2; justify-self: stretch; min-height: 36px; padding: 8px 10px; font-size: 12px; }
+            .teacher-panel { padding: 12px; }
+            .teacher-panel-header { grid-template-columns: 1fr; }
             .pager .jelly-btn { flex: 1 1 0; }
             .review-list { max-height: none; }
             .modal { padding: 24px 16px; border-width: 4px; }
@@ -162,9 +184,11 @@
     <div id="study" class="container">
         <h2 class="screen-title">新しい呪文</h2>
         <p class="muted">カードをタップして、翻訳魔法を使おう！</p>
-        <div class="row">
+        <div class="row study-actions">
             <button class="jelly-btn btn-speak" onclick="speakWord()">発音を聞く</button>
             <button id="btn-star" class="jelly-btn btn-star" onclick="toggleReview()">復習に追加</button>
+            <span class="teacher-action-spacer" aria-hidden="true"></span>
+            <button id="btn-teacher-toggle" class="jelly-btn btn-teacher-toggle" onclick="toggleTeacherPanel(event)">先生に聞く</button>
         </div>
         <div class="card" onclick="toggleCard()">
             <span id="study-word">Loading...</span>
@@ -174,6 +198,23 @@
                 <div class="sentence" id="study-en-sent">...</div>
                 <button class="jelly-btn btn-speak" style="padding: 6px 12px; font-size: 14px; margin-top:10px;" onclick="speakSentence(event)">例文を聞く</button>
                 <div id="study-jp-sent" style="font-size: 15px; margin-top: 10px; color: #555;">...</div>
+            </div>
+        </div>
+        <div id="teacher-panel" class="teacher-panel hidden">
+            <div class="teacher-panel-header">
+                <div>
+                    <div class="teacher-title">英語の先生</div>
+                    <div class="teacher-subtitle">この単語について質問できるよ</div>
+                </div>
+                <button class="jelly-btn btn-teacher-stop" onclick="stopTeacherDemo(event)">とめる</button>
+            </div>
+            <div class="teacher-meta">
+                <div>レベル: <span id="teacher-level">...</span></div>
+                <div>質問: <span id="teacher-turns">0 / 5</span></div>
+            </div>
+            <div id="teacher-status" class="teacher-status">日本語でも英語でも質問できるよ。先生は英語で答えるよ。</div>
+            <div class="row teacher-controls">
+                <button id="btn-teacher-mic" class="jelly-btn btn-teacher-mic" onclick="askTeacherDemo(event)">マイク</button>
             </div>
         </div>
         <div class="pager">
@@ -259,6 +300,10 @@ const STORE_KEY = "eikenPreviewUsersV1";
 let appState = { users: [], currentUserId: null };
 let currentCourseId = null;
 let currentQuizWord = null;
+let teacherTurns = 0;
+let teacherListening = false;
+const TEACHER_DEMO_MAX_TURNS = 5;
+const TEACHER_READY_STATUS = "日本語でも英語でも質問できるよ。先生は英語で答えるよ。";
 
 function defaultCourseProgress() {
     return {
@@ -267,6 +312,8 @@ function defaultCourseProgress() {
         currentLevelIndex: 0,
         quizWordEn: null,
         quizOptions: [],
+        quizDeckOrder: [],
+        quizDeckPosition: 0,
         reviewWordsList: [],
         unlocked: challengeLevels.map(() => false)
     };
@@ -292,6 +339,8 @@ function ensureUserShape(user) {
         user.progress[id].reviewWordsList = Array.isArray(user.progress[id].reviewWordsList) ? user.progress[id].reviewWordsList : [];
         user.progress[id].quizWordEn = typeof user.progress[id].quizWordEn === "string" ? user.progress[id].quizWordEn : null;
         user.progress[id].quizOptions = Array.isArray(user.progress[id].quizOptions) ? user.progress[id].quizOptions : [];
+        user.progress[id].quizDeckOrder = Array.isArray(user.progress[id].quizDeckOrder) ? user.progress[id].quizDeckOrder : [];
+        user.progress[id].quizDeckPosition = Number.isInteger(user.progress[id].quizDeckPosition) ? user.progress[id].quizDeckPosition : 0;
     });
 }
 
@@ -512,6 +561,7 @@ function loadStudyWord() {
     document.getElementById("study-en-sent").innerText = w.enSent;
     document.getElementById("study-jp-sent").innerText = w.jpSent;
     document.getElementById("study-details").classList.add("hidden");
+    resetTeacherDemo();
     updateStarButton();
 }
 
@@ -538,6 +588,115 @@ function speakSentence(e) {
     e.stopPropagation();
     const w = getWords()[getProgress().currentStudyIndex];
     speak(w.enSent);
+}
+
+function getTeacherLevelLabel() {
+    const course = getCourse();
+    if (!course) return "...";
+    if (currentCourseId === "pre2") return "EIKEN Pre-2";
+    if (currentCourseId === "level2") return "EIKEN 2";
+    return course.label;
+}
+
+function renderTeacherDemo() {
+    const level = document.getElementById("teacher-level");
+    const turns = document.getElementById("teacher-turns");
+    const status = document.getElementById("teacher-status");
+    const mic = document.getElementById("btn-teacher-mic");
+    if (!level || !turns || !status || !mic) return;
+
+    level.innerText = getTeacherLevelLabel();
+    turns.innerText = `${teacherTurns} / ${TEACHER_DEMO_MAX_TURNS}`;
+    mic.disabled = teacherListening || teacherTurns >= TEACHER_DEMO_MAX_TURNS;
+    if (teacherTurns >= TEACHER_DEMO_MAX_TURNS) {
+        status.innerText = "よくできました。カードの学習にもどろう！";
+    } else if (!status.innerText) {
+        status.innerText = TEACHER_READY_STATUS;
+    }
+}
+
+function resetTeacherDemo() {
+    stopTeacherConversation();
+    teacherTurns = 0;
+    teacherListening = false;
+    const panel = document.getElementById("teacher-panel");
+    const status = document.getElementById("teacher-status");
+    if (panel) panel.classList.add("hidden");
+    if (status) status.innerText = TEACHER_READY_STATUS;
+    renderTeacherDemo();
+}
+
+function toggleTeacherPanel(e) {
+    if (e) e.stopPropagation();
+    const panel = document.getElementById("teacher-panel");
+    if (!panel) return;
+    panel.classList.toggle("hidden");
+    renderTeacherDemo();
+}
+
+function askTeacherDemo(e) {
+    if (e) e.stopPropagation();
+    if (teacherListening || teacherTurns >= TEACHER_DEMO_MAX_TURNS) return;
+    const status = document.getElementById("teacher-status");
+    if (window.AndroidGemini && typeof window.AndroidGemini.startConversation === "function") {
+        if (status) status.innerText = "先生につないでいます...";
+        teacherListening = true;
+        renderTeacherDemo();
+        window.AndroidGemini.startConversation(JSON.stringify(getTeacherContext()));
+    } else {
+        teacherTurns += 1;
+        if (status && teacherTurns < TEACHER_DEMO_MAX_TURNS) {
+            status.innerText = "聞いています... プレビューではデモの質問を記録します。";
+        }
+        renderTeacherDemo();
+    }
+}
+
+function stopTeacherDemo(e) {
+    if (e) e.stopPropagation();
+    stopTeacherConversation();
+    const status = document.getElementById("teacher-status");
+    if (status && teacherTurns < TEACHER_DEMO_MAX_TURNS) status.innerText = "先生との会話をとめました。";
+    renderTeacherDemo();
+}
+
+function stopTeacherConversation() {
+    teacherListening = false;
+    if (window.AndroidGemini && typeof window.AndroidGemini.stopConversation === "function") {
+        window.AndroidGemini.stopConversation();
+    }
+}
+
+function getTeacherContext() {
+    const words = getWords();
+    const progress = getProgress();
+    const w = words[progress.currentStudyIndex];
+    return {
+        courseId: currentCourseId,
+        levelLabel: getTeacherLevelLabel(),
+        word: w.en,
+        jp: w.jp,
+        enSent: w.enSent,
+        jpSent: w.jpSent,
+        turns: teacherTurns,
+        maxTurns: TEACHER_DEMO_MAX_TURNS
+    };
+}
+
+function onGeminiTeacherStatus(status, message) {
+    const statusBox = document.getElementById("teacher-status");
+    if (statusBox && message) statusBox.innerText = message;
+    if (status === "connecting" || status === "permission_required" || status === "active") {
+        teacherListening = true;
+    }
+    if (status === "started") {
+        teacherListening = true;
+        teacherTurns = Math.min(TEACHER_DEMO_MAX_TURNS, teacherTurns + 1);
+    }
+    if (status === "stopped" || status === "error" || status === "permission_denied") {
+        teacherListening = false;
+    }
+    renderTeacherDemo();
 }
 
 function toggleReview() {
@@ -631,7 +790,7 @@ function loadQuizWord(forceNew) {
     const progress = getProgress();
     if (!progress) return;
     if (forceNew || !progress.quizWordEn || !words.some(w => w.en === progress.quizWordEn)) {
-        const nextWord = words[Math.floor(Math.random() * words.length)];
+        const nextWord = getNextQuizDeckWord(progress, words);
         progress.quizWordEn = nextWord.en;
         progress.quizOptions = buildQuizOptions(nextWord, words);
         saveAppState();
@@ -650,6 +809,66 @@ function loadQuizWord(forceNew) {
     progress.quizOptions = opts.slice();
     saveAppState();
     renderQuizOptions(opts);
+}
+
+function isPhraseEntry(word) {
+    return /\s|[?]/.test(word.en);
+}
+
+function quizHash(value) {
+    let hash = 2166136261;
+    for (let i = 0; i < value.length; i++) {
+        hash ^= value.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+    }
+    return hash >>> 0;
+}
+
+function shuffledByQuizHash(entries, salt) {
+    return entries.slice().sort((a, b) => quizHash(a.en + salt) - quizHash(b.en + salt));
+}
+
+function interleaveQuizEntries(words, blockIndex) {
+    const phraseEntries = shuffledByQuizHash(words.filter(isPhraseEntry), `phrase-${blockIndex}`);
+    const wordEntries = shuffledByQuizHash(words.filter(w => !isPhraseEntry(w)), `word-${blockIndex}`);
+    const first = blockIndex % 2 === 0 ? wordEntries : phraseEntries;
+    const second = blockIndex % 2 === 0 ? phraseEntries : wordEntries;
+    const mixed = [];
+    const max = Math.max(first.length, second.length);
+    for (let i = 0; i < max; i++) {
+        if (first[i]) mixed.push(first[i]);
+        if (second[i]) mixed.push(second[i]);
+    }
+    return mixed;
+}
+
+function buildQuizDeckOrder(words) {
+    const blockSize = 80;
+    const order = [];
+    for (let i = 0; i < words.length; i += blockSize) {
+        order.push(...interleaveQuizEntries(words.slice(i, i + blockSize), i / blockSize));
+    }
+    return order.map(w => w.en);
+}
+
+function ensureQuizDeck(progress, words) {
+    const wordSet = new Set(words.map(w => w.en));
+    const validDeck = progress.quizDeckOrder.length === words.length
+        && progress.quizDeckOrder.every(en => wordSet.has(en));
+    if (!validDeck) {
+        progress.quizDeckOrder = buildQuizDeckOrder(words);
+        progress.quizDeckPosition = 0;
+    }
+    if (progress.quizDeckPosition < 0 || progress.quizDeckPosition >= progress.quizDeckOrder.length) {
+        progress.quizDeckPosition = 0;
+    }
+}
+
+function getNextQuizDeckWord(progress, words) {
+    ensureQuizDeck(progress, words);
+    const en = progress.quizDeckOrder[progress.quizDeckPosition];
+    progress.quizDeckPosition = (progress.quizDeckPosition + 1) % progress.quizDeckOrder.length;
+    return words.find(w => w.en === en) || words[0];
 }
 
 function buildQuizOptions(word, words) {

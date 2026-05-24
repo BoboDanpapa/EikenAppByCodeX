@@ -2,6 +2,10 @@ plugins {
     id "com.android.application"
 }
 
+if (file("google-services.json").exists()) {
+    apply plugin: "com.google.gms.google-services"
+}
+
 android {
     namespace "com.eiken.magicwords"
     compileSdk 35
@@ -19,8 +23,8 @@ android {
         applicationId "com.eiken.magicwords"
         minSdk 23
         targetSdk 35
-        versionCode 8
-        versionName "1.1.6"
+        versionCode 11
+        versionName "1.1.9"
     }
 
     buildTypes {
@@ -30,4 +34,11 @@ android {
             shrinkResources false
         }
     }
+}
+
+dependencies {
+    implementation platform("com.google.firebase:firebase-bom:34.13.0")
+    implementation "com.google.firebase:firebase-ai"
+    implementation "com.google.guava:guava:31.0.1-android"
+    implementation "org.reactivestreams:reactive-streams:1.0.4"
 }

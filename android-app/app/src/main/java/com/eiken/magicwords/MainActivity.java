@@ -1,8 +1,10 @@
 package com.eiken.magicwords;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -15,13 +17,36 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.ai.FirebaseAI;
+import com.google.firebase.ai.LiveGenerativeModel;
+import com.google.firebase.ai.java.LiveModelFutures;
+import com.google.firebase.ai.java.LiveSessionFutures;
+import com.google.firebase.ai.type.Content;
+import com.google.firebase.ai.type.GenerativeBackend;
+import com.google.firebase.ai.type.LiveGenerationConfig;
+import com.google.firebase.ai.type.ResponseModality;
+import com.google.firebase.ai.type.SpeechConfig;
+import com.google.firebase.ai.type.Voice;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends Activity {
     private static final String TAG = "EikenTTS";
+    private static final String GEMINI_TAG = "EikenGeminiLive";
     private static final String ACTION_TTS_SETTINGS = "com.android.settings.TTS_SETTINGS";
+    private static final String GEMINI_LIVE_MODEL = "gemini-2.5-flash-native-audio-preview-12-2025";
+    private static final int REQUEST_RECORD_AUDIO = 4001;
     private WebView webView;
     private TextToSpeech textToSpeech;
     private boolean ttsReady = false;
@@ -30,6 +55,11 @@ public class MainActivity extends Activity {
     private final List<String> ttsEngineQueue = new ArrayList<>();
     private int ttsEngineIndex = 0;
     private String requestedEngine = "not-started";
+    private final ExecutorService geminiExecutor = Executors.newSingleThreadExecutor();
+    private LiveSessionFutures geminiSession;
+    private boolean geminiConversationActive = false;
+    private int geminiRequestId = 0;
+    private String pendingGeminiContextJson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +70,7 @@ public class MainActivity extends Activity {
         webView = new WebView(this);
         webView.setWebViewClient(new WebViewClient());
         webView.addJavascriptInterface(new AndroidTtsBridge(), "AndroidTTS");
+        webView.addJavascriptInterface(new AndroidGeminiBridge(), "AndroidGemini");
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -186,12 +217,15 @@ public class MainActivity extends Activity {
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
+            stopGeminiConversation("back pressed");
             super.onBackPressed();
         }
     }
 
     @Override
     protected void onDestroy() {
+        stopGeminiConversation("activity destroyed");
+        geminiExecutor.shutdownNow();
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();
@@ -200,6 +234,173 @@ public class MainActivity extends Activity {
             webView.destroy();
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode != REQUEST_RECORD_AUDIO) return;
+        boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+        if (granted && pendingGeminiContextJson != null) {
+            String context = pendingGeminiContextJson;
+            pendingGeminiContextJson = null;
+            startGeminiConversation(context);
+        } else {
+            pendingGeminiContextJson = null;
+            notifyGeminiStatus("permission_denied", "マイクの許可が必要です。Androidの設定でマイクを許可してください。");
+        }
+    }
+
+    private boolean hasRecordAudioPermission() {
+        return checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestRecordAudioPermission(String contextJson) {
+        pendingGeminiContextJson = contextJson;
+        runOnUiThread(() -> requestPermissions(new String[] { Manifest.permission.RECORD_AUDIO }, REQUEST_RECORD_AUDIO));
+    }
+
+    private void startGeminiConversation(String contextJson) {
+        if (geminiConversationActive) {
+            notifyGeminiStatus("active", "すでに先生が聞いています。終わるときは「とめる」を押してね。");
+            return;
+        }
+        if (!hasRecordAudioPermission()) {
+            notifyGeminiStatus("permission_required", "マイクの許可を確認しています。");
+            requestRecordAudioPermission(contextJson);
+            return;
+        }
+        if (FirebaseApp.getApps(this).isEmpty()) {
+            notifyGeminiStatus("error", "Firebase設定が見つかりません。android-app/app/google-services.json を追加してからビルドしてください。");
+            return;
+        }
+
+        notifyGeminiStatus("connecting", "先生につないでいます...");
+        stopGeminiConversation("new Gemini conversation");
+        geminiConversationActive = true;
+        final int requestId = ++geminiRequestId;
+
+        try {
+            JSONObject context = new JSONObject(contextJson);
+            Content systemInstruction = new Content.Builder()
+                    .addText(buildGeminiSystemInstruction(context))
+                    .build();
+            LiveGenerativeModel liveModel = FirebaseAI.getInstance(GenerativeBackend.googleAI()).liveModel(
+                    GEMINI_LIVE_MODEL,
+                    new LiveGenerationConfig.Builder()
+                            .setResponseModality(ResponseModality.AUDIO)
+                            .setSpeechConfig(new SpeechConfig(new Voice("Leda")))
+                            .build(),
+                    null,
+                    systemInstruction
+            );
+            LiveModelFutures liveModelFutures = LiveModelFutures.from(liveModel);
+            ListenableFuture<LiveSessionFutures> sessionFuture = liveModelFutures.connect();
+            Futures.addCallback(sessionFuture, new FutureCallback<LiveSessionFutures>() {
+                @Override
+                public void onSuccess(LiveSessionFutures session) {
+                    if (requestId != geminiRequestId) return;
+                    geminiSession = session;
+                    ListenableFuture<?> startFuture = session.startAudioConversation(false);
+                    Futures.addCallback(startFuture, new FutureCallback<Object>() {
+                        @Override
+                        public void onSuccess(Object result) {
+                            if (requestId != geminiRequestId) return;
+                            geminiConversationActive = true;
+                            notifyGeminiStatus("started", "聞いています。質問は日本語でも英語でも大丈夫です。");
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            if (requestId != geminiRequestId) return;
+                            Log.e(GEMINI_TAG, "Could not start audio conversation", t);
+                            notifyGeminiStatus("error", "Gemini Liveを開始できませんでした: " + safeError(t));
+                            stopGeminiConversation("start failed");
+                        }
+                    }, geminiExecutor);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    if (requestId != geminiRequestId) return;
+                    Log.e(GEMINI_TAG, "Could not connect Gemini Live", t);
+                    notifyGeminiStatus("error", "Gemini Liveにつなげませんでした: " + safeError(t));
+                    stopGeminiConversation("connect failed");
+                }
+            }, geminiExecutor);
+        } catch (JSONException e) {
+            geminiConversationActive = false;
+            notifyGeminiStatus("error", "単語データを読み取れませんでした。");
+        } catch (Throwable t) {
+            geminiConversationActive = false;
+            Log.e(GEMINI_TAG, "Gemini Live setup failed", t);
+            notifyGeminiStatus("error", "Gemini Liveの準備に失敗しました: " + safeError(t));
+        }
+    }
+
+    private void stopGeminiConversation(String reason) {
+        geminiRequestId++;
+        LiveSessionFutures session = geminiSession;
+        geminiSession = null;
+        geminiConversationActive = false;
+        if (session == null) return;
+        try {
+            ListenableFuture<?> stopFuture = session.stopAudioConversation();
+            Futures.addCallback(stopFuture, new FutureCallback<Object>() {
+                @Override
+                public void onSuccess(Object result) {
+                    notifyGeminiStatus("stopped", "先生との会話をとめました。");
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.w(GEMINI_TAG, "Could not stop audio conversation: " + reason, t);
+                    notifyGeminiStatus("stopped", "先生との会話をとめました。");
+                }
+            }, geminiExecutor);
+        } catch (Throwable t) {
+            Log.w(GEMINI_TAG, "Stop Gemini conversation failed: " + reason, t);
+        }
+    }
+
+    private String buildGeminiSystemInstruction(JSONObject context) {
+        String courseId = context.optString("courseId", "");
+        String levelLabel = context.optString("levelLabel", "EIKEN");
+        String word = context.optString("word", "");
+        String jp = context.optString("jp", "");
+        String enSent = context.optString("enSent", "");
+        String jpSent = context.optString("jpSent", "");
+        boolean pre2 = "pre2".equals(courseId);
+        String levelStyle = pre2
+                ? "Use very short sentences, common words, and a slow, gentle speaking style for an EIKEN Pre-2 child learner."
+                : "Use clear child-friendly English. You may use slightly richer vocabulary, but keep explanations easy for an EIKEN Grade 2 learner.";
+        return "You are an English learning teacher for a child using a vocabulary card app. "
+                + "The student may ask in Japanese or English, but you MUST answer in English only. "
+                + levelStyle + " "
+                + "Only discuss English learning for the current card: meaning, usage, pronunciation, example sentences, similar words, exam understanding, and simple practice. "
+                + "Do not chat casually. Do not answer unrelated questions. If the student goes off topic, say: I am your English teacher. Let's talk about this word. "
+                + "Keep every answer brief and encouraging. "
+                + "After the fifth exchange, say: Great work. Now let's go back to studying. "
+                + "Current course: " + levelLabel + ". "
+                + "Current word or phrase: " + word + ". "
+                + "Japanese meaning for context only: " + jp + ". "
+                + "Example sentence: " + enSent + ". "
+                + "Japanese example meaning for context only: " + jpSent + ".";
+    }
+
+    private void notifyGeminiStatus(String status, String message) {
+        Log.d(GEMINI_TAG, status + " | " + message);
+        if (webView == null) return;
+        String script = "window.onGeminiTeacherStatus && window.onGeminiTeacherStatus("
+                + JSONObject.quote(status) + ","
+                + JSONObject.quote(message) + ");";
+        runOnUiThread(() -> webView.evaluateJavascript(script, null));
+    }
+
+    private String safeError(Throwable t) {
+        if (t == null) return "unknown error";
+        String message = t.getMessage();
+        return message == null || message.trim().isEmpty() ? t.getClass().getSimpleName() : message;
     }
 
     private class AndroidTtsBridge {
@@ -227,6 +428,25 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void openTtsSettings() {
             runOnUiThread(MainActivity.this::openTextToSpeechSettings);
+        }
+    }
+
+    private class AndroidGeminiBridge {
+        @JavascriptInterface
+        public String startConversation(String contextJson) {
+            runOnUiThread(() -> startGeminiConversation(contextJson));
+            return "starting";
+        }
+
+        @JavascriptInterface
+        public String stopConversation() {
+            runOnUiThread(() -> stopGeminiConversation("user stopped"));
+            return "stopping";
+        }
+
+        @JavascriptInterface
+        public String getStatus() {
+            return geminiConversationActive ? "active" : "idle";
         }
     }
 }
