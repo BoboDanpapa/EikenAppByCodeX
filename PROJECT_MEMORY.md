@@ -30,7 +30,7 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.6`: Revised Eiken Pre-2 entries into study-priority order and replaced template examples with original textbook-style natural sentences.
 - `v1.1.7`: Added an independent quiz deck order so challenges are not alphabetical and do not follow the magic-card study order.
 - `v1.1.8`: Added a Japanese UI layout demo for the English teacher question button and five-turn teacher panel.
-- `v1.1.9`: Integrated Android Gemini Live teacher bridge, microphone permission flow, and five-turn word-question session handling.
+- `v1.1.9`: Integrated Android Gemini Live teacher bridge, microphone permission flow, and five-turn word-question session handling. Later patched the same release to use the quota-friendlier `gemini-live-2.5-flash-preview` model and count completed student/teacher exchanges instead of session starts.
 
 ## Important Behavior
 

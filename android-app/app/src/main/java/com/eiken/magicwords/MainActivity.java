@@ -30,6 +30,7 @@ import com.google.firebase.ai.type.GenerativeBackend;
 import com.google.firebase.ai.type.LiveGenerationConfig;
 import com.google.firebase.ai.type.ResponseModality;
 import com.google.firebase.ai.type.SpeechConfig;
+import com.google.firebase.ai.type.Transcription;
 import com.google.firebase.ai.type.Voice;
 
 import org.json.JSONException;
@@ -41,11 +42,13 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import kotlin.Unit;
+
 public class MainActivity extends Activity {
     private static final String TAG = "EikenTTS";
     private static final String GEMINI_TAG = "EikenGeminiLive";
     private static final String ACTION_TTS_SETTINGS = "com.android.settings.TTS_SETTINGS";
-    private static final String GEMINI_LIVE_MODEL = "gemini-2.5-flash-native-audio-preview-12-2025";
+    private static final String GEMINI_LIVE_MODEL = "gemini-live-2.5-flash-preview";
     private static final int REQUEST_RECORD_AUDIO = 4001;
     private WebView webView;
     private TextToSpeech textToSpeech;
@@ -60,6 +63,12 @@ public class MainActivity extends Activity {
     private boolean geminiConversationActive = false;
     private int geminiRequestId = 0;
     private String pendingGeminiContextJson;
+    private int teacherTurnCount = 0;
+    private int teacherMaxTurns = 5;
+    private boolean waitingForStudentInput = false;
+    private boolean answerSeenForCurrentInput = false;
+    private String lastInputText = "";
+    private String lastCountedInputText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -282,6 +291,7 @@ public class MainActivity extends Activity {
 
         try {
             JSONObject context = new JSONObject(contextJson);
+            resetTeacherTurnState(context.optInt("turns", 0), context.optInt("maxTurns", 5));
             Content systemInstruction = new Content.Builder()
                     .addText(buildGeminiSystemInstruction(context))
                     .build();
@@ -301,7 +311,10 @@ public class MainActivity extends Activity {
                 public void onSuccess(LiveSessionFutures session) {
                     if (requestId != geminiRequestId) return;
                     geminiSession = session;
-                    ListenableFuture<?> startFuture = session.startAudioConversation(false);
+                    ListenableFuture<?> startFuture = session.startAudioConversation((input, output) -> {
+                        handleGeminiTranscript(input, output);
+                        return Unit.INSTANCE;
+                    }, false);
                     Futures.addCallback(startFuture, new FutureCallback<Object>() {
                         @Override
                         public void onSuccess(Object result) {
@@ -363,6 +376,56 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void resetGeminiConversation(String reason) {
+        stopGeminiConversation(reason);
+        resetTeacherTurnState(0, 5);
+    }
+
+    private void resetTeacherTurnState(int turns, int maxTurns) {
+        teacherTurnCount = Math.max(0, turns);
+        teacherMaxTurns = Math.max(1, maxTurns);
+        waitingForStudentInput = false;
+        answerSeenForCurrentInput = false;
+        lastInputText = "";
+        lastCountedInputText = "";
+    }
+
+    private void handleGeminiTranscript(Transcription input, Transcription output) {
+        if (!geminiConversationActive) return;
+        String inputText = normalizeTranscript(input);
+        String outputText = normalizeTranscript(output);
+
+        if (!inputText.isEmpty()
+                && !inputText.equals(lastCountedInputText)
+                && (!waitingForStudentInput || !inputText.equals(lastInputText))) {
+            waitingForStudentInput = true;
+            answerSeenForCurrentInput = false;
+            lastInputText = inputText;
+        }
+
+        if (!outputText.isEmpty() && waitingForStudentInput && !answerSeenForCurrentInput) {
+            answerSeenForCurrentInput = true;
+            teacherTurnCount = Math.min(teacherMaxTurns, teacherTurnCount + 1);
+            lastCountedInputText = lastInputText;
+            notifyGeminiStatus("turn_completed",
+                    "質問: " + teacherTurnCount + " / " + teacherMaxTurns,
+                    teacherTurnCount);
+            waitingForStudentInput = false;
+            answerSeenForCurrentInput = false;
+            lastInputText = "";
+
+            if (teacherTurnCount >= teacherMaxTurns) {
+                notifyGeminiStatus("limit_reached", "よくできました。カードの学習にもどろう！", teacherTurnCount);
+                stopGeminiConversation("turn limit reached");
+            }
+        }
+    }
+
+    private String normalizeTranscript(Transcription transcription) {
+        if (transcription == null || transcription.getText() == null) return "";
+        return transcription.getText().trim().replaceAll("\\s+", " ");
+    }
+
     private String buildGeminiSystemInstruction(JSONObject context) {
         String courseId = context.optString("courseId", "");
         String levelLabel = context.optString("levelLabel", "EIKEN");
@@ -389,11 +452,16 @@ public class MainActivity extends Activity {
     }
 
     private void notifyGeminiStatus(String status, String message) {
+        notifyGeminiStatus(status, message, -1);
+    }
+
+    private void notifyGeminiStatus(String status, String message, int turns) {
         Log.d(GEMINI_TAG, status + " | " + message);
         if (webView == null) return;
         String script = "window.onGeminiTeacherStatus && window.onGeminiTeacherStatus("
                 + JSONObject.quote(status) + ","
-                + JSONObject.quote(message) + ");";
+                + JSONObject.quote(message) + ","
+                + turns + ");";
         runOnUiThread(() -> webView.evaluateJavascript(script, null));
     }
 
@@ -442,6 +510,12 @@ public class MainActivity extends Activity {
         public String stopConversation() {
             runOnUiThread(() -> stopGeminiConversation("user stopped"));
             return "stopping";
+        }
+
+        @JavascriptInterface
+        public String resetConversation() {
+            runOnUiThread(() -> resetGeminiConversation("word changed"));
+            return "resetting";
         }
 
         @JavascriptInterface

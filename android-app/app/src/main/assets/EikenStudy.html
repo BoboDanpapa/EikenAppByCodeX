@@ -616,7 +616,7 @@ function renderTeacherDemo() {
 }
 
 function resetTeacherDemo() {
-    stopTeacherConversation();
+    resetTeacherConversation();
     teacherTurns = 0;
     teacherListening = false;
     const panel = document.getElementById("teacher-panel");
@@ -667,6 +667,15 @@ function stopTeacherConversation() {
     }
 }
 
+function resetTeacherConversation() {
+    teacherListening = false;
+    if (window.AndroidGemini && typeof window.AndroidGemini.resetConversation === "function") {
+        window.AndroidGemini.resetConversation();
+    } else if (window.AndroidGemini && typeof window.AndroidGemini.stopConversation === "function") {
+        window.AndroidGemini.stopConversation();
+    }
+}
+
 function getTeacherContext() {
     const words = getWords();
     const progress = getProgress();
@@ -683,15 +692,24 @@ function getTeacherContext() {
     };
 }
 
-function onGeminiTeacherStatus(status, message) {
+function onGeminiTeacherStatus(status, message, turns) {
     const statusBox = document.getElementById("teacher-status");
     if (statusBox && message) statusBox.innerText = message;
+    if (Number.isInteger(turns) && turns >= 0) {
+        teacherTurns = Math.min(TEACHER_DEMO_MAX_TURNS, turns);
+    }
     if (status === "connecting" || status === "permission_required" || status === "active") {
         teacherListening = true;
     }
     if (status === "started") {
         teacherListening = true;
-        teacherTurns = Math.min(TEACHER_DEMO_MAX_TURNS, teacherTurns + 1);
+    }
+    if (status === "turn_completed") {
+        teacherListening = true;
+    }
+    if (status === "limit_reached") {
+        teacherListening = false;
+        teacherTurns = TEACHER_DEMO_MAX_TURNS;
     }
     if (status === "stopped" || status === "error" || status === "permission_denied") {
         teacherListening = false;
