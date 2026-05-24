@@ -30,7 +30,7 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.6`: Revised Eiken Pre-2 entries into study-priority order and replaced template examples with original textbook-style natural sentences.
 - `v1.1.7`: Added an independent quiz deck order so challenges are not alphabetical and do not follow the magic-card study order.
 - `v1.1.8`: Added a Japanese UI layout demo for the English teacher question button and five-turn teacher panel.
-- `v1.1.9`: Integrated Android Gemini Live teacher bridge, microphone permission flow, and five-turn word-question session handling. Later patched the same release to count completed student/teacher exchanges instead of session starts. Keep the Firebase GoogleAI backend on `gemini-2.5-flash-native-audio-preview-12-2025`; `gemini-live-2.5-flash-preview` can close the Firebase AI Logic WebSocket during connection.
+- `v1.1.9`: Integrated Android Gemini Live teacher bridge, microphone permission flow, and five-turn word-question session handling. Keep the Firebase GoogleAI backend on `gemini-2.5-flash-native-audio-preview-12-2025`; `gemini-live-2.5-flash-preview` can close the Firebase AI Logic WebSocket during connection. The transcript-handler turn counter was rolled back because it could prevent audio replies on device; future precise per-answer counting needs a custom receive/audio pipeline or another stable SDK event.
 
 ## Important Behavior
 

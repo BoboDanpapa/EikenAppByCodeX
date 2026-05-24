@@ -30,7 +30,6 @@ import com.google.firebase.ai.type.GenerativeBackend;
 import com.google.firebase.ai.type.LiveGenerationConfig;
 import com.google.firebase.ai.type.ResponseModality;
 import com.google.firebase.ai.type.SpeechConfig;
-import com.google.firebase.ai.type.Transcription;
 import com.google.firebase.ai.type.Voice;
 
 import org.json.JSONException;
@@ -41,8 +40,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import kotlin.Unit;
 
 public class MainActivity extends Activity {
     private static final String TAG = "EikenTTS";
@@ -65,10 +62,6 @@ public class MainActivity extends Activity {
     private String pendingGeminiContextJson;
     private int teacherTurnCount = 0;
     private int teacherMaxTurns = 5;
-    private boolean waitingForStudentInput = false;
-    private boolean answerSeenForCurrentInput = false;
-    private String lastInputText = "";
-    private String lastCountedInputText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -274,6 +267,10 @@ public class MainActivity extends Activity {
             notifyGeminiStatus("active", "すでに先生が聞いています。終わるときは「とめる」を押してね。");
             return;
         }
+        if (teacherTurnCount >= teacherMaxTurns) {
+            notifyGeminiStatus("limit_reached", "よくできました。カードの学習にもどろう！", teacherTurnCount);
+            return;
+        }
         if (!hasRecordAudioPermission()) {
             notifyGeminiStatus("permission_required", "マイクの許可を確認しています。");
             requestRecordAudioPermission(contextJson);
@@ -311,15 +308,16 @@ public class MainActivity extends Activity {
                 public void onSuccess(LiveSessionFutures session) {
                     if (requestId != geminiRequestId) return;
                     geminiSession = session;
-                    ListenableFuture<?> startFuture = session.startAudioConversation((input, output) -> {
-                        handleGeminiTranscript(input, output);
-                        return Unit.INSTANCE;
-                    }, false);
+                    ListenableFuture<?> startFuture = session.startAudioConversation(false);
                     Futures.addCallback(startFuture, new FutureCallback<Object>() {
                         @Override
                         public void onSuccess(Object result) {
                             if (requestId != geminiRequestId) return;
                             geminiConversationActive = true;
+                            teacherTurnCount = Math.min(teacherMaxTurns, teacherTurnCount + 1);
+                            notifyGeminiStatus("turn_completed",
+                                    "質問: " + teacherTurnCount + " / " + teacherMaxTurns,
+                                    teacherTurnCount);
                             notifyGeminiStatus("started", "聞いています。質問は日本語でも英語でも大丈夫です。");
                         }
 
@@ -384,46 +382,6 @@ public class MainActivity extends Activity {
     private void resetTeacherTurnState(int turns, int maxTurns) {
         teacherTurnCount = Math.max(0, turns);
         teacherMaxTurns = Math.max(1, maxTurns);
-        waitingForStudentInput = false;
-        answerSeenForCurrentInput = false;
-        lastInputText = "";
-        lastCountedInputText = "";
-    }
-
-    private void handleGeminiTranscript(Transcription input, Transcription output) {
-        if (!geminiConversationActive) return;
-        String inputText = normalizeTranscript(input);
-        String outputText = normalizeTranscript(output);
-
-        if (!inputText.isEmpty()
-                && !inputText.equals(lastCountedInputText)
-                && (!waitingForStudentInput || !inputText.equals(lastInputText))) {
-            waitingForStudentInput = true;
-            answerSeenForCurrentInput = false;
-            lastInputText = inputText;
-        }
-
-        if (!outputText.isEmpty() && waitingForStudentInput && !answerSeenForCurrentInput) {
-            answerSeenForCurrentInput = true;
-            teacherTurnCount = Math.min(teacherMaxTurns, teacherTurnCount + 1);
-            lastCountedInputText = lastInputText;
-            notifyGeminiStatus("turn_completed",
-                    "質問: " + teacherTurnCount + " / " + teacherMaxTurns,
-                    teacherTurnCount);
-            waitingForStudentInput = false;
-            answerSeenForCurrentInput = false;
-            lastInputText = "";
-
-            if (teacherTurnCount >= teacherMaxTurns) {
-                notifyGeminiStatus("limit_reached", "よくできました。カードの学習にもどろう！", teacherTurnCount);
-                stopGeminiConversation("turn limit reached");
-            }
-        }
-    }
-
-    private String normalizeTranscript(Transcription transcription) {
-        if (transcription == null || transcription.getText() == null) return "";
-        return transcription.getText().trim().replaceAll("\\s+", " ");
     }
 
     private String buildGeminiSystemInstruction(JSONObject context) {
