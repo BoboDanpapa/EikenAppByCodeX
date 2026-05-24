@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
     private static final String TAG = "EikenTTS";
     private static final String GEMINI_TAG = "EikenGeminiLive";
     private static final String ACTION_TTS_SETTINGS = "com.android.settings.TTS_SETTINGS";
-    private static final String GEMINI_LIVE_MODEL = "gemini-live-2.5-flash-preview";
+    private static final String GEMINI_LIVE_MODEL = "gemini-2.5-flash-native-audio-preview-12-2025";
     private static final int REQUEST_RECORD_AUDIO = 4001;
     private WebView webView;
     private TextToSpeech textToSpeech;
