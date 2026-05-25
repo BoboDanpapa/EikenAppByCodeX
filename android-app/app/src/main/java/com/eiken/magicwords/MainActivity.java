@@ -264,6 +264,7 @@ public class MainActivity extends Activity {
 
     private void startGeminiConversation(String contextJson) {
         if (geminiConversationActive) {
+            updateGeminiContext(contextJson);
             notifyGeminiStatus("active", "すでに先生が聞いています。終わるときは「とめる」を押してね。");
             return;
         }
@@ -314,10 +315,6 @@ public class MainActivity extends Activity {
                         public void onSuccess(Object result) {
                             if (requestId != geminiRequestId) return;
                             geminiConversationActive = true;
-                            teacherTurnCount = Math.min(teacherMaxTurns, teacherTurnCount + 1);
-                            notifyGeminiStatus("turn_completed",
-                                    "質問: " + teacherTurnCount + " / " + teacherMaxTurns,
-                                    teacherTurnCount);
                             notifyGeminiStatus("started", "聞いています。質問は日本語でも英語でも大丈夫です。");
                         }
 
@@ -379,6 +376,30 @@ public class MainActivity extends Activity {
         resetTeacherTurnState(0, 5);
     }
 
+    private void updateGeminiContext(String contextJson) {
+        LiveSessionFutures session = geminiSession;
+        if (!geminiConversationActive || session == null || contextJson == null) return;
+        try {
+            JSONObject context = new JSONObject(contextJson);
+            resetTeacherTurnState(context.optInt("turns", 0), context.optInt("maxTurns", 5));
+            ListenableFuture<?> sendFuture = session.send(buildGeminiContextUpdate(context));
+            Futures.addCallback(sendFuture, new FutureCallback<Object>() {
+                @Override
+                public void onSuccess(Object result) {
+                    notifyGeminiStatus("context_updated", "先生が新しい単語に移動しました。");
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.w(GEMINI_TAG, "Could not update Gemini context", t);
+                    notifyGeminiStatus("error", "新しい単語を先生に伝えられませんでした: " + safeError(t));
+                }
+            }, geminiExecutor);
+        } catch (JSONException e) {
+            notifyGeminiStatus("error", "単語データを読み取れませんでした。");
+        }
+    }
+
     private void resetTeacherTurnState(int turns, int maxTurns) {
         teacherTurnCount = Math.max(0, turns);
         teacherMaxTurns = Math.max(1, maxTurns);
@@ -398,6 +419,8 @@ public class MainActivity extends Activity {
         return "You are an English learning teacher for a child using a vocabulary card app. "
                 + "The student may ask in Japanese or English, but you MUST answer in English only. "
                 + levelStyle + " "
+                + "The app may send APP_CONTEXT_UPDATE messages when the current card changes. "
+                + "When you receive APP_CONTEXT_UPDATE, switch your target word immediately, say one short English confirmation like: Now let's talk about the word, then wait for the student's question. "
                 + "Only discuss English learning for the current card: meaning, usage, pronunciation, example sentences, similar words, exam understanding, and simple practice. "
                 + "Do not chat casually. Do not answer unrelated questions. If the student goes off topic, say: I am your English teacher. Let's talk about this word. "
                 + "Keep every answer brief and encouraging. "
@@ -407,6 +430,23 @@ public class MainActivity extends Activity {
                 + "Japanese meaning for context only: " + jp + ". "
                 + "Example sentence: " + enSent + ". "
                 + "Japanese example meaning for context only: " + jpSent + ".";
+    }
+
+    private String buildGeminiContextUpdate(JSONObject context) {
+        String levelLabel = context.optString("levelLabel", "EIKEN");
+        String word = context.optString("word", "");
+        String jp = context.optString("jp", "");
+        String enSent = context.optString("enSent", "");
+        String jpSent = context.optString("jpSent", "");
+        return "APP_CONTEXT_UPDATE\n"
+                + "The app moved to a new vocabulary card. From now on, only answer about this current card.\n"
+                + "Say one short English confirmation such as: Now let's talk about \"" + word + "\".\n"
+                + "Then wait for the student's next question.\n"
+                + "Current course: " + levelLabel + "\n"
+                + "Current word or phrase: " + word + "\n"
+                + "Japanese meaning for context only: " + jp + "\n"
+                + "Example sentence: " + enSent + "\n"
+                + "Japanese example meaning for context only: " + jpSent;
     }
 
     private void notifyGeminiStatus(String status, String message) {
@@ -474,6 +514,12 @@ public class MainActivity extends Activity {
         public String resetConversation() {
             runOnUiThread(() -> resetGeminiConversation("word changed"));
             return "resetting";
+        }
+
+        @JavascriptInterface
+        public String updateContext(String contextJson) {
+            runOnUiThread(() -> updateGeminiContext(contextJson));
+            return "updating";
         }
 
         @JavascriptInterface

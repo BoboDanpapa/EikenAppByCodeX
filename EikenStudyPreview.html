@@ -488,12 +488,14 @@ function renderHome() {
 }
 
 function goUserScreen() {
+    stopTeacherConversation();
     currentCourseId = null;
     renderUsers();
     showOnly("user-screen");
 }
 
 function goHome() {
+    stopTeacherConversation();
     currentCourseId = null;
     renderHome();
     showOnly("home-screen");
@@ -506,6 +508,7 @@ function enterCourse(courseId) {
 }
 
 function switchTab(t) {
+    if (t !== "study") stopTeacherConversation();
     ["study", "review", "quiz", "collection"].forEach(id => document.getElementById(id).classList.add("hidden"));
     document.getElementById(t).classList.remove("hidden");
     if (t === "study") loadStudyWord();
@@ -538,7 +541,8 @@ function loadStudyWord() {
     document.getElementById("study-en-sent").innerText = w.enSent;
     document.getElementById("study-jp-sent").innerText = w.jpSent;
     document.getElementById("study-details").classList.add("hidden");
-    resetTeacherDemo();
+    resetTeacherPanelForWord();
+    updateTeacherContext();
     updateStarButton();
 }
 
@@ -592,8 +596,7 @@ function renderTeacherDemo() {
     }
 }
 
-function resetTeacherDemo() {
-    resetTeacherConversation();
+function resetTeacherPanelForWord() {
     teacherTurns = 0;
     teacherListening = false;
     const panel = document.getElementById("teacher-panel");
@@ -608,6 +611,7 @@ function toggleTeacherPanel(e) {
     const panel = document.getElementById("teacher-panel");
     if (!panel) return;
     panel.classList.toggle("hidden");
+    if (!panel.classList.contains("hidden")) updateTeacherContext();
     renderTeacherDemo();
 }
 
@@ -650,6 +654,12 @@ function resetTeacherConversation() {
         window.AndroidGemini.resetConversation();
     } else if (window.AndroidGemini && typeof window.AndroidGemini.stopConversation === "function") {
         window.AndroidGemini.stopConversation();
+    }
+}
+
+function updateTeacherContext() {
+    if (window.AndroidGemini && typeof window.AndroidGemini.updateContext === "function") {
+        window.AndroidGemini.updateContext(JSON.stringify(getTeacherContext()));
     }
 }
 
