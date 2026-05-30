@@ -13,10 +13,10 @@ This file records durable project context for future Codex sessions. Read this b
 
 ## Current Stable Version
 
-- Current version after the Gemini Live teacher integration: `1.1.9`
-- Current `versionCode`: `11`
+- Current version after the settings/theme demo release: `1.1.10`
+- Current `versionCode`: `12`
 - Latest local release APK:
-  `releases/eiken-magicwords-v1.1.9-gemini-live-teacher.apk`
+  `releases/eiken-magicwords-v1.1.10-settings-theme-demo.apk`
 
 ## Major Version History
 
@@ -31,6 +31,7 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.7`: Added an independent quiz deck order so challenges are not alphabetical and do not follow the magic-card study order.
 - `v1.1.8`: Added a Japanese UI layout demo for the English teacher question button and five-turn teacher panel.
 - `v1.1.9`: Integrated Android Gemini Live teacher bridge, microphone permission flow, and five-turn word-question session handling. Keep the Firebase GoogleAI backend on `gemini-2.5-flash-native-audio-preview-12-2025`; `gemini-live-2.5-flash-preview` can close the Firebase AI Logic WebSocket during connection. The transcript-handler turn counter was rolled back because it could prevent audio replies on device; future precise per-answer counting needs a custom receive/audio pipeline or another stable SDK event. The stable Live session should be kept across word changes in the study tab; send an `APP_CONTEXT_UPDATE` text message instead of reconnecting, and only stop Live on `とめる`, leaving the study tab, back/exit, or Activity destroy.
+- `v1.1.10`: Added the settings entry, visible app version badge, theme selection demo, and teacher safety settings display. The alternate theme is `Navy + Sky`; settings persist in local storage.
 
 ## Important Behavior
 

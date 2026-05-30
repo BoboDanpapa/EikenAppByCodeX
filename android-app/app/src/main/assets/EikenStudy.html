@@ -5,70 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>英検 魔法の単語帳</title>
     <style>
+        :root {
+            --page-bg: #f7f1fa;
+            --text-main: #4a235a;
+            --header-start: #ba68c8;
+            --header-end: #9c27b0;
+            --header-shadow: rgba(156, 39, 176, 0.3);
+            --button-main: #ce93d8;
+            --button-shadow: #ab47bc;
+            --nav-button: #b39ddb;
+            --nav-shadow: #7e57c2;
+            --container-border: #e1bee7;
+            --container-shadow: rgba(206, 147, 216, 0.3);
+            --title-color: #8e24aa;
+            --dash-color: #ce93d8;
+            --soft-bg: #f3e5f5;
+            --card-grad-a: #f3e5f5;
+            --card-grad-b: #e1bee7;
+            --accent-text: #6a1b9a;
+            --hot-accent: #d81b60;
+            --secondary-main: #64b5f6;
+            --secondary-shadow: #1e88e5;
+            --speak-main: #ffd54f;
+            --speak-text: #d84315;
+            --speak-shadow: #ffb300;
+        }
+        body.theme-navy-sky {
+            --page-bg: #eef7ff;
+            --text-main: #17324d;
+            --header-start: #12355b;
+            --header-end: #0b5d8f;
+            --header-shadow: rgba(18, 53, 91, 0.28);
+            --button-main: #2497d4;
+            --button-shadow: #0d5f91;
+            --nav-button: #2f80c0;
+            --nav-shadow: #174d7c;
+            --container-border: #9ed8ff;
+            --container-shadow: rgba(37, 126, 184, 0.22);
+            --title-color: #12355b;
+            --dash-color: #5fb7e8;
+            --soft-bg: #e4f4ff;
+            --card-grad-a: #f9fcff;
+            --card-grad-b: #d9efff;
+            --accent-text: #0d4f7c;
+            --hot-accent: #f0a319;
+            --secondary-main: #37b7d8;
+            --secondary-shadow: #087a95;
+            --speak-main: #ffd766;
+            --speak-text: #785000;
+            --speak-shadow: #e6a800;
+        }
         * { box-sizing: border-box; }
         html { min-height: 100%; -webkit-text-size-adjust: 100%; }
-        body { font-family: 'Comic Sans MS', 'Nunito', 'Segoe UI', sans-serif; background-color: #f7f1fa; margin: 0; color: #4a235a; min-height: 100vh; overflow-x: hidden; padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+        body { font-family: 'Comic Sans MS', 'Nunito', 'Segoe UI', sans-serif; background-color: var(--page-bg); margin: 0; color: var(--text-main); min-height: 100vh; overflow-x: hidden; padding-bottom: max(18px, env(safe-area-inset-bottom)); }
         button, input { -webkit-tap-highlight-color: transparent; }
-        header { position: relative; background: linear-gradient(135deg, #ba68c8, #9c27b0); color: white; text-align: center; padding: clamp(15px, 4vw, 20px) 16px clamp(17px, 4vw, 22px); font-size: clamp(20px, 5.2vw, 24px); line-height: 1.25; font-weight: bold; border-bottom-left-radius: clamp(18px, 6vw, 30px); border-bottom-right-radius: clamp(18px, 6vw, 30px); box-shadow: 0 5px 15px rgba(156, 39, 176, 0.3); }
+        header { position: relative; background: linear-gradient(135deg, var(--header-start), var(--header-end)); color: white; text-align: center; padding: clamp(15px, 4vw, 20px) 16px clamp(17px, 4vw, 22px); font-size: clamp(20px, 5.2vw, 24px); line-height: 1.25; font-weight: bold; border-bottom-left-radius: clamp(18px, 6vw, 30px); border-bottom-right-radius: clamp(18px, 6vw, 30px); box-shadow: 0 5px 15px var(--header-shadow); }
         #app-title { display: inline-block; max-width: 100%; }
         .header-user { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); max-width: 30%; background: rgba(255,255,255,0.18); border: 2px dashed rgba(255,255,255,0.5); border-radius: 999px; color: white; font-size: 13px; line-height: 1.2; font-weight: bold; padding: 7px 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .header-user.hidden { display: none; }
         .nav { display: flex; justify-content: center; gap: 10px; padding: 10px 12px; flex-wrap: wrap; }
-        .jelly-btn { background-color: #ce93d8; color: white; border: none; font-size: 15px; line-height: 1.2; font-weight: bold; cursor: pointer; padding: 12px 18px; border-radius: 25px; box-shadow: 0 6px 0 #ab47bc; transition: all 0.1s; font-family: inherit; min-height: 44px; touch-action: manipulation; white-space: normal; overflow-wrap: anywhere; }
-        .jelly-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #ab47bc; }
+        .jelly-btn { background-color: var(--button-main); color: white; border: none; font-size: 15px; line-height: 1.2; font-weight: bold; cursor: pointer; padding: 12px 18px; border-radius: 25px; box-shadow: 0 6px 0 var(--button-shadow); transition: all 0.1s; font-family: inherit; min-height: 44px; touch-action: manipulation; white-space: normal; overflow-wrap: anywhere; }
+        .jelly-btn:active { transform: translateY(6px); box-shadow: 0 0 0 var(--button-shadow); }
         .jelly-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
-        .nav .jelly-btn { background-color: #b39ddb; box-shadow: 0 6px 0 #7e57c2; }
-        .container { width: min(540px, calc(100% - 24px)); margin: 10px auto 30px; background: white; padding: clamp(18px, 5vw, 28px); border-radius: clamp(22px, 6vw, 30px); border: 4px solid #e1bee7; box-shadow: 0 10px 25px rgba(206, 147, 216, 0.3); text-align: center; }
+        .nav .jelly-btn { background-color: var(--nav-button); box-shadow: 0 6px 0 var(--nav-shadow); }
+        .container { width: min(540px, calc(100% - 24px)); margin: 10px auto 30px; background: white; padding: clamp(18px, 5vw, 28px); border-radius: clamp(22px, 6vw, 30px); border: 4px solid var(--container-border); box-shadow: 0 10px 25px var(--container-shadow); text-align: center; }
         .wide-container { width: min(760px, calc(100% - 24px)); }
         .hidden { display: none !important; }
-        .screen-title { color: #8e24aa; margin: 0 0 8px; }
+        .screen-title { color: var(--title-color); margin: 0 0 8px; }
         .muted { color: #777; font-size: 14px; }
         .row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; align-items: stretch; }
         .study-actions { align-items: center; row-gap: 10px; }
-        .study-actions .jelly-btn { margin-top: 0; }
-        .teacher-action-spacer { flex-basis: 30px; width: 30px; height: 1px; }
+        .teacher-action-spacer { flex-basis: 18px; width: 18px; height: 1px; }
         .input-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin: 20px 0 8px; }
-        input { width: 100%; border: 3px solid #e1bee7; border-radius: 20px; color: #6a1b9a; font-family: inherit; font-weight: bold; font-size: 16px; padding: 12px 14px; outline: none; }
-        input:focus { border-color: #ba68c8; box-shadow: 0 0 0 4px #f3e5f5; }
+        input { width: 100%; border: 3px solid var(--container-border); border-radius: 20px; color: var(--accent-text); font-family: inherit; font-weight: bold; font-size: 16px; padding: 12px 14px; outline: none; }
+        input:focus { border-color: var(--button-main); box-shadow: 0 0 0 4px var(--soft-bg); }
         .user-list { display: grid; gap: 12px; margin-top: 20px; }
-        .user-item { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; background: #fafafa; border: 2px dashed #ce93d8; border-radius: 22px; padding: 14px; }
-        .user-name-btn { text-align: left; background: #f3e5f5; color: #6a1b9a; border: none; border-radius: 18px; padding: 14px 16px; font-family: inherit; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .user-item { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; background: #fafafa; border: 2px dashed var(--dash-color); border-radius: 22px; padding: 14px; }
+        .user-name-btn { text-align: left; background: var(--soft-bg); color: var(--accent-text); border: none; border-radius: 18px; padding: 14px 16px; font-family: inherit; font-size: 18px; font-weight: bold; cursor: pointer; }
         .danger-btn { background-color: #ffcdd2; color: #c62828; box-shadow: 0 5px 0 #ef9a9a; }
         .danger-btn:active { box-shadow: 0 0 0 #ef9a9a; }
-        .secondary-btn { background-color: #64b5f6; box-shadow: 0 6px 0 #1e88e5; }
+        .secondary-btn { background-color: var(--secondary-main); box-shadow: 0 6px 0 var(--secondary-shadow); }
         .home-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 22px 0; }
-        .level-card { border: 3px dashed #ce93d8; border-radius: 26px; padding: 24px 14px; background: linear-gradient(135deg, #fff, #f3e5f5); cursor: pointer; color: #6a1b9a; min-height: 178px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; overflow-wrap: anywhere; }
-        .level-card:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 8px 18px rgba(206, 147, 216, 0.35); }
+        .level-card { border: 3px dashed var(--dash-color); border-radius: 26px; padding: 24px 14px; background: linear-gradient(135deg, #fff, var(--soft-bg)); cursor: pointer; color: var(--accent-text); min-height: 178px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; overflow-wrap: anywhere; }
+        .level-card:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 8px 18px var(--container-shadow); }
         .level-card strong { font-size: 28px; display: block; margin-bottom: 10px; }
-        .level-card span { color: #d81b60; font-weight: bold; font-size: 14px; }
+        .level-card span { color: var(--hot-accent); font-weight: bold; font-size: 14px; }
         .toolbar { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 0 12px 8px; }
-        .card { background: linear-gradient(135deg, #f3e5f5, #e1bee7); color: #6a1b9a; padding: clamp(28px, 8vw, 40px) clamp(14px, 5vw, 20px); border-radius: 25px; margin: 18px 0; cursor: pointer; font-size: clamp(26px, 8vw, 32px); line-height: 1.15; font-weight: bold; border: 3px dashed #ce93d8; box-shadow: 0 8px 15px rgba(206, 147, 216, 0.4); transition: transform 0.3s; overflow-wrap: anywhere; word-break: break-word; }
+        .mobile-label { display: none; }
+        .card { background: linear-gradient(135deg, var(--card-grad-a), var(--card-grad-b)); color: var(--accent-text); padding: clamp(28px, 8vw, 40px) clamp(14px, 5vw, 20px); border-radius: 25px; margin: 18px 0; cursor: pointer; font-size: clamp(26px, 8vw, 32px); line-height: 1.15; font-weight: bold; border: 3px dashed var(--dash-color); box-shadow: 0 8px 15px var(--container-shadow); transition: transform 0.3s; overflow-wrap: anywhere; word-break: break-word; }
         .card:hover { transform: scale(1.03) rotate(1deg); }
         .details { font-size: clamp(16px, 4.4vw, 18px); margin-top: 20px; font-weight: normal; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 15px; }
-        .sentence { font-style: italic; margin-top: 10px; color: #4a235a; font-weight: bold; line-height: 1.45; overflow-wrap: anywhere; }
-        .btn-speak { background-color: #ffd54f; color: #d84315; box-shadow: 0 5px 0 #ffb300; }
+        .sentence { font-style: italic; margin-top: 10px; color: var(--text-main); font-weight: bold; line-height: 1.45; overflow-wrap: anywhere; }
+        .btn-speak { background-color: var(--speak-main); color: var(--speak-text); box-shadow: 0 5px 0 var(--speak-shadow); }
         .btn-star { background-color: #fff59d; color: #f57f17; box-shadow: 0 5px 0 #fbc02d; margin-top: 10px; font-size: 14px; }
         .btn-starred { background-color: #ffcc80; color: #e65100; box-shadow: 0 5px 0 #ef6c00; }
         .btn-teacher-toggle { background-color: #d7ecff; color: #1565c0; box-shadow: 0 4px 0 #90caf9; min-height: 36px; padding: 8px 12px; border-radius: 18px; font-size: 12px; margin-top: 10px; }
         .btn-teacher-toggle:active { box-shadow: 0 0 0 #90caf9; }
-        .teacher-panel { background: #fff; border: 2px dashed #ce93d8; border-radius: 18px; margin: -2px 0 18px; padding: 14px; text-align: left; box-shadow: 0 5px 12px rgba(206, 147, 216, 0.18); }
+        .teacher-panel { background: #fff; border: 2px dashed var(--dash-color); border-radius: 18px; margin: -2px 0 18px; padding: 14px; text-align: left; box-shadow: 0 5px 12px var(--container-shadow); }
         .teacher-panel-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; }
-        .teacher-title { color: #6a1b9a; font-size: 17px; line-height: 1.2; font-weight: bold; margin-bottom: 3px; }
+        .teacher-title { color: var(--accent-text); font-size: 17px; line-height: 1.2; font-weight: bold; margin-bottom: 3px; }
         .teacher-subtitle { color: #777; font-size: 13px; line-height: 1.35; font-weight: bold; }
         .teacher-meta { display: grid; gap: 5px; margin: 12px 0; color: #555; font-size: 13px; font-weight: bold; }
         .teacher-meta span { color: #1565c0; }
-        .teacher-status { background: #f7f1fa; border-radius: 14px; color: #5d326d; font-size: 13px; line-height: 1.35; font-weight: bold; padding: 10px 12px; margin-bottom: 12px; }
+        .teacher-status { background: var(--soft-bg); border-radius: 14px; color: var(--text-main); font-size: 13px; line-height: 1.35; font-weight: bold; padding: 10px 12px; margin-bottom: 12px; }
         .teacher-controls { justify-content: flex-start; gap: 8px; }
         .btn-teacher-mic, .btn-teacher-stop { min-height: 38px; padding: 8px 14px; border-radius: 18px; font-size: 13px; }
         .btn-teacher-mic { background-color: #b3e5fc; color: #0277bd; box-shadow: 0 4px 0 #4fc3f7; }
         .btn-teacher-stop { background-color: #eeeeee; color: #666; box-shadow: 0 4px 0 #cfcfcf; }
         .options { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
-        .option-btn { background-color: white; border: 3px solid #e1bee7; color: #6a1b9a; padding: 15px; font-size: clamp(16px, 4.5vw, 18px); line-height: 1.25; font-weight: bold; border-radius: 20px; cursor: pointer; transition: 0.2s; font-family: inherit; min-height: 52px; overflow-wrap: anywhere; }
-        .option-btn:hover { background-color: #f3e5f5; transform: scale(1.02); }
-        .status-box { background-color: #f3e5f5; border: 2px dashed #ce93d8; border-radius: 20px; padding: 15px; margin-bottom: 20px; text-align: center; }
+        .option-btn { background-color: white; border: 3px solid var(--container-border); color: var(--accent-text); padding: 15px; font-size: clamp(16px, 4.5vw, 18px); line-height: 1.25; font-weight: bold; border-radius: 20px; cursor: pointer; transition: 0.2s; font-family: inherit; min-height: 52px; overflow-wrap: anywhere; }
+        .option-btn:hover { background-color: var(--soft-bg); transform: scale(1.02); }
+        .status-box { background-color: var(--soft-bg); border: 2px dashed var(--dash-color); border-radius: 20px; padding: 15px; margin-bottom: 20px; text-align: center; }
         .level-title { font-size: 16px; color: #666; font-weight: bold; margin-bottom: 8px; }
         .level-title span { color: #d81b60; font-size: 20px; }
-        .streak-bar { font-size: clamp(20px, 6vw, 24px); color: #9c27b0; font-weight: bold; }
+        .streak-bar { font-size: clamp(20px, 6vw, 24px); color: var(--title-color); font-weight: bold; }
+        .version-badge { position: fixed; left: 10px; bottom: max(8px, env(safe-area-inset-bottom)); z-index: 900; background: rgba(255,255,255,0.82); color: var(--text-main); border: 1px solid var(--container-border); border-radius: 999px; font-size: 11px; line-height: 1; font-weight: bold; padding: 6px 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.08); pointer-events: none; }
+        .setting-section { text-align: left; border: 2px dashed var(--dash-color); border-radius: 18px; padding: 14px; margin: 14px 0; background: #fff; }
+        .setting-section h3 { color: var(--accent-text); margin: 0 0 10px; font-size: 17px; }
+        .theme-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .theme-choice { min-height: 76px; border: 3px solid var(--container-border); border-radius: 18px; background: #fff; color: var(--accent-text); font-family: inherit; font-weight: bold; cursor: pointer; padding: 10px; text-align: left; }
+        .theme-choice.active { border-color: var(--hot-accent); box-shadow: 0 0 0 4px var(--soft-bg); }
+        .theme-swatch { display: flex; gap: 5px; margin-bottom: 8px; }
+        .theme-swatch span { display: block; width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); box-shadow: 0 1px 4px rgba(0,0,0,0.16); }
+        .limit-grid { display: grid; gap: 9px; }
+        .limit-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 14px; background: var(--soft-bg); color: var(--text-main); font-weight: bold; }
+        .limit-row span:last-child { color: var(--accent-text); white-space: nowrap; }
         .review-list { text-align: left; margin-top: 20px; max-height: 450px; overflow-y: auto; padding-right: 5px; }
         .review-item { background: #fafafa; border: 2px dashed #ce93d8; border-radius: 20px; margin-bottom: 15px; text-align: left; overflow: hidden; }
         .review-header { padding: 18px; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: flex-start; background: #fafafa; transition: background 0.2s; gap: 10px; }
@@ -105,12 +166,19 @@
             #course-shell > .container { grid-column: 2; width: min(540px, 100%); margin-top: 0; }
         }
         @media (max-width: 560px) {
-            .header-user { left: 10px; max-width: 26%; font-size: 12px; padding: 6px 9px; }
-            #app-title { max-width: calc(100% - 170px); }
-            .nav, .toolbar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-            .toolbar { padding-top: 2px; }
-            .nav .jelly-btn, .toolbar .jelly-btn { width: 100%; padding-left: 8px; padding-right: 8px; }
-            .container { margin-top: 8px; margin-bottom: 24px; }
+            header { padding: calc(env(safe-area-inset-top, 0px) + 22px) 12px 13px; font-size: 20px; line-height: 1.18; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+            .header-user { left: 8px; top: calc(env(safe-area-inset-top, 0px) + 34px); max-width: 24%; font-size: 10px; line-height: 1.1; padding: 5px 7px; border-width: 1.5px; }
+            #app-title { max-width: calc(100% - 140px); }
+            .nav, .toolbar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; padding-left: 10px; padding-right: 10px; }
+            .toolbar { grid-template-columns: repeat(3, minmax(0, 1fr)); padding-top: 8px; padding-bottom: 2px; }
+            .nav { padding-top: 4px; padding-bottom: 6px; }
+            .nav .jelly-btn, .toolbar .jelly-btn { width: 100%; min-height: 34px; padding: 7px 8px; border-radius: 16px; box-shadow: 0 4px 0 var(--nav-shadow); font-size: 12px; line-height: 1.15; }
+            .toolbar .jelly-btn { min-height: 30px; padding: 6px 4px; border-radius: 999px; background: rgba(255,255,255,0.78); color: var(--accent-text); border: 1px solid var(--container-border); box-shadow: none; font-size: 11px; }
+            .toolbar .danger-btn { color: #a83232; box-shadow: none; }
+            .toolbar .secondary-btn { color: #1565c0; box-shadow: none; }
+            .toolbar .full-label { display: none; }
+            .toolbar .mobile-label { display: inline; }
+            .container { margin-top: 4px; margin-bottom: 24px; }
             .home-grid, .input-row { grid-template-columns: 1fr; }
             .level-card { min-height: 138px; }
             .jelly-btn { font-size: 14px; padding: 11px 14px; }
@@ -127,7 +195,6 @@
             .fs-name { font-size: 30px; }
         }
         @media (max-width: 380px) {
-            .nav, .toolbar { grid-template-columns: 1fr; }
             .review-header { grid-template-columns: 1fr; }
             .btn-remove { justify-self: end; }
             .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -166,13 +233,15 @@
     <div class="row">
         <button class="jelly-btn secondary-btn" onclick="goUserScreen()">ユーザー切替</button>
         <button class="jelly-btn danger-btn" onclick="confirmResetCurrentUser()">進度をリセット</button>
+        <button class="jelly-btn" onclick="openSettings()">設定</button>
     </div>
 </div>
 
 <div id="course-shell" class="hidden">
     <div class="toolbar">
-        <button class="jelly-btn secondary-btn" onclick="goHome()">コース選択へ</button>
-        <button class="jelly-btn danger-btn" onclick="confirmResetCurrentUser()">進度をリセット</button>
+        <button class="jelly-btn secondary-btn" onclick="goHome()"><span class="full-label">コース選択へ</span><span class="mobile-label">← コース</span></button>
+        <button class="jelly-btn danger-btn" onclick="confirmResetCurrentUser()"><span class="full-label">進度をリセット</span><span class="mobile-label">リセット</span></button>
+        <button class="jelly-btn" onclick="openSettings()"><span class="full-label">設定</span><span class="mobile-label">設定</span></button>
     </div>
     <div class="nav">
         <button class="jelly-btn" onclick="switchTab('study')">魔法のカード</button>
@@ -248,6 +317,43 @@
     </div>
 </div>
 
+<div id="settings-screen" class="container wide-container hidden">
+    <h2 class="screen-title">設定</h2>
+    <p class="muted">テーマと先生の安全設定を確認できます</p>
+    <div class="setting-section">
+        <h3>アプリのテーマ</h3>
+        <div class="theme-grid">
+            <button id="theme-purple" class="theme-choice" onclick="setAppTheme('purple')">
+                <div class="theme-swatch">
+                    <span style="background:#9c27b0;"></span>
+                    <span style="background:#ce93d8;"></span>
+                    <span style="background:#ffd54f;"></span>
+                </div>
+                やさしい紫
+            </button>
+            <button id="theme-navy-sky" class="theme-choice" onclick="setAppTheme('navySky')">
+                <div class="theme-swatch">
+                    <span style="background:#12355b;"></span>
+                    <span style="background:#37b7d8;"></span>
+                    <span style="background:#ffd766;"></span>
+                </div>
+                Navy + Sky
+            </button>
+        </div>
+    </div>
+    <div class="setting-section">
+        <h3>英語の先生 安全設定</h3>
+        <div class="limit-grid">
+            <div class="limit-row"><span>1日の開始</span><span>0 / 5</span></div>
+            <div class="limit-row"><span>今日の時間</span><span>0 / 10分</span></div>
+            <div class="limit-row"><span>1回の時間</span><span>最大3分</span></div>
+        </div>
+    </div>
+    <div class="row">
+        <button class="jelly-btn secondary-btn" onclick="closeSettings()">もどる</button>
+    </div>
+</div>
+
 <div class="overlay" id="overlay"></div>
 <div class="modal" id="modal">
     <h2 style="color: #d81b60;" id="modal-title">確認</h2>
@@ -264,6 +370,8 @@
         <div style="font-size:14px;color:#aaa;margin-top:15px;">画面をタップして閉じる</div>
     </div>
 </div>
+
+<div class="version-badge">v1.1.12</div>
 
 <script src="pre2_words.js"></script>
 <script src="words.js"></script>
@@ -297,11 +405,15 @@ const challengeLevels = [
 ];
 
 const STORE_KEY = "eikenPreviewUsersV1";
+const SETTINGS_KEY = "eikenPreviewSettingsV1";
 let appState = { users: [], currentUserId: null };
+let appSettings = { theme: "purple" };
+let settingsReturnScreen = "home-screen";
 let currentCourseId = null;
 let currentQuizWord = null;
 let teacherTurns = 0;
 let teacherListening = false;
+let teacherContextSentKey = null;
 const TEACHER_DEMO_MAX_TURNS = 5;
 const TEACHER_READY_STATUS = "日本語でも英語でも質問できるよ。先生は英語で答えるよ。";
 
@@ -365,6 +477,39 @@ function writeStoredState(state) {
     }
 }
 
+function readSettings() {
+    try {
+        const raw = window.localStorage ? window.localStorage.getItem(SETTINGS_KEY) : null;
+        const parsed = raw ? JSON.parse(raw) : {};
+        return Object.assign({ theme: "purple" }, parsed || {});
+    } catch (e) {
+        console.warn("Could not read settings. Continuing with defaults.", e);
+        return { theme: "purple" };
+    }
+}
+
+function saveSettings() {
+    try {
+        if (window.localStorage) window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+    } catch (e) {
+        console.warn("Could not save settings.", e);
+    }
+}
+
+function applyTheme() {
+    document.body.classList.toggle("theme-navy-sky", appSettings.theme === "navySky");
+    const purple = document.getElementById("theme-purple");
+    const navy = document.getElementById("theme-navy-sky");
+    if (purple) purple.classList.toggle("active", appSettings.theme === "purple");
+    if (navy) navy.classList.toggle("active", appSettings.theme === "navySky");
+}
+
+function setAppTheme(theme) {
+    appSettings.theme = theme === "navySky" ? "navySky" : "purple";
+    saveSettings();
+    applyTheme();
+}
+
 function loadAppState() {
     appState = readStoredState() || { users: [], currentUserId: null };
     appState.users = Array.isArray(appState.users) ? appState.users : [];
@@ -392,9 +537,10 @@ function getProgress() {
 }
 
 function showOnly(screenId) {
-    ["user-screen", "home-screen", "course-shell"].forEach(id => document.getElementById(id).classList.add("hidden"));
+    ["user-screen", "home-screen", "course-shell", "settings-screen"].forEach(id => document.getElementById(id).classList.add("hidden"));
     document.getElementById(screenId).classList.remove("hidden");
     renderHeader();
+    applyTheme();
 }
 
 function renderHeader() {
@@ -488,6 +634,19 @@ function renderHome() {
     renderHeader();
 }
 
+function getVisibleScreenId() {
+    return ["user-screen", "home-screen", "course-shell"].find(id => !document.getElementById(id).classList.contains("hidden")) || "home-screen";
+}
+
+function openSettings() {
+    settingsReturnScreen = getVisibleScreenId();
+    showOnly("settings-screen");
+}
+
+function closeSettings() {
+    showOnly(settingsReturnScreen || "home-screen");
+}
+
 function goUserScreen() {
     stopTeacherConversation();
     currentCourseId = null;
@@ -565,7 +724,6 @@ function loadStudyWord() {
     document.getElementById("study-jp-sent").innerText = w.jpSent;
     document.getElementById("study-details").classList.add("hidden");
     resetTeacherPanelForWord();
-    updateTeacherContext();
     updateStarButton();
 }
 
@@ -622,6 +780,7 @@ function renderTeacherDemo() {
 function resetTeacherPanelForWord() {
     teacherTurns = 0;
     teacherListening = false;
+    teacherContextSentKey = null;
     const panel = document.getElementById("teacher-panel");
     const status = document.getElementById("teacher-status");
     if (panel) panel.classList.add("hidden");
@@ -643,6 +802,12 @@ function askTeacherDemo(e) {
     if (teacherListening || teacherTurns >= TEACHER_DEMO_MAX_TURNS) return;
     const status = document.getElementById("teacher-status");
     if (window.AndroidGemini && typeof window.AndroidGemini.startConversation === "function") {
+        if (isAndroidGeminiActive() && teacherContextSentKey === getTeacherContextKey()) {
+            if (status) status.innerText = "聞いています。質問は日本語でも英語でも大丈夫です。";
+            teacherListening = true;
+            renderTeacherDemo();
+            return;
+        }
         if (status) status.innerText = "先生につないでいます...";
         teacherListening = true;
         renderTeacherDemo();
@@ -682,8 +847,28 @@ function resetTeacherConversation() {
 
 function updateTeacherContext() {
     if (window.AndroidGemini && typeof window.AndroidGemini.updateContext === "function") {
+        if (!isAndroidGeminiActive()) return;
+        const contextKey = getTeacherContextKey();
+        if (teacherContextSentKey === contextKey) return;
+        teacherContextSentKey = contextKey;
+        const status = document.getElementById("teacher-status");
+        if (status) status.innerText = "先生に新しい単語を伝えています...";
+        teacherListening = true;
+        renderTeacherDemo();
         window.AndroidGemini.updateContext(JSON.stringify(getTeacherContext()));
     }
+}
+
+function isAndroidGeminiActive() {
+    if (!window.AndroidGemini || typeof window.AndroidGemini.getStatus !== "function") return false;
+    return window.AndroidGemini.getStatus() === "active";
+}
+
+function getTeacherContextKey() {
+    const progress = getProgress();
+    const words = getWords();
+    if (!progress || !words[progress.currentStudyIndex]) return "";
+    return `${currentCourseId}:${progress.currentStudyIndex}:${words[progress.currentStudyIndex].en}`;
 }
 
 function getTeacherContext() {
@@ -1061,6 +1246,8 @@ function escapeHtml(value) {
 }
 
 window.onload = function() {
+    appSettings = readSettings();
+    applyTheme();
     loadAppState();
     renderUsers();
     if (getCurrentUser()) {

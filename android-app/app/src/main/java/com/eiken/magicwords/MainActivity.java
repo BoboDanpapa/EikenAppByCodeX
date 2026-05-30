@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
@@ -38,6 +40,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -47,6 +50,8 @@ public class MainActivity extends Activity {
     private static final String ACTION_TTS_SETTINGS = "com.android.settings.TTS_SETTINGS";
     private static final String GEMINI_LIVE_MODEL = "gemini-2.5-flash-native-audio-preview-12-2025";
     private static final int REQUEST_RECORD_AUDIO = 4001;
+    private static final int GEMINI_CONTEXT_MAX_RETRIES = 3;
+    private static final long GEMINI_CONTEXT_RETRY_DELAY_MS = 650L;
     private WebView webView;
     private TextToSpeech textToSpeech;
     private boolean ttsReady = false;
@@ -62,6 +67,11 @@ public class MainActivity extends Activity {
     private String pendingGeminiContextJson;
     private int teacherTurnCount = 0;
     private int teacherMaxTurns = 5;
+    private final Handler geminiRetryHandler = new Handler(Looper.getMainLooper());
+    private String latestGeminiContextJson;
+    private boolean contextUpdateInFlight = false;
+    private int contextUpdateRetryCount = 0;
+    private Runnable pendingContextRetry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -284,8 +294,11 @@ public class MainActivity extends Activity {
 
         notifyGeminiStatus("connecting", "先生につないでいます...");
         stopGeminiConversation("new Gemini conversation");
+        latestGeminiContextJson = contextJson;
+        contextUpdateRetryCount = 0;
         geminiConversationActive = true;
         final int requestId = ++geminiRequestId;
+        final String initialContextJson = contextJson;
 
         try {
             JSONObject context = new JSONObject(contextJson);
@@ -316,6 +329,9 @@ public class MainActivity extends Activity {
                             if (requestId != geminiRequestId) return;
                             geminiConversationActive = true;
                             notifyGeminiStatus("started", "聞いています。質問は日本語でも英語でも大丈夫です。");
+                            if (latestGeminiContextJson != null && !latestGeminiContextJson.equals(initialContextJson)) {
+                                enqueueLatestGeminiContextUpdate();
+                            }
                         }
 
                         @Override
@@ -351,6 +367,7 @@ public class MainActivity extends Activity {
         LiveSessionFutures session = geminiSession;
         geminiSession = null;
         geminiConversationActive = false;
+        clearGeminiContextUpdateState();
         if (session == null) return;
         try {
             ListenableFuture<?> stopFuture = session.stopAudioConversation();
@@ -377,8 +394,20 @@ public class MainActivity extends Activity {
     }
 
     private void updateGeminiContext(String contextJson) {
+        if (contextJson == null) return;
+        if (!contextJson.equals(latestGeminiContextJson)) {
+            contextUpdateRetryCount = 0;
+        }
+        latestGeminiContextJson = contextJson;
+        cancelPendingGeminiContextRetry();
+        enqueueLatestGeminiContextUpdate();
+    }
+
+    private void enqueueLatestGeminiContextUpdate() {
         LiveSessionFutures session = geminiSession;
-        if (!geminiConversationActive || session == null || contextJson == null) return;
+        String contextJson = latestGeminiContextJson;
+        if (!geminiConversationActive || session == null || contextJson == null || contextUpdateInFlight) return;
+        contextUpdateInFlight = true;
         try {
             JSONObject context = new JSONObject(contextJson);
             resetTeacherTurnState(context.optInt("turns", 0), context.optInt("maxTurns", 5));
@@ -386,18 +415,84 @@ public class MainActivity extends Activity {
             Futures.addCallback(sendFuture, new FutureCallback<Object>() {
                 @Override
                 public void onSuccess(Object result) {
-                    notifyGeminiStatus("context_updated", "先生が新しい単語に移動しました。");
+                    runOnUiThread(() -> {
+                        contextUpdateInFlight = false;
+                        contextUpdateRetryCount = 0;
+                        if (contextJson.equals(latestGeminiContextJson)) {
+                            notifyGeminiStatus("context_updated", "先生が新しい単語に移動しました。");
+                        } else {
+                            enqueueLatestGeminiContextUpdate();
+                        }
+                    });
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
-                    Log.w(GEMINI_TAG, "Could not update Gemini context", t);
-                    notifyGeminiStatus("error", "新しい単語を先生に伝えられませんでした: " + safeError(t));
+                    runOnUiThread(() -> {
+                        contextUpdateInFlight = false;
+                        if (!contextJson.equals(latestGeminiContextJson)) {
+                            enqueueLatestGeminiContextUpdate();
+                            return;
+                        }
+                        if (isContextUpdateCancellation(t)) {
+                            Log.i(GEMINI_TAG, "Gemini context update was cancelled; retrying latest context.", t);
+                            scheduleGeminiContextRetry();
+                        } else {
+                            Log.w(GEMINI_TAG, "Could not update Gemini context", t);
+                            notifyGeminiStatus("error", "新しい単語を先生に伝えられませんでした: " + safeError(t));
+                        }
+                    });
                 }
             }, geminiExecutor);
         } catch (JSONException e) {
+            contextUpdateInFlight = false;
             notifyGeminiStatus("error", "単語データを読み取れませんでした。");
+        } catch (Throwable t) {
+            contextUpdateInFlight = false;
+            if (isContextUpdateCancellation(t)) {
+                Log.i(GEMINI_TAG, "Gemini context update was cancelled before callback; retrying latest context.", t);
+                scheduleGeminiContextRetry();
+            } else {
+                Log.w(GEMINI_TAG, "Could not send Gemini context update", t);
+                notifyGeminiStatus("error", "新しい単語を先生に伝えられませんでした: " + safeError(t));
+            }
         }
+    }
+
+    private void scheduleGeminiContextRetry() {
+        if (!geminiConversationActive || geminiSession == null || latestGeminiContextJson == null) return;
+        if (contextUpdateRetryCount >= GEMINI_CONTEXT_MAX_RETRIES) {
+            Log.w(GEMINI_TAG, "Gemini context update retry limit reached; keeping Live session active.");
+            return;
+        }
+        contextUpdateRetryCount++;
+        cancelPendingGeminiContextRetry();
+        pendingContextRetry = () -> {
+            pendingContextRetry = null;
+            enqueueLatestGeminiContextUpdate();
+        };
+        geminiRetryHandler.postDelayed(pendingContextRetry, GEMINI_CONTEXT_RETRY_DELAY_MS);
+    }
+
+    private void cancelPendingGeminiContextRetry() {
+        if (pendingContextRetry != null) {
+            geminiRetryHandler.removeCallbacks(pendingContextRetry);
+            pendingContextRetry = null;
+        }
+    }
+
+    private void clearGeminiContextUpdateState() {
+        cancelPendingGeminiContextRetry();
+        latestGeminiContextJson = null;
+        contextUpdateInFlight = false;
+        contextUpdateRetryCount = 0;
+    }
+
+    private boolean isContextUpdateCancellation(Throwable t) {
+        if (t == null) return false;
+        if (t instanceof CancellationException) return true;
+        String error = safeError(t).toLowerCase(Locale.US);
+        return error.contains("task was cancelled") || error.contains("cancelled") || error.contains("canceled");
     }
 
     private void resetTeacherTurnState(int turns, int maxTurns) {
