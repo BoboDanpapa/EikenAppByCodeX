@@ -51,6 +51,7 @@ function buildPrompt(question, context) {
   const jp = cleanText(context.jp, 160);
   const enSent = cleanText(context.enSent, 240);
   const jpSent = cleanText(context.jpSent, 240);
+  const inputLanguage = cleanText(context.inputLanguage || "Japanese or English", 80);
   const turns = Number.isFinite(Number(context.turns)) ? Number(context.turns) : 0;
   const maxTurns = Number.isFinite(Number(context.maxTurns)) ? Number(context.maxTurns) : 5;
 
@@ -59,12 +60,15 @@ function buildPrompt(question, context) {
     "The student may ask in Japanese or English, but you must answer in English only.",
     "Only discuss English learning for the current vocabulary card: meaning, usage, pronunciation, example sentences, similar words, exam understanding, and simple practice.",
     "Do not chat casually. Do not answer unrelated questions. If the student goes off topic, say exactly: I am your English teacher. Let's talk about this word.",
+    "Answer the student's exact question first. Do not merely repeat the card definition unless the student asked for the meaning.",
+    "If the student's question is unclear because of speech transcription, briefly say what you understood and ask them to repeat it.",
     "Keep the answer brief, warm, and useful for a child. Use 1 to 3 short sentences.",
     `Current course: ${levelLabel}`,
     `Current word or phrase: ${word}`,
     `Japanese meaning for context only: ${jp}`,
     `Example sentence: ${enSent}`,
     `Japanese example meaning for context only: ${jpSent}`,
+    `Student selected input language: ${inputLanguage}`,
     `Current question count: ${turns} / ${maxTurns}`,
     `Student question: ${cleanText(question, 600)}`
   ].join("\n");
