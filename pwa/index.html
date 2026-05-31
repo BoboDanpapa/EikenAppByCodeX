@@ -117,6 +117,7 @@
         .teacher-time-row { display: flex; justify-content: space-between; gap: 10px; }
         .teacher-status { background: var(--soft-bg); border-radius: 14px; color: var(--text-main); font-size: 13px; line-height: 1.35; font-weight: bold; padding: 10px 12px; margin-bottom: 12px; }
         .teacher-controls { justify-content: flex-start; gap: 8px; }
+        .teacher-language-select { min-height: 38px; border: 2px solid #90caf9; border-radius: 18px; background: #fff; color: #1565c0; font-family: inherit; font-size: 13px; font-weight: bold; padding: 7px 10px; }
         .btn-teacher-mic, .btn-teacher-stop { min-height: 38px; padding: 8px 14px; border-radius: 18px; font-size: 13px; }
         .btn-teacher-mic { background-color: #b3e5fc; color: #0277bd; box-shadow: 0 4px 0 #4fc3f7; }
         .btn-teacher-stop { background-color: #eeeeee; color: #666; box-shadow: 0 4px 0 #cfcfcf; }
@@ -313,6 +314,10 @@
             </div>
             <div id="teacher-status" class="teacher-status">日本語でも英語でも質問できるよ。先生は英語で答えるよ。</div>
             <div class="row teacher-controls">
+                <select id="teacher-language-select" class="teacher-language-select" onchange="setTeacherRecognitionLanguage(event)">
+                    <option value="ja-JP">日本語</option>
+                    <option value="en-US">English</option>
+                </select>
                 <button id="btn-teacher-mic" class="jelly-btn btn-teacher-mic" onclick="askTeacherDemo(event)">マイク</button>
             </div>
         </div>
@@ -401,7 +406,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.17</div>
+<div class="version-badge">v1.1.18</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -462,7 +467,6 @@ let teacherTickSaveCounter = 0;
 let teacherRecognition = null;
 let teacherShouldKeepListening = false;
 let teacherRecognitionRestartId = null;
-let teacherRecognitionRetryRequested = false;
 let teacherSpeaking = false;
 let teacherAnswerInFlight = false;
 let teacherGeminiBackendUnavailable = false;
@@ -478,7 +482,7 @@ const TEACHER_LOW_CONFIDENCE_THRESHOLD = 0.45;
 const TEACHER_MAX_QUESTIONS = 5;
 const TEACHER_WORD_LIMIT_SECONDS = 20 * 60;
 const TEACHER_DAILY_LIMIT_SECONDS = 60 * 60;
-const TEACHER_READY_STATUS = "日本語でも英語でも質問できるよ。先生は英語で答えるよ。";
+const TEACHER_READY_STATUS = "日本語かEnglishを選んでから質問してね。先生は英語で答えるよ。";
 
 function defaultCourseProgress() {
     return {
@@ -876,6 +880,7 @@ function renderTeacherDemo() {
     const dayRemaining = document.getElementById("teacher-day-remaining");
     const status = document.getElementById("teacher-status");
     const mic = document.getElementById("btn-teacher-mic");
+    const languageSelect = document.getElementById("teacher-language-select");
     if (!level || !turns || !status || !mic) return;
 
     level.innerText = getTeacherLevelLabel();
@@ -887,6 +892,7 @@ function renderTeacherDemo() {
     const wordLimitReached = teacherWordSeconds >= TEACHER_WORD_LIMIT_SECONDS;
     const dailyLimitReached = getTeacherDailyRemainingSeconds() <= 0;
     mic.disabled = teacherListening || questionLimitReached || wordLimitReached || dailyLimitReached;
+    if (languageSelect) languageSelect.disabled = teacherListening;
     if (dailyLimitReached) {
         status.innerText = "今日の先生時間を使い切りました。また明日使おう！";
     } else if (wordLimitReached) {
@@ -904,7 +910,6 @@ function resetTeacherPanelForWord() {
     teacherTurns = 0;
     teacherListening = false;
     teacherShouldKeepListening = false;
-    teacherRecognitionRetryRequested = false;
     teacherSpeaking = false;
     teacherAnswerInFlight = false;
     teacherContextSentKey = null;
@@ -1004,11 +1009,20 @@ function getSpeechRecognitionConstructor() {
 }
 
 function getTeacherRecognitionLanguage() {
+    const select = document.getElementById("teacher-language-select");
+    const selected = select ? select.value : "";
+    if (TEACHER_RECOGNITION_LANGUAGES.includes(selected)) return selected;
     return TEACHER_RECOGNITION_LANGUAGES[teacherRecognitionLanguageIndex % TEACHER_RECOGNITION_LANGUAGES.length];
 }
 
-function rotateTeacherRecognitionLanguage() {
-    teacherRecognitionLanguageIndex = (teacherRecognitionLanguageIndex + 1) % TEACHER_RECOGNITION_LANGUAGES.length;
+function setTeacherRecognitionLanguage(event) {
+    const selected = event && event.target ? event.target.value : "";
+    const index = TEACHER_RECOGNITION_LANGUAGES.indexOf(selected);
+    if (index >= 0) teacherRecognitionLanguageIndex = index;
+    const status = document.getElementById("teacher-status");
+    if (status && !teacherListening) {
+        status.innerText = `${getTeacherRecognitionLanguageLabel(getTeacherRecognitionLanguage())}で質問してください。先生は英語で答えます。`;
+    }
 }
 
 function getTeacherRecognitionLanguageLabel(lang) {
@@ -1019,8 +1033,6 @@ function shouldRetryTeacherRecognition(finalText, confidence, lang) {
     const text = String(finalText || "").trim();
     if (!text) return true;
     if (confidence && confidence < TEACHER_LOW_CONFIDENCE_THRESHOLD) return true;
-    if (lang === "en-US" && /[\u3040-\u30ff\u3400-\u9fff]/.test(text)) return true;
-    if (lang === "ja-JP" && /^[a-z][a-z\s'?.!,;-]*$/i.test(text) && text.split(/\s+/).length >= 3) return false;
     return false;
 }
 
@@ -1060,7 +1072,6 @@ function startTeacherRecognitionCycle(status) {
     teacherRecognition = recognition;
     teacherRecognitionHeardText = "";
     teacherRecognitionHeardConfidence = 0;
-    teacherRecognitionRetryRequested = false;
     const recognitionLanguage = getTeacherRecognitionLanguage();
     recognition.lang = recognitionLanguage;
     recognition.interimResults = true;
@@ -1096,11 +1107,9 @@ function startTeacherRecognitionCycle(status) {
         }
         if (finalText) {
             if (shouldRetryTeacherRecognition(finalText, finalConfidence, recognitionLanguage)) {
-                rotateTeacherRecognitionLanguage();
                 teacherRecognitionHeardText = "";
                 teacherRecognitionHeardConfidence = 0;
-                teacherRecognitionRetryRequested = true;
-                if (status) status.innerText = "うまく聞き取れませんでした。もう一度同じ質問を話してください。";
+                if (status) status.innerText = `${getTeacherRecognitionLanguageLabel(recognitionLanguage)}としてうまく聞き取れませんでした。言語を確認して、もう一度同じ質問を話してください。`;
                 try {
                     recognition.stop();
                 } catch (error) {
@@ -1116,9 +1125,6 @@ function startTeacherRecognitionCycle(status) {
 
     recognition.onerror = event => {
         teacherRecognition = null;
-        if (event.error === "no-speech" || event.error === "network" || event.error === "audio-capture") {
-            rotateTeacherRecognitionLanguage();
-        }
         if (event.error === "not-allowed" || event.error === "service-not-allowed") {
             teacherShouldKeepListening = false;
             teacherListening = false;
@@ -1134,14 +1140,9 @@ function startTeacherRecognitionCycle(status) {
 
     recognition.onend = () => {
         teacherRecognition = null;
-        if (teacherRecognitionRetryRequested) {
-            teacherRecognitionRetryRequested = false;
-        } else if (!teacherRecognitionHeardText) {
-            rotateTeacherRecognitionLanguage();
-        }
         if (canContinueBrowserTeacherListening()) {
             if (status && !teacherRecognitionHeardText) {
-                status.innerText = "聞いています。日本語でも英語でも質問できます。";
+                status.innerText = `${getTeacherRecognitionLanguageLabel(getTeacherRecognitionLanguage())}で聞いています。`;
             }
             scheduleTeacherRecognitionRestart(status);
         } else {
