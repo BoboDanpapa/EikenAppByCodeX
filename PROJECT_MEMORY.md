@@ -44,6 +44,7 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.20`: Fixed PWA teacher answer playback being cut off. A browser microphone attempt now stops after one complete question, waits for teacher TTS playback to finish, and only then re-enables the mic; PWA must not auto-restart speech recognition while teacher TTS is speaking. Worker answer budget increased to reduce truncated Gemini text.
 - `v1.1.21`: Added PWA teacher incomplete-answer protection. If Gemini returns an apparently unfinished sentence, the PWA must reject it and use the local fallback instead of showing a half answer. The fallback includes explicit handling for `反対言葉` / `opposite`, including `a lot of` -> `a few` / `a little`.
 - `v1.1.22`: Added per-word PWA teacher conversation memory. The PWA keeps recent student/teacher turns for the current word and sends them to the backend with each question so follow-up questions can refer to earlier answers. This memory resets when the study word changes and should not cross words/courses.
+- `v1.1.23`: Fixed repeated example answers in the PWA teacher. When the student asks for another/new/different example sentence, the backend prompt must not reuse the card's original example, and the PWA must reject Gemini answers that repeat the original example and use a new-example fallback instead.
 - PWA teacher panel should not display the `のこり` remaining-time row; keep the daily limit internally, but only show current-card time and today's used teacher time.
 
 ## Important Behavior
@@ -68,6 +69,7 @@ Current design for `先生に聞く`:
 - PWA/Web teacher audio playback must finish before any new recognition starts. Do not call `speechSynthesis.cancel()` or restart recognition while `teacherSpeaking` / `teacherAnswerInFlight` is true; one microphone press should capture one question, play one complete answer, then re-enable the mic.
 - PWA/Web teacher must never display a half sentence from Gemini. Validate backend answers before displaying or speaking them; if the answer looks incomplete, fall back to deterministic local guidance for the current word/question.
 - PWA/Web text-backend teacher must include recent same-word conversation history in backend requests. Keep the history short, current-word-only, and reset it on word changes; use it so the 5 allowed questions behave like one short conversation rather than five isolated Gemini calls.
+- When the student asks for another/new/different example sentence, the PWA/Web teacher must generate a new example using the current word. Do not repeat the card's original `enSent`; validate Gemini answers and fall back if they reuse it.
 - The Live session is kept alive across word changes to reduce reconnects. Pressing `前へ` / `次へ` must not send the new word to Gemini.
 - Lazy context update is intentional: the app sends the current word to Gemini only when the user opens `先生に聞く` for that card, or when starting a new conversation from `マイク`.
 - Avoid duplicate context updates. If the current word context was already sent after opening `先生に聞く`, pressing `マイク` must not send the same word again and must not trigger a second Gemini confirmation.

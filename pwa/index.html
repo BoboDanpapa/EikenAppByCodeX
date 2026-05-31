@@ -405,7 +405,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.22</div>
+<div class="version-badge">v1.1.23</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -1287,8 +1287,23 @@ function normalizeTeacherQuestion(value) {
 
 async function buildBrowserTeacherAnswer(questionText) {
     const geminiAnswer = await fetchGeminiTeacherAnswer(questionText);
-    if (geminiAnswer && isCompleteTeacherAnswer(geminiAnswer)) return geminiAnswer;
+    if (geminiAnswer && isCompleteTeacherAnswer(geminiAnswer) && !shouldRejectTeacherAnswer(questionText, geminiAnswer)) return geminiAnswer;
     return buildFallbackTeacherAnswer(questionText);
+}
+
+function normalizeTeacherText(value) {
+    return String(value || "").toLowerCase().replace(/["'“”‘’.,!?;:]/g, "").replace(/\s+/g, " ").trim();
+}
+
+function isNewExampleRequest(questionText) {
+    const q = String(questionText || "").toLowerCase();
+    return /(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new).*(例文|例|sentence|example)|(例文|例|sentence|example).*(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new)/.test(q);
+}
+
+function shouldRejectTeacherAnswer(questionText, answerText) {
+    const context = getTeacherContext();
+    if (!isNewExampleRequest(questionText)) return false;
+    return normalizeTeacherText(answerText).includes(normalizeTeacherText(context.enSent));
 }
 
 function isCompleteTeacherAnswer(answer) {
@@ -1346,7 +1361,7 @@ function buildFallbackTeacherAnswer(questionText) {
         return `Let's say it slowly: ${context.word}. ${context.word}. Now try it with me.`;
     }
     if (wantsExample) {
-        return `Here is a good example: ${context.enSent}`;
+        return buildNewExampleFallback(context);
     }
     if (wantsDifference) {
         return `${context.word} means "${context.jp}". Tell me the other word, and I can help you compare them.`;
@@ -1361,6 +1376,18 @@ function buildFallbackTeacherAnswer(questionText) {
         return `${context.word} means "${context.jp}" in Japanese. You can remember it with this sentence: ${context.enSent}`;
     }
     return `I heard your question about ${context.word}. For this word, a useful point is: ${context.enSent}`;
+}
+
+function buildNewExampleFallback(context) {
+    const word = String(context.word || "").trim();
+    const lower = word.toLowerCase();
+    if (lower === "a lot of") {
+        return `Here is another example: We saw a lot of stars in the sky.`;
+    }
+    if (lower === "depend on") {
+        return `Here is another example: I depend on my alarm clock every morning.`;
+    }
+    return `Here is another example: I can use "${word}" in my English homework.`;
 }
 
 function speakTeacherAnswer(answer) {
