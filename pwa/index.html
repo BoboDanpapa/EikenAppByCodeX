@@ -405,7 +405,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.20</div>
+<div class="version-badge">v1.1.21</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -1272,8 +1272,17 @@ function normalizeTeacherQuestion(value) {
 
 async function buildBrowserTeacherAnswer(questionText) {
     const geminiAnswer = await fetchGeminiTeacherAnswer(questionText);
-    if (geminiAnswer) return geminiAnswer;
+    if (geminiAnswer && isCompleteTeacherAnswer(geminiAnswer)) return geminiAnswer;
     return buildFallbackTeacherAnswer(questionText);
+}
+
+function isCompleteTeacherAnswer(answer) {
+    const text = String(answer || "").trim();
+    if (!text) return false;
+    if (/[.!?。！？]$/.test(text)) return true;
+    if (/[,:;]$/.test(text)) return false;
+    if (/["'“‘]$/.test(text) && !/[.!?。！？]["'”’]$/.test(text)) return false;
+    return !/\b(a|an|and|are|as|because|for|from|in|is|of|or|the|to|with|without|means)$/i.test(text);
 }
 
 function getGeminiBackendUrl() {
@@ -1312,6 +1321,7 @@ function buildFallbackTeacherAnswer(questionText) {
     const wantsExample = /例文|例|sentence|example|使い方|use|使う/.test(q);
     const wantsPronunciation = /発音|読み|よみ|pronounce|pronunciation|read|say/.test(q);
     const wantsDifference = /違い|ちがい|similar|difference|different|同じ|似/.test(q);
+    const wantsOpposite = /反対|反対語|反対言葉|逆|opposite|antonym/.test(q);
     const wantsJapanese = /日本語|和訳|訳|translate|翻訳/.test(q);
 
     if (offTopic) {
@@ -1325,6 +1335,12 @@ function buildFallbackTeacherAnswer(questionText) {
     }
     if (wantsDifference) {
         return `${context.word} means "${context.jp}". Tell me the other word, and I can help you compare them.`;
+    }
+    if (wantsOpposite) {
+        if (context.word.toLowerCase() === "a lot of") {
+            return `The opposite of "a lot of" is "a few" for countable things, or "a little" for uncountable things. For books, say "a few books."`;
+        }
+        return `An opposite for ${context.word} depends on the sentence. Tell me the sentence, and I can help you choose a good opposite.`;
     }
     if (wantsMeaning || wantsJapanese) {
         return `${context.word} means "${context.jp}" in Japanese. You can remember it with this sentence: ${context.enSent}`;

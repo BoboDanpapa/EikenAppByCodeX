@@ -62,7 +62,8 @@ function buildPrompt(question, context) {
     "Do not chat casually. Do not answer unrelated questions. If the student goes off topic, say exactly: I am your English teacher. Let's talk about this word.",
     "Answer the student's exact question first. Do not merely repeat the card definition unless the student asked for the meaning.",
     "If the student's question is unclear because of speech transcription, briefly say what you understood and ask them to repeat it.",
-    "Keep the answer brief, warm, and useful for a child. Use 1 to 3 short sentences.",
+    "Keep the answer brief, warm, and useful for a child. Use 1 to 3 complete short sentences.",
+    "Never end with an unfinished phrase. Finish the final sentence with punctuation.",
     `Current course: ${levelLabel}`,
     `Current word or phrase: ${word}`,
     `Japanese meaning for context only: ${jp}`,
@@ -99,7 +100,7 @@ async function askGemini(question, context, env) {
       ],
       generationConfig: {
         temperature: 0.35,
-        maxOutputTokens: 240
+        maxOutputTokens: 320
       }
     })
   });
@@ -109,6 +110,9 @@ async function askGemini(question, context, env) {
       error: data?.error?.message || `Gemini request failed with ${response.status}`,
       status: response.status
     };
+  }
+  if (data?.candidates?.[0]?.finishReason === "MAX_TOKENS") {
+    return { error: "Gemini answer was truncated", status: 502 };
   }
   const answer = extractGeminiText(data);
   if (!answer) return { error: "Gemini returned an empty answer", status: 502 };
