@@ -6,6 +6,7 @@
 
 - Original web demo: `EikenStudy.html`
 - PWA build: `pwa/`
+- PWA Gemini backend: `pwa-backend/`
 - Android WebView app source: `android-app/`
 - Vocabulary data: `eiken_grade2_words.js` and Android asset copy
 - Additional 500-entry vocabulary data: `eiken_grade4_words.js`, `eiken_grade3_words.js`, `eiken_pre1_words.js`, `eiken_grade1_words.js`
@@ -52,6 +53,7 @@ The `pwa/` directory is a self-contained Progressive Web App version of the late
 - `eiken_grade2_words.js` / `eiken_pre1_words.js` / `eiken_grade1_words.js`
 - `images/`
 - `icons/`
+- optional `backend-config.js` for the Gemini teacher backend URL
 
 To test locally:
 
@@ -61,6 +63,22 @@ python3 -m http.server 8766
 ```
 
 Then open `http://localhost:8766/index.html`. For public use, deploy the contents of `pwa/` to any HTTPS static host. PWA installation and service worker caching require HTTPS, except on localhost.
+
+## PWA Gemini Backend
+
+The PWA cannot safely store a Gemini API key in browser-visible files. Use `pwa-backend/` as a Cloudflare Worker API for the PWA teacher:
+
+```sh
+cd pwa-backend
+npm install
+npx wrangler login
+npx wrangler secret put GEMINI_API_KEY
+npm run deploy
+```
+
+These commands assume only that you already have a Cloudflare account. Wrangler will create/deploy the Worker from `pwa-backend/wrangler.toml`.
+
+After deploying the Worker, set `window.EIKEN_GEMINI_BACKEND_URL` in `pwa/backend-config.js`. The PWA calls `/api/teacher/ask` on that backend and falls back to the offline teacher when the backend is not configured.
 
 ## Android Build Notes
 

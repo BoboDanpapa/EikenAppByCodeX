@@ -37,6 +37,7 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.13`: Added Gemini teacher usage limits: 5 questions per word via Live transcription callbacks, 20 minutes per word, 60 minutes per user per local day, and visible teacher time counters. The current Android implementation still keeps lazy context updates so words are sent to Gemini only when the teacher panel is opened.
 - `v1.1.14`: Added 英検4級・3級・準1級・1級 to the course selector, synced all six courses to Android/PWA assets, and kept user progress separated per course.
 - `v1.1.15`: PWA teacher listening fix: removed the manual language selector, removed Chinese from teacher input requirements, internally alternates English/Japanese browser speech recognition, only final speech recognition results may trigger answers/counting, and PWA/Web teacher rules remain current-card-only with Japanese/English student questions and English teacher answers.
+- `v1.1.16`: Added the PWA Gemini backend integration path. The static PWA reads `window.EIKEN_GEMINI_BACKEND_URL` from `pwa/backend-config.js` and calls `/api/teacher/ask`; the new `pwa-backend/` Cloudflare Worker keeps `GEMINI_API_KEY` in a Worker secret and applies the same current-card-only teacher rules. If no backend URL is configured, PWA falls back to the local offline teacher.
 
 ## Important Behavior
 
@@ -81,6 +82,9 @@ PWA note:
 
 - This design depends on Android native bridges (`AndroidGemini`) and Firebase Android Live APIs. It does not directly work in browser/PWA. A real PWA teacher needs a separate browser-compatible Gemini backend/design.
 - PWA/Web implementations must still preserve the same product rules: current-card-only help, refusal of casual/off-topic chat, student questions in Japanese or English, and teacher answers in English.
+- Do not put Gemini API keys into `pwa/`, GitHub Pages, or any browser-visible JavaScript. PWA Gemini access must go through a server-side backend such as the Cloudflare Worker in `pwa-backend/`, configured from `pwa/backend-config.js`.
+- For the first PWA Gemini backend rollout, it is acceptable to reuse the same Gemini API key as the APK/Firebase setup by storing it only as the Worker secret `GEMINI_API_KEY`. After the PWA teacher is stable, remind the user to create a separate PWA backend key for separate quota, monitoring, and revocation.
+- The current PWA backend target is text question/answer first. If text Q&A does not meet the user's goal of APK-equivalent teacher behavior, remind the user to continue with a Web Live audio backend plan.
 
 ## Vocabulary Ordering Rule
 
@@ -120,6 +124,7 @@ Every time a new APK is generated:
 - PWA user progress is local to each browser/device/origin via web storage. It is not a shared cloud database.
 - A custom domain is optional. The GitHub Pages URL is enough for sharing with friends at the current stage.
 - In the PWA browser environment, Android native bridges such as `AndroidTTS` and `AndroidGemini` are not available. PWA pronunciation uses the browser Web Speech API (`speechSynthesis`) when supported, and should show a friendly unsupported-browser message otherwise. A real PWA AI teacher needs a separate Web/API backend or another browser-compatible design.
+- PWA Gemini backend rollout order: first ship text Q&A through the Cloudflare Worker in `pwa-backend/` using the Worker secret `GEMINI_API_KEY`; later revisit true Live audio if the text flow is not enough.
 - APK release conventions remain separate from PWA deployment.
 
 ## Build Command

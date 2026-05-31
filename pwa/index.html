@@ -405,8 +405,12 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.15</div>
+<div class="version-badge">v1.1.16</div>
 
+<script src="backend-config.js"></script>
+<script>
+window.EIKEN_GEMINI_BACKEND_URL = window.EIKEN_GEMINI_BACKEND_URL || "";
+</script>
 <script src="eiken_grade4_words.js"></script>
 <script src="eiken_grade3_words.js"></script>
 <script src="eiken_pre2_words.js"></script>
@@ -463,6 +467,8 @@ let teacherRecognition = null;
 let teacherShouldKeepListening = false;
 let teacherRecognitionRestartId = null;
 let teacherSpeaking = false;
+let teacherAnswerInFlight = false;
+let teacherGeminiBackendUnavailable = false;
 let teacherRecognitionLanguageIndex = 0;
 let teacherRecognitionHeardText = "";
 let teacherLastAnsweredText = "";
@@ -899,6 +905,7 @@ function resetTeacherPanelForWord() {
     teacherListening = false;
     teacherShouldKeepListening = false;
     teacherSpeaking = false;
+    teacherAnswerInFlight = false;
     teacherContextSentKey = null;
     teacherWordSeconds = 0;
     teacherRecognitionHeardText = "";
@@ -1157,19 +1164,22 @@ function askTeacherByText(e) {
     renderTeacherDemo();
 }
 
-function answerBrowserTeacherQuestion(questionText) {
+async function answerBrowserTeacherQuestion(questionText) {
     const cleanedQuestion = String(questionText || "").trim();
-    if (!cleanedQuestion || cleanedQuestion === teacherLastAnsweredText) return;
+    if (!cleanedQuestion || cleanedQuestion === teacherLastAnsweredText || teacherAnswerInFlight) return;
+    teacherAnswerInFlight = true;
     teacherLastAnsweredText = cleanedQuestion;
     countTeacherQuestionOnce(cleanedQuestion);
-    const answer = buildBrowserTeacherAnswer(cleanedQuestion);
     teacherSpeaking = true;
     pauseTeacherRecognitionForAnswer();
     const status = document.getElementById("teacher-status");
+    if (status) status.innerText = `聞こえました: ${cleanedQuestion}\n先生が考えています...`;
+    const answer = await buildBrowserTeacherAnswer(cleanedQuestion);
     if (status) {
         status.innerText = `聞こえました: ${cleanedQuestion}\n先生: ${answer}`;
     }
     speakTeacherAnswer(answer);
+    teacherAnswerInFlight = false;
 }
 
 function countTeacherQuestionOnce(questionText) {
@@ -1191,7 +1201,41 @@ function normalizeTeacherQuestion(value) {
     return String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
 }
 
-function buildBrowserTeacherAnswer(questionText) {
+async function buildBrowserTeacherAnswer(questionText) {
+    const geminiAnswer = await fetchGeminiTeacherAnswer(questionText);
+    if (geminiAnswer) return geminiAnswer;
+    return buildFallbackTeacherAnswer(questionText);
+}
+
+function getGeminiBackendUrl() {
+    const configured = window.EIKEN_GEMINI_BACKEND_URL || localStorage.getItem("eikenGeminiBackendUrl") || "";
+    return String(configured || "").trim().replace(/\/+$/, "");
+}
+
+async function fetchGeminiTeacherAnswer(questionText) {
+    const baseUrl = getGeminiBackendUrl();
+    if (!baseUrl || teacherGeminiBackendUnavailable) return "";
+    try {
+        const response = await fetch(`${baseUrl}/api/teacher/ask`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                question: questionText,
+                context: getTeacherContext()
+            })
+        });
+        if (!response.ok) throw new Error(`backend ${response.status}`);
+        const data = await response.json();
+        return String(data.answer || "").trim();
+    } catch (error) {
+        teacherGeminiBackendUnavailable = true;
+        const status = document.getElementById("teacher-status");
+        if (status) status.innerText = "Gemini先生につながりません。今はオフライン先生で答えます。";
+        return "";
+    }
+}
+
+function buildFallbackTeacherAnswer(questionText) {
     const context = getTeacherContext();
     const q = String(questionText || "").toLowerCase();
     const offTopic = /天気|ゲーム|冗談|歌|ニュース|政治|weather|game|joke|song|news|politics|chat/.test(q);
@@ -1258,6 +1302,7 @@ function stopBrowserTeacherSpeech() {
         teacherRecognitionRestartId = null;
     }
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    teacherAnswerInFlight = false;
     if (!teacherRecognition) return;
     const recognition = teacherRecognition;
     teacherRecognition = null;

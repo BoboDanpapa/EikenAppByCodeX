@@ -1,0 +1,7 @@
+name = "eiken-magicwords-pwa-backend"
+main = "src/worker.js"
+compatibility_date = "2026-05-31"
+
+[vars]
+GEMINI_MODEL = "gemini-2.5-flash"
+ALLOWED_ORIGINS = "https://bobodanpapa.github.io,http://localhost:8766,http://127.0.0.1:8766"
