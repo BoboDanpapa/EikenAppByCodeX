@@ -48,11 +48,12 @@ This file records durable project context for future Codex sessions. Read this b
 
 ## Gemini Live Teacher Control Design
 
-Current Android-only design for `先生に聞く`:
+Current design for `先生に聞く`:
 
 - The Gemini Live model remains `gemini-2.5-flash-native-audio-preview-12-2025` through Firebase AI Logic with `ResponseModality.AUDIO`.
 - The teacher must answer only in English. Students may ask in Japanese or English.
 - The teacher is restricted to English-learning help for the current card: meaning, usage, examples, pronunciation, similar words, and exam understanding. It must refuse casual/off-topic chat.
+- These scope and language rules apply to both Android Gemini Live and PWA/Web teacher implementations. Do not regress the PWA/Web teacher into Japanese-only recognition; keep Japanese and English question input available, such as with a language selector or equivalent browser-compatible design.
 - The Live session is kept alive across word changes to reduce reconnects. Pressing `前へ` / `次へ` must not send the new word to Gemini.
 - Lazy context update is intentional: the app sends the current word to Gemini only when the user opens `先生に聞く` for that card, or when starting a new conversation from `マイク`.
 - Avoid duplicate context updates. If the current word context was already sent after opening `先生に聞く`, pressing `マイク` must not send the same word again and must not trigger a second Gemini confirmation.
@@ -78,6 +79,7 @@ Question counting notes:
 PWA note:
 
 - This design depends on Android native bridges (`AndroidGemini`) and Firebase Android Live APIs. It does not directly work in browser/PWA. A real PWA teacher needs a separate browser-compatible Gemini backend/design.
+- PWA/Web implementations must still preserve the same product rules: current-card-only help, refusal of casual/off-topic chat, student questions in Japanese or English, and teacher answers in English.
 
 ## Vocabulary Ordering Rule
 
