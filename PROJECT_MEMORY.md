@@ -36,6 +36,7 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.10`: Added the settings entry, visible app version badge, theme selection demo, and teacher safety settings display. The alternate theme is `Navy + Sky`; settings persist in local storage.
 - `v1.1.13`: Added Gemini teacher usage limits: 5 questions per word via Live transcription callbacks, 20 minutes per word, 60 minutes per user per local day, and visible teacher time counters. The current Android implementation still keeps lazy context updates so words are sent to Gemini only when the teacher panel is opened.
 - `v1.1.14`: Added 英検4級・3級・準1級・1級 to the course selector, synced all six courses to Android/PWA assets, and kept user progress separated per course.
+- `v1.1.15`: PWA teacher listening fix: removed the manual language selector, removed Chinese from teacher input requirements, internally alternates English/Japanese browser speech recognition, only final speech recognition results may trigger answers/counting, and PWA/Web teacher rules remain current-card-only with Japanese/English student questions and English teacher answers.
 
 ## Important Behavior
 
@@ -53,7 +54,7 @@ Current design for `先生に聞く`:
 - The Gemini Live model remains `gemini-2.5-flash-native-audio-preview-12-2025` through Firebase AI Logic with `ResponseModality.AUDIO`.
 - The teacher must answer only in English. Students may ask in Japanese or English.
 - The teacher is restricted to English-learning help for the current card: meaning, usage, examples, pronunciation, similar words, and exam understanding. It must refuse casual/off-topic chat.
-- These scope and language rules apply to both Android Gemini Live and PWA/Web teacher implementations. Do not regress the PWA/Web teacher into Japanese-only recognition; keep Japanese and English question input available, such as with a language selector or equivalent browser-compatible design.
+- These scope and language rules apply to both Android Gemini Live and PWA/Web teacher implementations. Do not regress the PWA/Web teacher into Japanese-only recognition; keep Japanese and English question input available without exposing a manual language selector in the teacher UI. Chinese input is not a supported teacher requirement.
 - The Live session is kept alive across word changes to reduce reconnects. Pressing `前へ` / `次へ` must not send the new word to Gemini.
 - Lazy context update is intentional: the app sends the current word to Gemini only when the user opens `先生に聞く` for that card, or when starting a new conversation from `マイク`.
 - Avoid duplicate context updates. If the current word context was already sent after opening `先生に聞く`, pressing `マイク` must not send the same word again and must not trigger a second Gemini confirmation.
