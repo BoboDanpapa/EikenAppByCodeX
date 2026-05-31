@@ -314,10 +314,6 @@
             <div id="teacher-status" class="teacher-status">日本語でも英語でも質問できるよ。先生は英語で答えるよ。</div>
             <div class="row teacher-controls">
                 <button id="btn-teacher-mic" class="jelly-btn btn-teacher-mic" onclick="askTeacherDemo(event)">マイク</button>
-                <div class="teacher-text-row">
-                    <input id="teacher-text-question" type="text" maxlength="120" placeholder="文字で質問">
-                    <button class="jelly-btn btn-teacher-mic" onclick="askTeacherByText(event)">質問</button>
-                </div>
             </div>
         </div>
         <div class="pager">
@@ -1013,7 +1009,7 @@ function rotateTeacherRecognitionLanguage() {
 function startBrowserTeacherSpeech(status) {
     if (!window.isSecureContext) {
         if (status) {
-            status.innerText = "マイクはHTTPSのページで使えます。今のローカルHTTPテストでは、下の「文字で質問」で先生の回答を確認してください。";
+            status.innerText = "マイクはHTTPSのページで使えます。GitHub Pages版、またはHTTPSのページで試してください。";
         }
         renderTeacherDemo();
         return;
