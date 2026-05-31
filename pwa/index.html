@@ -310,7 +310,6 @@
                 <div>質問: <span id="teacher-turns">0 / 5</span></div>
                 <div class="teacher-time-row"><span>この単語</span><span id="teacher-word-time">0:00 / 20:00</span></div>
                 <div class="teacher-time-row"><span>今日</span><span id="teacher-day-time">0:00 / 60:00</span></div>
-                <div class="teacher-time-row"><span>のこり</span><span id="teacher-day-remaining">60:00</span></div>
             </div>
             <div id="teacher-status" class="teacher-status">日本語でも英語でも質問できるよ。先生は英語で答えるよ。</div>
             <div class="row teacher-controls">
@@ -406,7 +405,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.19</div>
+<div class="version-badge">v1.1.20</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -878,7 +877,6 @@ function renderTeacherDemo() {
     const turns = document.getElementById("teacher-turns");
     const wordTime = document.getElementById("teacher-word-time");
     const dayTime = document.getElementById("teacher-day-time");
-    const dayRemaining = document.getElementById("teacher-day-remaining");
     const status = document.getElementById("teacher-status");
     const mic = document.getElementById("btn-teacher-mic");
     const languageSelect = document.getElementById("teacher-language-select");
@@ -888,12 +886,11 @@ function renderTeacherDemo() {
     turns.innerText = `${teacherTurns} / ${TEACHER_MAX_QUESTIONS}`;
     if (wordTime) wordTime.innerText = `${formatTeacherTime(teacherWordSeconds)} / ${formatTeacherTime(TEACHER_WORD_LIMIT_SECONDS)}`;
     if (dayTime) dayTime.innerText = `${formatTeacherTime(getTeacherDailyUsedSeconds())} / ${formatTeacherTime(TEACHER_DAILY_LIMIT_SECONDS)}`;
-    if (dayRemaining) dayRemaining.innerText = formatTeacherTime(getTeacherDailyRemainingSeconds());
     const questionLimitReached = teacherTurns >= TEACHER_MAX_QUESTIONS;
     const wordLimitReached = teacherWordSeconds >= TEACHER_WORD_LIMIT_SECONDS;
     const dailyLimitReached = getTeacherDailyRemainingSeconds() <= 0;
-    mic.disabled = teacherListening || questionLimitReached || wordLimitReached || dailyLimitReached;
-    if (languageSelect) languageSelect.disabled = teacherListening;
+    mic.disabled = teacherListening || teacherSpeaking || teacherAnswerInFlight || questionLimitReached || wordLimitReached || dailyLimitReached;
+    if (languageSelect) languageSelect.disabled = teacherListening || teacherSpeaking || teacherAnswerInFlight;
     if (dailyLimitReached) {
         status.innerText = "今日の先生時間を使い切りました。また明日使おう！";
     } else if (wordLimitReached) {
@@ -1162,6 +1159,7 @@ function startTeacherRecognitionCycle(status) {
             }
             teacherPendingStudentQuestion = finalQuestion;
             teacherAnswerSeenForPendingQuestion = false;
+            teacherShouldKeepListening = false;
             answerBrowserTeacherQuestion(finalQuestion);
             renderTeacherDemo();
             return;
@@ -1246,8 +1244,11 @@ async function answerBrowserTeacherQuestion(questionText) {
     if (status) {
         status.innerText = `聞こえました: ${cleanedQuestion}\n先生: ${answer}`;
     }
-    speakTeacherAnswer(answer);
+    await speakTeacherAnswer(answer);
+    teacherListening = false;
+    stopTeacherTimer(true);
     teacherAnswerInFlight = false;
+    renderTeacherDemo();
 }
 
 function countTeacherQuestionOnce(questionText) {
@@ -1334,9 +1335,9 @@ function buildFallbackTeacherAnswer(questionText) {
 function speakTeacherAnswer(answer) {
     if (!("speechSynthesis" in window)) {
         teacherSpeaking = false;
-        scheduleTeacherRecognitionRestart(document.getElementById("teacher-status"));
-        return;
+        return Promise.resolve();
     }
+    return new Promise(resolve => {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(answer);
     utterance.lang = "en-US";
@@ -1346,11 +1347,12 @@ function speakTeacherAnswer(answer) {
         if (finished) return;
         finished = true;
         teacherSpeaking = false;
-        scheduleTeacherRecognitionRestart(document.getElementById("teacher-status"));
+        resolve();
     };
     utterance.onend = finish;
     utterance.onerror = finish;
     window.speechSynthesis.speak(utterance);
+    });
 }
 
 function pauseTeacherRecognitionForAnswer() {

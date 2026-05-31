@@ -99,7 +99,7 @@ async function askGemini(question, context, env) {
       ],
       generationConfig: {
         temperature: 0.35,
-        maxOutputTokens: 160
+        maxOutputTokens: 240
       }
     })
   });
