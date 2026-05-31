@@ -405,7 +405,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.21</div>
+<div class="version-badge">v1.1.22</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -476,10 +476,12 @@ let teacherLastAnsweredText = "";
 let teacherPendingStudentQuestion = null;
 let teacherAnswerSeenForPendingQuestion = false;
 let teacherLastCountedQuestion = "";
+let teacherConversationHistory = [];
 const TEACHER_RECOGNITION_LANGUAGES = ["ja-JP", "en-US"];
 const TEACHER_LOW_CONFIDENCE_THRESHOLD = 0.45;
 const TEACHER_RECOGNITION_FINISH_DELAY_MS = 900;
 const TEACHER_MAX_QUESTIONS = 5;
+const TEACHER_HISTORY_MAX_MESSAGES = 8;
 const TEACHER_WORD_LIMIT_SECONDS = 20 * 60;
 const TEACHER_DAILY_LIMIT_SECONDS = 60 * 60;
 const TEACHER_READY_STATUS = "日本語かEnglishを選んでから質問してね。先生は英語で答えるよ。";
@@ -918,6 +920,7 @@ function resetTeacherPanelForWord() {
     teacherPendingStudentQuestion = null;
     teacherAnswerSeenForPendingQuestion = false;
     teacherLastCountedQuestion = "";
+    teacherConversationHistory = [];
     const panel = document.getElementById("teacher-panel");
     const status = document.getElementById("teacher-status");
     if (panel) panel.classList.add("hidden");
@@ -1244,11 +1247,23 @@ async function answerBrowserTeacherQuestion(questionText) {
     if (status) {
         status.innerText = `聞こえました: ${cleanedQuestion}\n先生: ${answer}`;
     }
+    addTeacherConversationTurn(cleanedQuestion, answer);
     await speakTeacherAnswer(answer);
     teacherListening = false;
     stopTeacherTimer(true);
     teacherAnswerInFlight = false;
     renderTeacherDemo();
+}
+
+function addTeacherConversationTurn(questionText, answerText) {
+    const question = String(questionText || "").trim();
+    const answer = String(answerText || "").trim();
+    if (!question || !answer) return;
+    teacherConversationHistory.push({ role: "student", text: question });
+    teacherConversationHistory.push({ role: "teacher", text: answer });
+    if (teacherConversationHistory.length > TEACHER_HISTORY_MAX_MESSAGES) {
+        teacherConversationHistory = teacherConversationHistory.slice(-TEACHER_HISTORY_MAX_MESSAGES);
+    }
 }
 
 function countTeacherQuestionOnce(questionText) {
@@ -1471,6 +1486,7 @@ function getTeacherContext() {
         enSent: w.enSent,
         jpSent: w.jpSent,
         inputLanguage: getTeacherRecognitionLanguageLabel(getTeacherRecognitionLanguage()),
+        history: teacherConversationHistory.slice(-TEACHER_HISTORY_MAX_MESSAGES),
         turns: teacherTurns,
         maxTurns: TEACHER_MAX_QUESTIONS
     };

@@ -45,6 +45,17 @@ function cleanText(value, maxLength = 1200) {
   return String(value || "").replace(/\s+/g, " ").trim().slice(0, maxLength);
 }
 
+function cleanHistory(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .slice(-8)
+    .map(item => ({
+      role: item?.role === "teacher" ? "teacher" : "student",
+      text: cleanText(item?.text, 500)
+    }))
+    .filter(item => item.text);
+}
+
 function buildPrompt(question, context) {
   const levelLabel = cleanText(context.levelLabel || "EIKEN", 80);
   const word = cleanText(context.word, 120);
@@ -52,8 +63,12 @@ function buildPrompt(question, context) {
   const enSent = cleanText(context.enSent, 240);
   const jpSent = cleanText(context.jpSent, 240);
   const inputLanguage = cleanText(context.inputLanguage || "Japanese or English", 80);
+  const history = cleanHistory(context.history);
   const turns = Number.isFinite(Number(context.turns)) ? Number(context.turns) : 0;
   const maxTurns = Number.isFinite(Number(context.maxTurns)) ? Number(context.maxTurns) : 5;
+  const historyLines = history.length
+    ? history.map(item => `${item.role === "teacher" ? "Teacher" : "Student"}: ${item.text}`)
+    : ["No previous turns for this word."];
 
   return [
     "You are an English learning teacher for a child using a vocabulary card app.",
@@ -71,6 +86,9 @@ function buildPrompt(question, context) {
     `Japanese example meaning for context only: ${jpSent}`,
     `Student selected input language: ${inputLanguage}`,
     `Current question count: ${turns} / ${maxTurns}`,
+    "Recent conversation for this same word:",
+    ...historyLines,
+    "Use the recent conversation to answer follow-up questions, but stay focused on the current word.",
     `Student question: ${cleanText(question, 600)}`
   ].join("\n");
 }
