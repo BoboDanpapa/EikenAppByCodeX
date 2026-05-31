@@ -1,7 +1,7 @@
-// words.js - 英検2級 単語・熟語データ (deduplicated for Android app)
+// eiken_grade2_words.js - 英検2級 単語・熟語データ (deduplicated for Android app)
 // Original entries: 608; unique entries: 561
 
-const vocabData = [
+const eikenGrade2VocabData = [
   {
     "en": "Provide",
     "jp": "提供する",

@@ -1,12 +1,15 @@
 # EikenAppByCodeX
 
-英検2級の単語・熟語を楽しく覚えるための、子ども向け学習アプリプロジェクトです。
+英検4級から1級までの単語・熟語を楽しく覚えるための、子ども向け学習アプリプロジェクトです。
 
 ## What Is Included
 
 - Original web demo: `EikenStudy.html`
+- PWA build: `pwa/`
 - Android WebView app source: `android-app/`
-- Vocabulary data: `words.js` and Android asset copy
+- Vocabulary data: `eiken_grade2_words.js` and Android asset copy
+- Additional 500-entry vocabulary data: `eiken_grade4_words.js`, `eiken_grade3_words.js`, `eiken_pre1_words.js`, `eiken_grade1_words.js`
+- Custom/original vocabulary backups: `*_custom.js`
 - Character image assets: `images/`
 - Browser preview for next-version UI flow: `EikenStudyPreview.html`
 - Durable project notes for future work: `PROJECT_MEMORY.md`
@@ -15,9 +18,9 @@
 
 - Multiple local users without passwords
 - Separate user progress
-- 英検準2級 / 英検2級 course selection
-- 英検2級単語カード
-- 英検準2級 500-entry vocabulary and phrase set
+- 英検4級 / 3級 / 準2級 / 2級 / 準1級 / 1級 course selection
+- Course-specific vocabulary cards
+- 500-entry vocabulary and phrase sets for 英検4級 / 3級 / 準2級 / 準1級 / 1級
 - 復習ノート
 - 四択クイズ
 - 階級アップと図鑑解放
@@ -33,10 +36,31 @@ Open `EikenStudyPreview.html` in a browser to review the planned next-version fl
 - User switching
 - User deletion confirmation
 - Shared course selection page
-- Separate 英検準2級 / 英検2級 progress
+- Separate progress for each Eiken course
 - Current-user progress reset confirmation
 
 The preview page is not the production APK. It is for UI and flow confirmation.
+
+## PWA Build
+
+The `pwa/` directory is a self-contained Progressive Web App version of the latest production WebView assets. It includes:
+
+- `index.html`
+- `manifest.webmanifest`
+- `service-worker.js`
+- `eiken_grade4_words.js` / `eiken_grade3_words.js` / `eiken_pre2_words.js`
+- `eiken_grade2_words.js` / `eiken_pre1_words.js` / `eiken_grade1_words.js`
+- `images/`
+- `icons/`
+
+To test locally:
+
+```sh
+cd pwa
+python3 -m http.server 8766
+```
+
+Then open `http://localhost:8766/index.html`. For public use, deploy the contents of `pwa/` to any HTTPS static host. PWA installation and service worker caching require HTTPS, except on localhost.
 
 ## Android Build Notes
 

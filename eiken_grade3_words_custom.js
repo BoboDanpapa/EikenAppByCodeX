@@ -1,8 +1,10 @@
-// words.js - 英検3級 頻出単語・熟語データ (第1批: 1~250)
+// eiken_grade3_words_custom.js - 英検3級 custom/original backup
+// Note: This preserves the Grade 3 list before the app-curated cleanup in eiken_grade3_words.js.
+// Use this file as a personal/custom reference, not as the default app course list.
 // データソース：旺文社《予想問題ドリル》、《集中ゼミ》、《でる順パス単》
 // 優先度：実戦でよく出る熟語 ＞ コア動詞 ＞ 頻出名詞
 
-const vocabData = [
+const eikenGrade3CustomVocabData = [
     // =============== 【1. 英検3級 必修熟語 (超重要！会話・穴埋め問題)】 ===============
     { en: "a lot of", jp: "たくさんの", enSent: "I have a lot of books.", jpSent: "私はたくさんの本を持っています。" },
     { en: "after school", jp: "放課後", enSent: "Let's play after school.", jpSent: "放課後に遊びましょう。" },

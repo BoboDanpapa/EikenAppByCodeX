@@ -1,5 +1,8 @@
-  // --- 準一級核心词库 第一批 (51 - 250) ---
-const words_pre1_batch1 = [
+// eiken_pre1_words_custom.js - 英検準1級 custom/original backup
+// Note: This preserves the Pre-1 list before the app-curated cleanup in eiken_pre1_words.js.
+// Use this file as a personal/custom reference, not as the default app course list.
+// Original note: 準一級核心词库 第一批 (51 - 250)
+const eikenPre1CustomVocabData = [
   // --- Priority 1: 核心痛点动词 & 形容词 ---
   { word: "crucial", meaning: "極めて重要な", exampleEn: "Sleep is crucial for your health.", exampleJp: "睡眠は健康にとって極めて重要です。" },
   { word: "implement", meaning: "実行する、導入する", exampleEn: "The school will implement a new rule next month.", exampleJp: "学校は来月、新しい規則を導入します。" },

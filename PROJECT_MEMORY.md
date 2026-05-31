@@ -7,16 +7,18 @@ This file records durable project context for future Codex sessions. Read this b
 - This is a kid-friendly Eiken vocabulary Android WebView app.
 - Main app asset: `android-app/app/src/main/assets/EikenStudy.html`
 - Browser preview: `EikenStudyPreview.html`
-- Eiken Grade 2 vocabulary is kept in `words.js` and `android-app/app/src/main/assets/words.js`.
-- Eiken Pre-2 vocabulary is kept separately in `pre2_words.js` and `android-app/app/src/main/assets/pre2_words.js`.
+- Eiken Grade 2 vocabulary is kept in `eiken_grade2_words.js` and `android-app/app/src/main/assets/eiken_grade2_words.js`.
+- Eiken Pre-2 vocabulary is kept separately in `eiken_pre2_words.js` and `android-app/app/src/main/assets/eiken_pre2_words.js`.
+- Eiken Grade 4, Grade 3, Pre-1, and Grade 1 vocabulary are kept in `eiken_grade4_words.js`, `eiken_grade3_words.js`, `eiken_pre1_words.js`, and `eiken_grade1_words.js`; each has 500 app-curated entries.
+- Custom/original vocabulary backups use the `*_custom.js` suffix, for example `eiken_pre2_words_custom.js`, `eiken_grade3_words_custom.js`, and `eiken_pre1_words_custom.js`.
 - Character images live in `images/` and `android-app/app/src/main/assets/images/`.
 
 ## Current Stable Version
 
-- Current version after the settings/theme demo release: `1.1.10`
-- Current `versionCode`: `12`
+- Current version after the six-course vocabulary release: `1.1.14`
+- Current `versionCode`: `16`
 - Latest local release APK:
-  `releases/eiken-magicwords-v1.1.10-settings-theme-demo.apk`
+  `releases/eiken-magicwords-v1.1.14-six-course-vocab.apk`
 
 ## Major Version History
 
@@ -32,15 +34,50 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.8`: Added a Japanese UI layout demo for the English teacher question button and five-turn teacher panel.
 - `v1.1.9`: Integrated Android Gemini Live teacher bridge, microphone permission flow, and five-turn word-question session handling. Keep the Firebase GoogleAI backend on `gemini-2.5-flash-native-audio-preview-12-2025`; `gemini-live-2.5-flash-preview` can close the Firebase AI Logic WebSocket during connection. The transcript-handler turn counter was rolled back because it could prevent audio replies on device; future precise per-answer counting needs a custom receive/audio pipeline or another stable SDK event. The stable Live session should be kept across word changes in the study tab; send an `APP_CONTEXT_UPDATE` text message instead of reconnecting, and only stop Live on `とめる`, leaving the study tab, back/exit, or Activity destroy.
 - `v1.1.10`: Added the settings entry, visible app version badge, theme selection demo, and teacher safety settings display. The alternate theme is `Navy + Sky`; settings persist in local storage.
+- `v1.1.13`: Added Gemini teacher usage limits: 5 questions per word via Live transcription callbacks, 20 minutes per word, 60 minutes per user per local day, and visible teacher time counters. The current Android implementation still keeps lazy context updates so words are sent to Gemini only when the teacher panel is opened.
+- `v1.1.14`: Added 英検4級・3級・準1級・1級 to the course selector, synced all six courses to Android/PWA assets, and kept user progress separated per course.
 
 ## Important Behavior
 
 - Users are local only, without passwords.
 - Progress is stored locally per user and per course.
-- Eiken Pre-2 and Eiken Grade 2 progress must remain separate.
+- Progress for Eiken Grade 4, Grade 3, Pre-2, Grade 2, Pre-1, and Grade 1 must remain separate.
 - Review notes, streak, rank progress, and unlocked gallery entries are course-specific.
 - In `鬼殺隊の試練`, the current unanswered quiz word and answer options must persist when switching tabs. Do not regenerate a quiz question merely because the user leaves and returns to the quiz tab.
 - Generate a new quiz question only after the user answers, after a level-up continuation, or when the saved quiz word is invalid for the current course data.
+
+## Gemini Live Teacher Control Design
+
+Current Android-only design for `先生に聞く`:
+
+- The Gemini Live model remains `gemini-2.5-flash-native-audio-preview-12-2025` through Firebase AI Logic with `ResponseModality.AUDIO`.
+- The teacher must answer only in English. Students may ask in Japanese or English.
+- The teacher is restricted to English-learning help for the current card: meaning, usage, examples, pronunciation, similar words, and exam understanding. It must refuse casual/off-topic chat.
+- The Live session is kept alive across word changes to reduce reconnects. Pressing `前へ` / `次へ` must not send the new word to Gemini.
+- Lazy context update is intentional: the app sends the current word to Gemini only when the user opens `先生に聞く` for that card, or when starting a new conversation from `マイク`.
+- Avoid duplicate context updates. If the current word context was already sent after opening `先生に聞く`, pressing `マイク` must not send the same word again and must not trigger a second Gemini confirmation.
+- If `APP_CONTEXT_UPDATE` send returns `Task was cancelled` / cancellation, treat it as transient. Do not show that error to the child; keep the session active and retry the latest context in the background.
+- Stop Gemini Live on `とめる`, leaving the study tab, returning/exiting, or Activity destroy/app close.
+
+Usage limits:
+
+- Per word: maximum `5` detected questions.
+- Per word: maximum `20` minutes of teacher time.
+- Per user per local day: maximum `60` minutes total teacher time.
+- Usage is local-device/local-user state, not cloud billing truth. It is a hard in-app guardrail but can be reset by clearing app data.
+- The UI should show `質問`, `この単語`, `今日`, and remaining time in the teacher panel.
+- The app should stop the Live session and disable `マイク` when a question/time limit is reached.
+
+Question counting notes:
+
+- Android v1.1.13 attempts automatic question counting with `startAudioConversation(transcriptHandler, false)`.
+- Count one question when a student transcript is seen and then the teacher output transcript starts.
+- Guard against duplicate transcript fragments with native turn state such as pending student question and answer-seen flags.
+- This transcript-handler path previously had audio-response risk, so real-device testing must verify that Gemini still hears and answers. If audio becomes unreliable, preserve the time limits and revisit the counting pipeline instead of reintroducing `receive()` while audio conversation is active.
+
+PWA note:
+
+- This design depends on Android native bridges (`AndroidGemini`) and Firebase Android Live APIs. It does not directly work in browser/PWA. A real PWA teacher needs a separate browser-compatible Gemini backend/design.
 
 ## Vocabulary Ordering Rule
 
@@ -64,6 +101,23 @@ Every time a new APK is generated:
 - Name the copied APK with the new version number and a short change description, for example:
   `releases/eiken-magicwords-v1.1.5-pre2-500-quiz-lock.apk`
 - Confirm the APK contains the expected changed assets when vocabulary or HTML assets changed.
+
+## PWA Deployment Plan
+
+- The PWA build lives in `pwa/` and should remain a self-contained static web app build separate from the Android APK source.
+- The separate GitHub publishing repository is `BoboDanpapa/EikenMagicwordsPWA`.
+- Publish the contents of `pwa/` at the root of `BoboDanpapa/EikenMagicwordsPWA`; do not publish the full Android project there.
+- GitHub Pages should deploy from the `main` branch and `/ (root)`.
+- Expected GitHub Pages URL:
+  `https://bobodanpapa.github.io/EikenMagicwordsPWA/`
+- Keep this repository as the development/source workspace. In-progress PWA changes, debugging builds, and unfinished features stay here under `pwa/`.
+- `BoboDanpapa/EikenMagicwordsPWA` is the friend-facing stable publishing repo. Do not push changes there unless the user explicitly says the PWA build has been tested and is ready/stable for friends.
+- If an untested PWA change is accidentally pushed to `BoboDanpapa/EikenMagicwordsPWA`, revert the publishing repo back to the last stable version rather than leaving friends on the experimental build.
+- On 2026-05-31, the untested PWA teacher usage counter commit `997128f` was mistakenly pushed to the publishing repo and then reverted with commit `d0d0de4`.
+- PWA user progress is local to each browser/device/origin via web storage. It is not a shared cloud database.
+- A custom domain is optional. The GitHub Pages URL is enough for sharing with friends at the current stage.
+- In the PWA browser environment, Android native bridges such as `AndroidTTS` and `AndroidGemini` are not available. PWA pronunciation uses the browser Web Speech API (`speechSynthesis`) when supported, and should show a friendly unsupported-browser message otherwise. A real PWA AI teacher needs a separate Web/API backend or another browser-compatible design.
+- APK release conventions remain separate from PWA deployment.
 
 ## Build Command
 

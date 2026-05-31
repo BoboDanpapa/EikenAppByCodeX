@@ -107,6 +107,7 @@
         .teacher-subtitle { color: #777; font-size: 13px; line-height: 1.35; font-weight: bold; }
         .teacher-meta { display: grid; gap: 5px; margin: 12px 0; color: #555; font-size: 13px; font-weight: bold; }
         .teacher-meta span { color: #1565c0; }
+        .teacher-time-row { display: flex; justify-content: space-between; gap: 10px; }
         .teacher-status { background: var(--soft-bg); border-radius: 14px; color: var(--text-main); font-size: 13px; line-height: 1.35; font-weight: bold; padding: 10px 12px; margin-bottom: 12px; }
         .teacher-controls { justify-content: flex-start; gap: 8px; }
         .btn-teacher-mic, .btn-teacher-stop { min-height: 38px; padding: 8px 14px; border-radius: 18px; font-size: 13px; }
@@ -221,6 +222,14 @@
     <h2 class="screen-title"><span id="home-user-name">...</span> さんの単語帳</h2>
     <p class="muted">コースを選んでね</p>
     <div class="home-grid">
+        <div class="level-card" onclick="enterCourse('grade4')">
+            <strong>英検4級</strong>
+            <span>重要単語・熟語 500</span>
+        </div>
+        <div class="level-card" onclick="enterCourse('grade3')">
+            <strong>英検3級</strong>
+            <span>重要単語・熟語 500</span>
+        </div>
         <div class="level-card" onclick="enterCourse('pre2')">
             <strong>英検準2級</strong>
             <span>重要単語・熟語 500</span>
@@ -228,6 +237,14 @@
         <div class="level-card" onclick="enterCourse('level2')">
             <strong>英検2級</strong>
             <span>現在の単語データ</span>
+        </div>
+        <div class="level-card" onclick="enterCourse('pre1')">
+            <strong>英検準1級</strong>
+            <span>重要単語・熟語 500</span>
+        </div>
+        <div class="level-card" onclick="enterCourse('grade1')">
+            <strong>英検1級</strong>
+            <span>重要単語・熟語 500</span>
         </div>
     </div>
     <div class="row">
@@ -280,6 +297,9 @@
             <div class="teacher-meta">
                 <div>レベル: <span id="teacher-level">...</span></div>
                 <div>質問: <span id="teacher-turns">0 / 5</span></div>
+                <div class="teacher-time-row"><span>この単語</span><span id="teacher-word-time">0:00 / 20:00</span></div>
+                <div class="teacher-time-row"><span>今日</span><span id="teacher-day-time">0:00 / 60:00</span></div>
+                <div class="teacher-time-row"><span>のこり</span><span id="teacher-day-remaining">60:00</span></div>
             </div>
             <div id="teacher-status" class="teacher-status">日本語でも英語でも質問できるよ。先生は英語で答えるよ。</div>
             <div class="row teacher-controls">
@@ -344,9 +364,9 @@
     <div class="setting-section">
         <h3>英語の先生 安全設定</h3>
         <div class="limit-grid">
-            <div class="limit-row"><span>1日の開始</span><span>0 / 5</span></div>
-            <div class="limit-row"><span>今日の時間</span><span>0 / 10分</span></div>
-            <div class="limit-row"><span>1回の時間</span><span>最大3分</span></div>
+            <div class="limit-row"><span>1単語の質問</span><span>最大5問</span></div>
+            <div class="limit-row"><span>今日の時間</span><span>0 / 60分</span></div>
+            <div class="limit-row"><span>1単語の時間</span><span>最大20分</span></div>
         </div>
     </div>
     <div class="row">
@@ -371,14 +391,22 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.12</div>
+<div class="version-badge">v1.1.14</div>
 
-<script src="pre2_words.js"></script>
-<script src="words.js"></script>
+<script src="eiken_grade4_words.js"></script>
+<script src="eiken_grade3_words.js"></script>
+<script src="eiken_pre2_words.js"></script>
+<script src="eiken_grade2_words.js"></script>
+<script src="eiken_pre1_words.js"></script>
+<script src="eiken_grade1_words.js"></script>
 <script>
 const courses = {
-    pre2: { label: "英検準2級", storageKey: "pre2", words: pre2VocabData },
-    level2: { label: "英検2級", storageKey: "level2", words: vocabData }
+    grade4: { label: "英検4級", storageKey: "grade4", words: eikenGrade4VocabData },
+    grade3: { label: "英検3級", storageKey: "grade3", words: eikenGrade3VocabData },
+    pre2: { label: "英検準2級", storageKey: "pre2", words: eikenPre2VocabData },
+    level2: { label: "英検2級", storageKey: "level2", words: eikenGrade2VocabData },
+    pre1: { label: "英検準1級", storageKey: "pre1", words: eikenPre1VocabData },
+    grade1: { label: "英検1級", storageKey: "grade1", words: eikenGrade1VocabData }
 };
 
 const challengeLevels = [
@@ -414,7 +442,12 @@ let currentQuizWord = null;
 let teacherTurns = 0;
 let teacherListening = false;
 let teacherContextSentKey = null;
-const TEACHER_DEMO_MAX_TURNS = 5;
+let teacherWordSeconds = 0;
+let teacherTimerId = null;
+let teacherTickSaveCounter = 0;
+const TEACHER_MAX_QUESTIONS = 5;
+const TEACHER_WORD_LIMIT_SECONDS = 20 * 60;
+const TEACHER_DAILY_LIMIT_SECONDS = 60 * 60;
 const TEACHER_READY_STATUS = "日本語でも英語でも質問できるよ。先生は英語で答えるよ。";
 
 function defaultCourseProgress() {
@@ -431,19 +464,25 @@ function defaultCourseProgress() {
     };
 }
 
+function defaultAllCourseProgress() {
+    return Object.keys(courses).reduce((progress, id) => {
+        progress[id] = defaultCourseProgress();
+        return progress;
+    }, {});
+}
+
 function defaultUser(name) {
     return {
         id: String(Date.now()) + Math.random().toString(16).slice(2),
         name,
-        progress: {
-            pre2: defaultCourseProgress(),
-            level2: defaultCourseProgress()
-        }
+        progress: defaultAllCourseProgress(),
+        teacherUsageByDate: {}
     };
 }
 
 function ensureUserShape(user) {
     user.progress = user.progress || {};
+    user.teacherUsageByDate = user.teacherUsageByDate && typeof user.teacherUsageByDate === "object" ? user.teacherUsageByDate : {};
     Object.keys(courses).forEach(id => {
         user.progress[id] = Object.assign(defaultCourseProgress(), user.progress[id] || {});
         user.progress[id].unlocked = Array.isArray(user.progress[id].unlocked) ? user.progress[id].unlocked.slice(0, challengeLevels.length) : challengeLevels.map(() => false);
@@ -536,6 +575,38 @@ function getProgress() {
     return user.progress[currentCourseId];
 }
 
+function getTeacherUsageDateKey() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+function getTeacherDailyUsage() {
+    const user = getCurrentUser();
+    if (!user) return { usedSeconds: 0 };
+    ensureUserShape(user);
+    const today = getTeacherUsageDateKey();
+    user.teacherUsageByDate[today] = user.teacherUsageByDate[today] || { usedSeconds: 0 };
+    return user.teacherUsageByDate[today];
+}
+
+function formatTeacherTime(totalSeconds) {
+    const seconds = Math.max(0, Math.floor(totalSeconds || 0));
+    const minutes = Math.floor(seconds / 60);
+    const rest = String(seconds % 60).padStart(2, "0");
+    return `${minutes}:${rest}`;
+}
+
+function getTeacherDailyUsedSeconds() {
+    return Math.min(TEACHER_DAILY_LIMIT_SECONDS, getTeacherDailyUsage().usedSeconds || 0);
+}
+
+function getTeacherDailyRemainingSeconds() {
+    return Math.max(0, TEACHER_DAILY_LIMIT_SECONDS - getTeacherDailyUsedSeconds());
+}
+
 function showOnly(screenId) {
     ["user-screen", "home-screen", "course-shell", "settings-screen"].forEach(id => document.getElementById(id).classList.add("hidden"));
     document.getElementById(screenId).classList.remove("hidden");
@@ -606,7 +677,7 @@ function confirmDeleteUser(id) {
     if (!user) return;
     openModal(
         "ユーザーを削除しますか？",
-        `${escapeHtml(user.name)} さんの準2級・2級の進度も削除されます。`,
+        `${escapeHtml(user.name)} さんのすべてのコースの進度も削除されます。`,
         "",
         [
             { label: "キャンセル", action: closeModal, type: "secondary" },
@@ -763,14 +834,27 @@ function getTeacherLevelLabel() {
 function renderTeacherDemo() {
     const level = document.getElementById("teacher-level");
     const turns = document.getElementById("teacher-turns");
+    const wordTime = document.getElementById("teacher-word-time");
+    const dayTime = document.getElementById("teacher-day-time");
+    const dayRemaining = document.getElementById("teacher-day-remaining");
     const status = document.getElementById("teacher-status");
     const mic = document.getElementById("btn-teacher-mic");
     if (!level || !turns || !status || !mic) return;
 
     level.innerText = getTeacherLevelLabel();
-    turns.innerText = `${teacherTurns} / ${TEACHER_DEMO_MAX_TURNS}`;
-    mic.disabled = teacherListening || teacherTurns >= TEACHER_DEMO_MAX_TURNS;
-    if (teacherTurns >= TEACHER_DEMO_MAX_TURNS) {
+    turns.innerText = `${teacherTurns} / ${TEACHER_MAX_QUESTIONS}`;
+    if (wordTime) wordTime.innerText = `${formatTeacherTime(teacherWordSeconds)} / ${formatTeacherTime(TEACHER_WORD_LIMIT_SECONDS)}`;
+    if (dayTime) dayTime.innerText = `${formatTeacherTime(getTeacherDailyUsedSeconds())} / ${formatTeacherTime(TEACHER_DAILY_LIMIT_SECONDS)}`;
+    if (dayRemaining) dayRemaining.innerText = formatTeacherTime(getTeacherDailyRemainingSeconds());
+    const questionLimitReached = teacherTurns >= TEACHER_MAX_QUESTIONS;
+    const wordLimitReached = teacherWordSeconds >= TEACHER_WORD_LIMIT_SECONDS;
+    const dailyLimitReached = getTeacherDailyRemainingSeconds() <= 0;
+    mic.disabled = teacherListening || questionLimitReached || wordLimitReached || dailyLimitReached;
+    if (dailyLimitReached) {
+        status.innerText = "今日の先生時間を使い切りました。また明日使おう！";
+    } else if (wordLimitReached) {
+        status.innerText = "この単語の先生時間は終わりです。次のカードへ進もう！";
+    } else if (questionLimitReached) {
         status.innerText = "よくできました。カードの学習にもどろう！";
     } else if (!status.innerText) {
         status.innerText = TEACHER_READY_STATUS;
@@ -781,6 +865,7 @@ function resetTeacherPanelForWord() {
     teacherTurns = 0;
     teacherListening = false;
     teacherContextSentKey = null;
+    teacherWordSeconds = 0;
     const panel = document.getElementById("teacher-panel");
     const status = document.getElementById("teacher-status");
     if (panel) panel.classList.add("hidden");
@@ -799,7 +884,10 @@ function toggleTeacherPanel(e) {
 
 function askTeacherDemo(e) {
     if (e) e.stopPropagation();
-    if (teacherListening || teacherTurns >= TEACHER_DEMO_MAX_TURNS) return;
+    if (teacherListening || teacherTurns >= TEACHER_MAX_QUESTIONS || teacherWordSeconds >= TEACHER_WORD_LIMIT_SECONDS || getTeacherDailyRemainingSeconds() <= 0) {
+        renderTeacherDemo();
+        return;
+    }
     const status = document.getElementById("teacher-status");
     if (window.AndroidGemini && typeof window.AndroidGemini.startConversation === "function") {
         if (isAndroidGeminiActive() && teacherContextSentKey === getTeacherContextKey()) {
@@ -813,8 +901,10 @@ function askTeacherDemo(e) {
         renderTeacherDemo();
         window.AndroidGemini.startConversation(JSON.stringify(getTeacherContext()));
     } else {
+        teacherListening = true;
+        startTeacherTimer();
         teacherTurns += 1;
-        if (status && teacherTurns < TEACHER_DEMO_MAX_TURNS) {
+        if (status && teacherTurns < TEACHER_MAX_QUESTIONS) {
             status.innerText = "聞いています... プレビューではデモの質問を記録します。";
         }
         renderTeacherDemo();
@@ -825,12 +915,13 @@ function stopTeacherDemo(e) {
     if (e) e.stopPropagation();
     stopTeacherConversation();
     const status = document.getElementById("teacher-status");
-    if (status && teacherTurns < TEACHER_DEMO_MAX_TURNS) status.innerText = "先生との会話をとめました。";
+    if (status && teacherTurns < TEACHER_MAX_QUESTIONS) status.innerText = "先生との会話をとめました。";
     renderTeacherDemo();
 }
 
 function stopTeacherConversation() {
     teacherListening = false;
+    stopTeacherTimer(true);
     if (window.AndroidGemini && typeof window.AndroidGemini.stopConversation === "function") {
         window.AndroidGemini.stopConversation();
     }
@@ -854,9 +945,58 @@ function updateTeacherContext() {
         const status = document.getElementById("teacher-status");
         if (status) status.innerText = "先生に新しい単語を伝えています...";
         teacherListening = true;
+        startTeacherTimer();
         renderTeacherDemo();
         window.AndroidGemini.updateContext(JSON.stringify(getTeacherContext()));
     }
+}
+
+function startTeacherTimer() {
+    if (teacherTimerId) return;
+    teacherTimerId = window.setInterval(tickTeacherUsage, 1000);
+}
+
+function stopTeacherTimer(saveNow) {
+    if (teacherTimerId) {
+        window.clearInterval(teacherTimerId);
+        teacherTimerId = null;
+    }
+    if (saveNow) saveAppState();
+}
+
+function isTeacherUsageActive() {
+    return teacherListening || isAndroidGeminiActive();
+}
+
+function tickTeacherUsage() {
+    if (!isTeacherUsageActive()) {
+        stopTeacherTimer(true);
+        renderTeacherDemo();
+        return;
+    }
+    const usage = getTeacherDailyUsage();
+    usage.usedSeconds = Math.min(TEACHER_DAILY_LIMIT_SECONDS, (usage.usedSeconds || 0) + 1);
+    teacherWordSeconds = Math.min(TEACHER_WORD_LIMIT_SECONDS, teacherWordSeconds + 1);
+    teacherTickSaveCounter += 1;
+    if (teacherTickSaveCounter >= 5) {
+        teacherTickSaveCounter = 0;
+        saveAppState();
+    }
+    enforceTeacherUsageLimits();
+    renderTeacherDemo();
+}
+
+function enforceTeacherUsageLimits() {
+    const dailyLimitReached = getTeacherDailyRemainingSeconds() <= 0;
+    const wordLimitReached = teacherWordSeconds >= TEACHER_WORD_LIMIT_SECONDS;
+    if (!dailyLimitReached && !wordLimitReached) return;
+    const status = document.getElementById("teacher-status");
+    if (status) {
+        status.innerText = dailyLimitReached
+            ? "今日の先生時間を使い切りました。また明日使おう！"
+            : "この単語の先生時間は終わりです。次のカードへ進もう！";
+    }
+    stopTeacherConversation();
 }
 
 function isAndroidGeminiActive() {
@@ -883,7 +1023,7 @@ function getTeacherContext() {
         enSent: w.enSent,
         jpSent: w.jpSent,
         turns: teacherTurns,
-        maxTurns: TEACHER_DEMO_MAX_TURNS
+        maxTurns: TEACHER_MAX_QUESTIONS
     };
 }
 
@@ -891,23 +1031,28 @@ function onGeminiTeacherStatus(status, message, turns) {
     const statusBox = document.getElementById("teacher-status");
     if (statusBox && message) statusBox.innerText = message;
     if (Number.isInteger(turns) && turns >= 0) {
-        teacherTurns = Math.min(TEACHER_DEMO_MAX_TURNS, turns);
+        teacherTurns = Math.min(TEACHER_MAX_QUESTIONS, turns);
     }
     if (status === "connecting" || status === "permission_required" || status === "active") {
         teacherListening = true;
+        startTeacherTimer();
     }
     if (status === "started") {
         teacherListening = true;
+        startTeacherTimer();
     }
     if (status === "turn_completed") {
         teacherListening = true;
+        startTeacherTimer();
     }
     if (status === "limit_reached") {
         teacherListening = false;
-        teacherTurns = TEACHER_DEMO_MAX_TURNS;
+        teacherTurns = TEACHER_MAX_QUESTIONS;
+        stopTeacherTimer(true);
     }
     if (status === "stopped" || status === "error" || status === "permission_denied") {
         teacherListening = false;
+        stopTeacherTimer(true);
     }
     renderTeacherDemo();
 }
@@ -1200,7 +1345,7 @@ function confirmResetCurrentUser() {
     if (!user) return;
     openModal(
         "進度をリセットしますか？",
-        `${escapeHtml(user.name)} さんの準2級・2級の進度、復習ノート、階級、図鑑をリセットします。`,
+        `${escapeHtml(user.name)} さんのすべてのコースの進度、復習ノート、階級、図鑑をリセットします。`,
         "",
         [
             { label: "キャンセル", action: closeModal, type: "secondary" },
@@ -1212,7 +1357,7 @@ function confirmResetCurrentUser() {
 function resetCurrentUserProgress() {
     const user = getCurrentUser();
     if (!user) return;
-    user.progress = { pre2: defaultCourseProgress(), level2: defaultCourseProgress() };
+    user.progress = defaultAllCourseProgress();
     saveAppState();
     closeModal();
     if (currentCourseId) switchTab("study");

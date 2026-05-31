@@ -32,7 +32,10 @@ import com.google.firebase.ai.type.GenerativeBackend;
 import com.google.firebase.ai.type.LiveGenerationConfig;
 import com.google.firebase.ai.type.ResponseModality;
 import com.google.firebase.ai.type.SpeechConfig;
+import com.google.firebase.ai.type.Transcription;
 import com.google.firebase.ai.type.Voice;
+
+import kotlin.Unit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,6 +70,9 @@ public class MainActivity extends Activity {
     private String pendingGeminiContextJson;
     private int teacherTurnCount = 0;
     private int teacherMaxTurns = 5;
+    private boolean pendingStudentQuestion = false;
+    private boolean answerSeenForCurrentQuestion = false;
+    private String lastStudentTranscript = "";
     private final Handler geminiRetryHandler = new Handler(Looper.getMainLooper());
     private String latestGeminiContextJson;
     private boolean contextUpdateInFlight = false;
@@ -322,7 +328,10 @@ public class MainActivity extends Activity {
                 public void onSuccess(LiveSessionFutures session) {
                     if (requestId != geminiRequestId) return;
                     geminiSession = session;
-                    ListenableFuture<?> startFuture = session.startAudioConversation(false);
+                    ListenableFuture<?> startFuture = session.startAudioConversation((studentTranscription, teacherTranscription) -> {
+                        handleGeminiTranscription(studentTranscription, teacherTranscription);
+                        return Unit.INSTANCE;
+                    }, false);
                     Futures.addCallback(startFuture, new FutureCallback<Object>() {
                         @Override
                         public void onSuccess(Object result) {
@@ -498,6 +507,36 @@ public class MainActivity extends Activity {
     private void resetTeacherTurnState(int turns, int maxTurns) {
         teacherTurnCount = Math.max(0, turns);
         teacherMaxTurns = Math.max(1, maxTurns);
+        pendingStudentQuestion = false;
+        answerSeenForCurrentQuestion = false;
+        lastStudentTranscript = "";
+    }
+
+    private void handleGeminiTranscription(Transcription studentTranscription, Transcription teacherTranscription) {
+        runOnUiThread(() -> {
+            String studentText = transcriptionText(studentTranscription);
+            String teacherText = transcriptionText(teacherTranscription);
+            if (!studentText.isEmpty() && !studentText.equals(lastStudentTranscript)) {
+                lastStudentTranscript = studentText;
+                pendingStudentQuestion = true;
+                answerSeenForCurrentQuestion = false;
+            }
+            if (!teacherText.isEmpty() && pendingStudentQuestion && !answerSeenForCurrentQuestion) {
+                answerSeenForCurrentQuestion = true;
+                pendingStudentQuestion = false;
+                teacherTurnCount = Math.min(teacherMaxTurns, teacherTurnCount + 1);
+                notifyGeminiStatus("turn_completed", "質問: " + teacherTurnCount + " / " + teacherMaxTurns, teacherTurnCount);
+                if (teacherTurnCount >= teacherMaxTurns) {
+                    notifyGeminiStatus("limit_reached", "よくできました。カードの学習にもどろう！", teacherTurnCount);
+                    stopGeminiConversation("question limit reached");
+                }
+            }
+        });
+    }
+
+    private String transcriptionText(Transcription transcription) {
+        if (transcription == null || transcription.getText() == null) return "";
+        return transcription.getText().trim();
     }
 
     private String buildGeminiSystemInstruction(JSONObject context) {

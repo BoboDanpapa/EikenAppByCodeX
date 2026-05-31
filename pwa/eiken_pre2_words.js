@@ -1,8 +1,8 @@
-// pre2_words.js - 英検準2級 単語・熟語データ
+// eiken_pre2_words.js - 英検準2級 単語・熟語データ
 // Curated entries: 500; ordered by study priority, not alphabetically.
 // Example sentences are original textbook-style sentences for Pre-2 learners.
 
-const pre2VocabData = [
+const eikenPre2VocabData = [
   {
     "en": "depend on",
     "jp": "〜に頼る・〜次第である",

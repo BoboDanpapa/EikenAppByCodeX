@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="英検 魔法の単語帳">
+  <rect width="512" height="512" rx="112" fill="#f7f1fa"/>
+  <path d="M96 356c0-102 66-190 160-190s160 88 160 190c0 32-72 60-160 60S96 388 96 356Z" fill="#e1bee7"/>
+  <path d="M146 160c22-55 63-82 110-82s88 27 110 82c-31-21-68-32-110-32s-79 11-110 32Z" fill="#9c27b0"/>
+  <path d="M163 357c22-24 52-37 93-37s71 13 93 37" fill="none" stroke="#6a1b9a" stroke-width="24" stroke-linecap="round"/>
+  <circle cx="204" cy="242" r="22" fill="#4a235a"/>
+  <circle cx="308" cy="242" r="22" fill="#4a235a"/>
+  <path d="M256 274l17 30h-34l17-30Z" fill="#d81b60"/>
+  <path d="M374 104l18 42 42 18-42 18-18 42-18-42-42-18 42-18 18-42Z" fill="#ffd54f"/>
+  <path d="M120 84l12 28 28 12-28 12-12 28-12-28-28-12 28-12 12-28Z" fill="#64b5f6"/>
+  <text x="256" y="465" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#6a1b9a">英検</text>
+</svg>

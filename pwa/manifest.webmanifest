@@ -1,0 +1,41 @@
+{
+  "name": "英検 魔法の単語帳",
+  "short_name": "英検単語帳",
+  "description": "英検準2級・2級の単語と熟語を楽しく覚える子ども向け学習PWAです。",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f1fa",
+  "theme_color": "#9c27b0",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icons/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "kids", "productivity"],
+  "shortcuts": [
+    {
+      "name": "学習を始める",
+      "short_name": "学習",
+      "url": "./index.html"
+    }
+  ]
+}

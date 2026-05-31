@@ -1,5 +1,5 @@
 
-const vocabData = [
+const eikenPre2CustomVocabData = [
     { en: "agree with", jp: "〜に賛成する", enSent: "I agree with you.", jpSent: "私はあなたに賛成です。" },
     { en: "ask for", jp: "〜を求める", enSent: "He asked for water.", jpSent: "彼は水を求めました。" },
     { en: "be covered with", jp: "〜で覆われている", enSent: "The mountain is covered with snow.", jpSent: "山は雪で覆われています。" },

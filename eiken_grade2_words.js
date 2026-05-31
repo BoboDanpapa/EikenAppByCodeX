@@ -1,7 +1,7 @@
-// words.js - 英検2級 頻出単語・熟語データ (Top 80 核心精选第一批)
+// eiken_grade2_words.js - 英検2級 頻出単語・熟語データ (Top 80 核心精选第一批)
 // 数据来源：旺文社《でる順パス単 英検2級》、《予想問題ドリル》
 
-const vocabData = [
+const eikenGrade2VocabData = [
     // =============== 【1. 超高頻出動詞】 ===============
     { en: "Provide", jp: "提供する", enSent: "They provide food for us.", jpSent: "彼らは私たちに食べ物を提供します。" },
     { en: "Require", jp: "必要とする", enSent: "This job requires English.", jpSent: "この仕事は英語を必要とします。" },
