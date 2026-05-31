@@ -401,7 +401,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.16</div>
+<div class="version-badge">v1.1.17</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -462,15 +462,19 @@ let teacherTickSaveCounter = 0;
 let teacherRecognition = null;
 let teacherShouldKeepListening = false;
 let teacherRecognitionRestartId = null;
+let teacherRecognitionRetryRequested = false;
 let teacherSpeaking = false;
 let teacherAnswerInFlight = false;
 let teacherGeminiBackendUnavailable = false;
 let teacherRecognitionLanguageIndex = 0;
 let teacherRecognitionHeardText = "";
+let teacherRecognitionHeardConfidence = 0;
 let teacherLastAnsweredText = "";
 let teacherPendingStudentQuestion = null;
 let teacherAnswerSeenForPendingQuestion = false;
 let teacherLastCountedQuestion = "";
+const TEACHER_RECOGNITION_LANGUAGES = ["ja-JP", "en-US"];
+const TEACHER_LOW_CONFIDENCE_THRESHOLD = 0.45;
 const TEACHER_MAX_QUESTIONS = 5;
 const TEACHER_WORD_LIMIT_SECONDS = 20 * 60;
 const TEACHER_DAILY_LIMIT_SECONDS = 60 * 60;
@@ -900,11 +904,13 @@ function resetTeacherPanelForWord() {
     teacherTurns = 0;
     teacherListening = false;
     teacherShouldKeepListening = false;
+    teacherRecognitionRetryRequested = false;
     teacherSpeaking = false;
     teacherAnswerInFlight = false;
     teacherContextSentKey = null;
     teacherWordSeconds = 0;
     teacherRecognitionHeardText = "";
+    teacherRecognitionHeardConfidence = 0;
     teacherLastAnsweredText = "";
     teacherPendingStudentQuestion = null;
     teacherAnswerSeenForPendingQuestion = false;
@@ -998,12 +1004,24 @@ function getSpeechRecognitionConstructor() {
 }
 
 function getTeacherRecognitionLanguage() {
-    const languages = ["en-US", "ja-JP"];
-    return languages[teacherRecognitionLanguageIndex % languages.length];
+    return TEACHER_RECOGNITION_LANGUAGES[teacherRecognitionLanguageIndex % TEACHER_RECOGNITION_LANGUAGES.length];
 }
 
 function rotateTeacherRecognitionLanguage() {
-    teacherRecognitionLanguageIndex = (teacherRecognitionLanguageIndex + 1) % 2;
+    teacherRecognitionLanguageIndex = (teacherRecognitionLanguageIndex + 1) % TEACHER_RECOGNITION_LANGUAGES.length;
+}
+
+function getTeacherRecognitionLanguageLabel(lang) {
+    return lang === "ja-JP" ? "日本語" : "English";
+}
+
+function shouldRetryTeacherRecognition(finalText, confidence, lang) {
+    const text = String(finalText || "").trim();
+    if (!text) return true;
+    if (confidence && confidence < TEACHER_LOW_CONFIDENCE_THRESHOLD) return true;
+    if (lang === "en-US" && /[\u3040-\u30ff\u3400-\u9fff]/.test(text)) return true;
+    if (lang === "ja-JP" && /^[a-z][a-z\s'?.!,;-]*$/i.test(text) && text.split(/\s+/).length >= 3) return false;
+    return false;
 }
 
 function startBrowserTeacherSpeech(status) {
@@ -1026,6 +1044,7 @@ function startBrowserTeacherSpeech(status) {
     teacherShouldKeepListening = true;
     teacherListening = true;
     teacherRecognitionHeardText = "";
+    teacherRecognitionHeardConfidence = 0;
     teacherLastAnsweredText = "";
     teacherPendingStudentQuestion = null;
     teacherAnswerSeenForPendingQuestion = false;
@@ -1040,12 +1059,15 @@ function startTeacherRecognitionCycle(status) {
     const recognition = new Recognition();
     teacherRecognition = recognition;
     teacherRecognitionHeardText = "";
-    recognition.lang = getTeacherRecognitionLanguage();
+    teacherRecognitionHeardConfidence = 0;
+    teacherRecognitionRetryRequested = false;
+    const recognitionLanguage = getTeacherRecognitionLanguage();
+    recognition.lang = recognitionLanguage;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
-        if (status) status.innerText = "聞いています。日本語でも英語でも質問できます。";
+        if (status) status.innerText = `${getTeacherRecognitionLanguageLabel(recognitionLanguage)}で聞いています。日本語でも英語でも質問できます。`;
         renderTeacherDemo();
     };
 
@@ -1053,20 +1075,39 @@ function startTeacherRecognitionCycle(status) {
         if (teacherSpeaking) return;
         let finalText = "";
         let interimText = "";
+        let finalConfidence = 0;
         for (let i = event.resultIndex; i < event.results.length; i++) {
             const text = event.results[i][0] ? event.results[i][0].transcript.trim() : "";
             if (!text) continue;
-            if (event.results[i].isFinal) finalText += text;
-            else interimText += text;
+            if (event.results[i].isFinal) {
+                finalText += text;
+                finalConfidence = Math.max(finalConfidence, event.results[i][0].confidence || 0);
+            } else {
+                interimText += text;
+            }
         }
         const heard = finalText || interimText;
         if (heard) {
             teacherRecognitionHeardText = heard;
+            if (finalText) teacherRecognitionHeardConfidence = finalConfidence;
             if (status) {
                 status.innerText = `聞こえました: ${heard}`;
             }
         }
         if (finalText) {
+            if (shouldRetryTeacherRecognition(finalText, finalConfidence, recognitionLanguage)) {
+                rotateTeacherRecognitionLanguage();
+                teacherRecognitionHeardText = "";
+                teacherRecognitionHeardConfidence = 0;
+                teacherRecognitionRetryRequested = true;
+                if (status) status.innerText = "うまく聞き取れませんでした。もう一度同じ質問を話してください。";
+                try {
+                    recognition.stop();
+                } catch (error) {
+                    // Some browsers throw if recognition already ended.
+                }
+                return;
+            }
             teacherPendingStudentQuestion = finalText;
             teacherAnswerSeenForPendingQuestion = false;
             answerBrowserTeacherQuestion(finalText);
@@ -1093,7 +1134,11 @@ function startTeacherRecognitionCycle(status) {
 
     recognition.onend = () => {
         teacherRecognition = null;
-        if (!teacherRecognitionHeardText) rotateTeacherRecognitionLanguage();
+        if (teacherRecognitionRetryRequested) {
+            teacherRecognitionRetryRequested = false;
+        } else if (!teacherRecognitionHeardText) {
+            rotateTeacherRecognitionLanguage();
+        }
         if (canContinueBrowserTeacherListening()) {
             if (status && !teacherRecognitionHeardText) {
                 status.innerText = "聞いています。日本語でも英語でも質問できます。";
