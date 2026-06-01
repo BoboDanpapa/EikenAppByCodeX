@@ -405,7 +405,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.30</div>
+<div class="version-badge">v1.1.31</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -1417,6 +1417,9 @@ function formatTeacherBackendError(result) {
     }
     if (/high demand|overloaded|temporar|try again later|unavailable/i.test(raw)) {
         return "Gemini先生が今とても混み合っています。少し待ってからもう一度試してください。";
+    }
+    if (/truncated|too long/i.test(raw)) {
+        return "Gemini先生の答えが長くなりすぎました。もう一度、短く質問してみてください。";
     }
     if (/quota|rate.?limit|exceeded/i.test(raw)) {
         return "Gemini先生の利用回数制限に当たっています。少し待ってからもう一度試してください。";

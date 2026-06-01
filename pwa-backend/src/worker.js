@@ -1,5 +1,7 @@
 const DEFAULT_MODEL = "gemini-2.5-flash";
 const DEFAULT_RETRY_DELAY_MS = 700;
+const DEFAULT_MAX_OUTPUT_TOKENS = 700;
+const TRUNCATED_RETRY_MAX_OUTPUT_TOKENS = 900;
 
 function getGeminiEndpoint(model) {
   return `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
@@ -72,7 +74,7 @@ function getQuestionIntent(question) {
   return "follow-up";
 }
 
-function buildPrompt(question, context) {
+function buildPrompt(question, context, options = {}) {
   const levelLabel = cleanText(context.levelLabel || "EIKEN", 80);
   const word = cleanText(context.word, 120);
   const jp = cleanText(context.jp, 160);
@@ -102,6 +104,7 @@ function buildPrompt(question, context) {
     "Never repeat an example sentence you already gave in the recent conversation.",
     "If the student's question is unclear because of speech transcription, briefly say what you understood and ask them to repeat it.",
     "Keep the answer brief, warm, and useful for a child. Use 1 to 3 complete short sentences.",
+    options.compactRetry ? "This is a retry because the previous answer was too long. Answer in exactly one complete short sentence, under 25 words." : "",
     "Never end with an unfinished phrase. Finish the final sentence with punctuation.",
     `Current course: ${levelLabel}`,
     `Current word or phrase: ${word}`,
@@ -115,7 +118,7 @@ function buildPrompt(question, context) {
     ...historyLines,
     "Use the recent conversation to answer follow-up questions, but stay focused on the current word. If the student asks for another example, make it different from every Teacher example above.",
     `Student question: ${cleanText(question, 600)}`
-  ].join("\n");
+  ].filter(Boolean).join("\n");
 }
 
 function extractGeminiText(data) {
@@ -139,7 +142,10 @@ function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function callGeminiOnce(question, context, model, apiKey) {
+async function callGeminiOnce(question, context, model, apiKey, options = {}) {
+  const maxOutputTokens = Number.isFinite(Number(options.maxOutputTokens))
+    ? Number(options.maxOutputTokens)
+    : DEFAULT_MAX_OUTPUT_TOKENS;
   const response = await fetch(getGeminiEndpoint(model), {
     method: "POST",
     headers: {
@@ -150,12 +156,12 @@ async function callGeminiOnce(question, context, model, apiKey) {
       contents: [
         {
           role: "user",
-          parts: [{ text: buildPrompt(question, context) }]
+          parts: [{ text: buildPrompt(question, context, options) }]
         }
       ],
       generationConfig: {
         temperature: 0.55,
-        maxOutputTokens: 420
+        maxOutputTokens
       }
     })
   });
@@ -167,7 +173,7 @@ async function callGeminiOnce(question, context, model, apiKey) {
     };
   }
   if (data?.candidates?.[0]?.finishReason === "MAX_TOKENS") {
-    return { error: "Gemini answer was truncated", status: 502 };
+    return { error: "Gemini answer was truncated", status: 502, reason: "truncated" };
   }
   const answer = extractGeminiText(data);
   if (!answer) return { error: "Gemini returned an empty answer", status: 502 };
@@ -180,6 +186,20 @@ async function askGemini(question, context, env) {
   }
   const model = env.GEMINI_MODEL || DEFAULT_MODEL;
   const firstResult = await callGeminiOnce(question, context, model, env.GEMINI_API_KEY);
+  if (firstResult.reason === "truncated") {
+    await wait(getRetryDelayMs(env));
+    const compactResult = await callGeminiOnce(question, context, model, env.GEMINI_API_KEY, {
+      compactRetry: true,
+      maxOutputTokens: TRUNCATED_RETRY_MAX_OUTPUT_TOKENS
+    });
+    if (compactResult.error) {
+      return {
+        ...compactResult,
+        retried: true
+      };
+    }
+    return compactResult;
+  }
   if (!shouldRetryGeminiError(firstResult)) return firstResult;
   await wait(getRetryDelayMs(env));
   const secondResult = await callGeminiOnce(question, context, model, env.GEMINI_API_KEY);

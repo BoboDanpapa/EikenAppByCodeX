@@ -173,6 +173,10 @@ assert(
   sandbox.formatTeacherBackendError({ status: 503, error: "This model is currently experiencing high demand. Please try again later." }).includes("混み合っています"),
   "High-demand Gemini errors are not shown as a friendly congestion message"
 );
+assert(
+  sandbox.formatTeacherBackendError({ status: 502, error: "Gemini answer was truncated" }).includes("長くなりすぎました"),
+  "Truncated Gemini answers are not shown as a friendly length message"
+);
 assert(sandbox.formatTeacherBackendError({ error: "Gemini answer was incomplete." }).includes("Gemini先生で問題"), "Generic Gemini errors are not shown clearly");
 
 sandbox.teacherConversationHistory = [];
@@ -188,6 +192,8 @@ if (checkBackend) {
     "cleanHistory",
     "getQuestionIntent",
     "shouldRetryGeminiError",
+    "TRUNCATED_RETRY_MAX_OUTPUT_TOKENS",
+    "compactRetry",
     "Detected student intent",
     "off-topic",
     "Never repeat an example sentence you already gave",
@@ -196,7 +202,7 @@ if (checkBackend) {
     "Do not reuse the provided example sentence",
     "Only discuss English learning for the current vocabulary card",
     "GEMINI_RETRY_DELAY_MS",
-    "maxOutputTokens: 420"
+    "DEFAULT_MAX_OUTPUT_TOKENS"
   ]) {
     assert(backendSource.includes(required), `Missing backend teacher requirement: ${required}`);
   }
