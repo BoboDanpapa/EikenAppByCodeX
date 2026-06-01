@@ -119,6 +119,7 @@ for (const fn of [
   "normalizeTeacherText",
   "isNewExampleRequest",
   "shouldRejectTeacherAnswer",
+  "formatTeacherBackendError",
   "buildNewExampleFallback",
   "buildFallbackTeacherAnswer",
   "addTeacherConversationTurn"
@@ -153,6 +154,10 @@ const offTopicFallback = sandbox.buildFallbackTeacherAnswer("雑談しましょ�
 assert(offTopicFallback === "I am your English teacher. Let's talk about this word: a lot of.", `Off-topic fallback was wrong: ${offTopicFallback}`);
 const unclearFallback = sandbox.buildFallbackTeacherAnswer("please help");
 assert(!unclearFallback.includes("I have a lot of books"), "Unclear fallback repeated the card default example");
+assert(!scriptSource.includes("return buildFallbackTeacherAnswer(questionText);"), "Gemini path still falls back to fake teacher answers");
+assert(scriptSource.includes("Gemini先生の利用回数制限"), "Missing visible Gemini quota message");
+assert(sandbox.formatTeacherBackendError({ status: 429, error: "quota exceeded" }).includes("利用回数制限"), "429 is not shown as a Gemini quota problem");
+assert(sandbox.formatTeacherBackendError({ error: "Gemini answer was incomplete." }).includes("Gemini先生で問題"), "Generic Gemini errors are not shown clearly");
 
 sandbox.teacherConversationHistory = [];
 for (let i = 1; i <= 5; i += 1) sandbox.addTeacherConversationTurn(`q${i}`, `a${i}`);

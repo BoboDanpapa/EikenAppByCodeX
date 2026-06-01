@@ -405,7 +405,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.26</div>
+<div class="version-badge">v1.1.27</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -468,7 +468,6 @@ let teacherShouldKeepListening = false;
 let teacherRecognitionRestartId = null;
 let teacherSpeaking = false;
 let teacherAnswerInFlight = false;
-let teacherGeminiBackendUnavailable = false;
 let teacherRecognitionLanguageIndex = 0;
 let teacherRecognitionHeardText = "";
 let teacherRecognitionHeardConfidence = 0;
@@ -1238,21 +1237,30 @@ async function answerBrowserTeacherQuestion(questionText) {
     if (!cleanedQuestion || cleanedQuestion === teacherLastAnsweredText || teacherAnswerInFlight) return;
     teacherAnswerInFlight = true;
     teacherLastAnsweredText = cleanedQuestion;
-    countTeacherQuestionOnce(cleanedQuestion);
-    teacherSpeaking = true;
     pauseTeacherRecognitionForAnswer();
     const status = document.getElementById("teacher-status");
     if (status) status.innerText = `聞こえました: ${cleanedQuestion}\n先生が考えています...`;
-    const answer = await buildBrowserTeacherAnswer(cleanedQuestion);
-    if (status) {
-        status.innerText = `聞こえました: ${cleanedQuestion}\n先生: ${answer}`;
+    try {
+        const result = await buildBrowserTeacherAnswer(cleanedQuestion);
+        if (!result.answer) {
+            if (status) status.innerText = `聞こえました: ${cleanedQuestion}\n${formatTeacherBackendError(result)}`;
+            return;
+        }
+        const answer = result.answer;
+        countTeacherQuestionOnce(cleanedQuestion);
+        if (status) {
+            status.innerText = `聞こえました: ${cleanedQuestion}\n先生: ${answer}`;
+        }
+        addTeacherConversationTurn(cleanedQuestion, answer);
+        teacherSpeaking = true;
+        await speakTeacherAnswer(answer);
+    } finally {
+        teacherSpeaking = false;
+        teacherListening = false;
+        stopTeacherTimer(true);
+        teacherAnswerInFlight = false;
+        renderTeacherDemo();
     }
-    addTeacherConversationTurn(cleanedQuestion, answer);
-    await speakTeacherAnswer(answer);
-    teacherListening = false;
-    stopTeacherTimer(true);
-    teacherAnswerInFlight = false;
-    renderTeacherDemo();
 }
 
 function addTeacherConversationTurn(questionText, answerText) {
@@ -1286,9 +1294,16 @@ function normalizeTeacherQuestion(value) {
 }
 
 async function buildBrowserTeacherAnswer(questionText) {
-    const geminiAnswer = await fetchGeminiTeacherAnswer(questionText);
-    if (geminiAnswer && isCompleteTeacherAnswer(geminiAnswer) && !shouldRejectTeacherAnswer(questionText, geminiAnswer)) return geminiAnswer;
-    return buildFallbackTeacherAnswer(questionText);
+    const result = await fetchGeminiTeacherAnswer(questionText);
+    if (result.error) return result;
+    const answer = String(result.answer || "").trim();
+    if (!isCompleteTeacherAnswer(answer)) {
+        return { error: "Gemini answer was incomplete. Please try again." };
+    }
+    if (shouldRejectTeacherAnswer(questionText, answer)) {
+        return { error: "Gemini repeated an old example. Please try again." };
+    }
+    return { answer };
 }
 
 function normalizeTeacherText(value) {
@@ -1329,7 +1344,7 @@ function getGeminiBackendUrl() {
 
 async function fetchGeminiTeacherAnswer(questionText) {
     const baseUrl = getGeminiBackendUrl();
-    if (!baseUrl || teacherGeminiBackendUnavailable) return "";
+    if (!baseUrl) return { error: "Gemini backend is not configured." };
     try {
         const response = await fetch(`${baseUrl}/api/teacher/ask`, {
             method: "POST",
@@ -1339,15 +1354,34 @@ async function fetchGeminiTeacherAnswer(questionText) {
                 context: getTeacherContext()
             })
         });
-        if (!response.ok) throw new Error(`backend ${response.status}`);
-        const data = await response.json();
-        return String(data.answer || "").trim();
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            return {
+                error: data.error || `Gemini backend error ${response.status}`,
+                status: response.status
+            };
+        }
+        const answer = String(data.answer || "").trim();
+        if (!answer) return { error: "Gemini returned an empty answer." };
+        return { answer };
     } catch (error) {
-        teacherGeminiBackendUnavailable = true;
-        const status = document.getElementById("teacher-status");
-        if (status) status.innerText = "Gemini先生につながりません。今はオフライン先生で答えます。";
-        return "";
+        return {
+            error: error.message || "Gemini backend could not be reached.",
+            status: 0
+        };
     }
+}
+
+function formatTeacherBackendError(result) {
+    const raw = String(result && result.error ? result.error : "Gemini is not available right now.");
+    if (result && result.status === 429) {
+        return "Gemini先生の利用回数制限に当たっています。少し待ってからもう一度試してください。";
+    }
+    if (/quota|rate.?limit|exceeded/i.test(raw)) {
+        return "Gemini先生の利用回数制限に当たっています。少し待ってからもう一度試してください。";
+    }
+    const short = raw.length > 160 ? `${raw.slice(0, 157)}...` : raw;
+    return `Gemini先生で問題が起きました: ${short}`;
 }
 
 function buildFallbackTeacherAnswer(questionText) {
