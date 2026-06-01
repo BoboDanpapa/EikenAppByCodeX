@@ -82,6 +82,8 @@ for (const required of [
   "English",
   "teacherConversationHistory",
   "history: teacherConversationHistory",
+  "TEACHER_RECOGNITION_INTERIM_SUBMIT_MS",
+  "TEACHER_RECOGNITION_MAX_LISTEN_MS",
   "isCompleteTeacherAnswer",
   "shouldRejectTeacherAnswer",
   "buildNewExampleFallback"
@@ -156,6 +158,10 @@ const unclearFallback = sandbox.buildFallbackTeacherAnswer("please help");
 assert(!unclearFallback.includes("I have a lot of books"), "Unclear fallback repeated the card default example");
 assert(!scriptSource.includes("return buildFallbackTeacherAnswer(questionText);"), "Gemini path still falls back to fake teacher answers");
 assert(scriptSource.includes("Gemini先生の利用回数制限"), "Missing visible Gemini quota message");
+assert(scriptSource.includes("recognition.continuous = false"), "Teacher microphone must capture one question per press, not stay in continuous mode");
+assert(!scriptSource.includes("scheduleTeacherRecognitionRestart(status);"), "Teacher microphone must not auto-restart after a no-speech end event");
+assert(scriptSource.includes("const finalQuestion = (cycleFinalText || teacherRecognitionHeardText || latestInterimText).trim();"), "Teacher microphone must submit stable interim text when the browser never emits a final result");
+assert(scriptSource.includes("teacherListening = false;\n        stopTeacherTimer(true);\n        if (status) status.innerText = \"質問が聞こえませんでした。もう一度マイクを押して話してください。\";"), "Teacher microphone no-speech end path must release listening state");
 assert(sandbox.formatTeacherBackendError({ status: 429, error: "quota exceeded" }).includes("利用回数制限"), "429 is not shown as a Gemini quota problem");
 assert(sandbox.formatTeacherBackendError({ error: "Gemini answer was incomplete." }).includes("Gemini先生で問題"), "Generic Gemini errors are not shown clearly");
 

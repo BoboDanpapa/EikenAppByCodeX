@@ -36,5 +36,8 @@ jobs:
       - name: Check local PWA smoke
         run: node scripts/smoke-pwa-local.mjs
 
+      - name: Check PWA teacher microphone flow
+        run: node scripts/test-pwa-teacher-mic.mjs
+
       - name: Check backend Worker syntax
         run: node --check pwa-backend/src/worker.js

@@ -405,7 +405,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.27</div>
+<div class="version-badge">v1.1.28</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -479,6 +479,8 @@ let teacherConversationHistory = [];
 const TEACHER_RECOGNITION_LANGUAGES = ["ja-JP", "en-US"];
 const TEACHER_LOW_CONFIDENCE_THRESHOLD = 0.45;
 const TEACHER_RECOGNITION_FINISH_DELAY_MS = 900;
+const TEACHER_RECOGNITION_INTERIM_SUBMIT_MS = 1600;
+const TEACHER_RECOGNITION_MAX_LISTEN_MS = 12000;
 const TEACHER_MAX_QUESTIONS = 5;
 const TEACHER_HISTORY_MAX_MESSAGES = 8;
 const TEACHER_WORD_LIMIT_SECONDS = 20 * 60;
@@ -1066,7 +1068,7 @@ function startBrowserTeacherSpeech(status) {
 }
 
 function startTeacherRecognitionCycle(status) {
-    if (!teacherShouldKeepListening || teacherRecognition || teacherSpeaking) return;
+    if (!teacherShouldKeepListening || teacherRecognition || teacherSpeaking || teacherAnswerInFlight) return;
     const Recognition = getSpeechRecognitionConstructor();
     const recognition = new Recognition();
     teacherRecognition = recognition;
@@ -1075,25 +1077,51 @@ function startTeacherRecognitionCycle(status) {
     const recognitionLanguage = getTeacherRecognitionLanguage();
     let cycleFinalText = "";
     let cycleConfidence = 0;
+    let latestInterimText = "";
     let finishTimer = null;
-    const finishRecognitionSoon = () => {
+    let interimSubmitTimer = null;
+    let maxListenTimer = null;
+    let recognitionHadError = false;
+    const clearRecognitionTimers = () => {
+        if (finishTimer) window.clearTimeout(finishTimer);
+        if (interimSubmitTimer) window.clearTimeout(interimSubmitTimer);
+        if (maxListenTimer) window.clearTimeout(maxListenTimer);
+        finishTimer = null;
+        interimSubmitTimer = null;
+        maxListenTimer = null;
+    };
+    const stopRecognitionSafely = () => {
+        try {
+            recognition.stop();
+        } catch (error) {
+            // Some browsers throw if recognition already ended.
+        }
+    };
+    const finishRecognitionSoon = (delayMs = TEACHER_RECOGNITION_FINISH_DELAY_MS) => {
         if (finishTimer) window.clearTimeout(finishTimer);
         finishTimer = window.setTimeout(() => {
             finishTimer = null;
-            try {
-                recognition.stop();
-            } catch (error) {
-                // Some browsers throw if recognition already ended.
-            }
-        }, TEACHER_RECOGNITION_FINISH_DELAY_MS);
+            stopRecognitionSafely();
+        }, delayMs);
+    };
+    const submitStableInterimSoon = () => {
+        if (interimSubmitTimer) window.clearTimeout(interimSubmitTimer);
+        interimSubmitTimer = window.setTimeout(() => {
+            interimSubmitTimer = null;
+            if (!cycleFinalText && latestInterimText) finishRecognitionSoon(0);
+        }, TEACHER_RECOGNITION_INTERIM_SUBMIT_MS);
     };
     recognition.lang = recognitionLanguage;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
-    recognition.continuous = true;
+    recognition.continuous = false;
 
     recognition.onstart = () => {
-        if (status) status.innerText = `${getTeacherRecognitionLanguageLabel(recognitionLanguage)}で聞いています。日本語でも英語でも質問できます。`;
+        maxListenTimer = window.setTimeout(() => {
+            maxListenTimer = null;
+            stopRecognitionSafely();
+        }, TEACHER_RECOGNITION_MAX_LISTEN_MS);
+        if (status) status.innerText = `${getTeacherRecognitionLanguageLabel(recognitionLanguage)}で聞いています。質問を1つ話してください。`;
         renderTeacherDemo();
     };
 
@@ -1106,16 +1134,17 @@ function startTeacherRecognitionCycle(status) {
             const text = event.results[i][0] ? event.results[i][0].transcript.trim() : "";
             if (!text) continue;
             if (event.results[i].isFinal) {
-                finalText += text;
+                finalText = `${finalText} ${text}`.trim();
                 finalConfidence = Math.max(finalConfidence, event.results[i][0].confidence || 0);
             } else {
-                interimText += text;
+                interimText = `${interimText} ${text}`.trim();
             }
         }
         if (finalText) {
             cycleFinalText = `${cycleFinalText} ${finalText}`.trim();
             cycleConfidence = Math.max(cycleConfidence, finalConfidence);
         }
+        if (interimText) latestInterimText = interimText;
         const heard = `${cycleFinalText} ${interimText}`.trim();
         if (heard) {
             teacherRecognitionHeardText = heard;
@@ -1126,35 +1155,41 @@ function startTeacherRecognitionCycle(status) {
         }
         if (finalText) {
             finishRecognitionSoon();
+        } else if (interimText) {
+            submitStableInterimSoon();
         }
     };
 
     recognition.onerror = event => {
+        recognitionHadError = true;
+        clearRecognitionTimers();
         teacherRecognition = null;
-        if (event.error === "not-allowed" || event.error === "service-not-allowed") {
-            teacherShouldKeepListening = false;
-            teacherListening = false;
-            stopTeacherTimer(true);
-        }
+        teacherShouldKeepListening = false;
+        teacherListening = false;
+        stopTeacherTimer(true);
         if (status) {
             status.innerText = event.error === "not-allowed" || event.error === "service-not-allowed"
                 ? "マイクの許可がありません。ブラウザのマイク許可を確認してください。"
-                : "聞こえませんでした。もう一度そのまま話してください。";
+                : "聞こえませんでした。もう一度マイクを押して、質問を話してください。";
         }
         renderTeacherDemo();
     };
 
     recognition.onend = () => {
-        if (finishTimer) {
-            window.clearTimeout(finishTimer);
-            finishTimer = null;
-        }
+        clearRecognitionTimers();
         teacherRecognition = null;
-        const finalQuestion = cycleFinalText.trim();
+        if (recognitionHadError) {
+            renderTeacherDemo();
+            return;
+        }
+        const finalQuestion = (cycleFinalText || teacherRecognitionHeardText || latestInterimText).trim();
         if (finalQuestion) {
             if (shouldRetryTeacherRecognition(finalQuestion, cycleConfidence, recognitionLanguage)) {
                 teacherRecognitionHeardText = "";
                 teacherRecognitionHeardConfidence = 0;
+                teacherShouldKeepListening = false;
+                teacherListening = false;
+                stopTeacherTimer(true);
                 if (status) status.innerText = `${getTeacherRecognitionLanguageLabel(recognitionLanguage)}としてうまく聞き取れませんでした。言語を確認して、もう一度同じ質問を話してください。`;
                 renderTeacherDemo();
                 return;
@@ -1166,16 +1201,10 @@ function startTeacherRecognitionCycle(status) {
             renderTeacherDemo();
             return;
         }
-        if (canContinueBrowserTeacherListening()) {
-            if (status && !teacherRecognitionHeardText) {
-                status.innerText = `${getTeacherRecognitionLanguageLabel(getTeacherRecognitionLanguage())}で聞いています。`;
-            }
-            scheduleTeacherRecognitionRestart(status);
-        } else {
-            teacherShouldKeepListening = false;
-            teacherListening = false;
-            stopTeacherTimer(true);
-        }
+        teacherShouldKeepListening = false;
+        teacherListening = false;
+        stopTeacherTimer(true);
+        if (status) status.innerText = "質問が聞こえませんでした。もう一度マイクを押して話してください。";
         renderTeacherDemo();
     };
 
