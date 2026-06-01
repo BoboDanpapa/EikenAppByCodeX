@@ -1,0 +1,40 @@
+name: PWA Release Check
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "pwa/**"
+      - "pwa-backend/**"
+      - "scripts/**"
+      - ".github/workflows/pwa-release-check.yml"
+  push:
+    branches:
+      - main
+      - "codex/**"
+    paths:
+      - "pwa/**"
+      - "pwa-backend/**"
+      - "scripts/**"
+      - ".github/workflows/pwa-release-check.yml"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check PWA release rules
+        run: node scripts/check-pwa-release.mjs
+
+      - name: Check local PWA smoke
+        run: node scripts/smoke-pwa-local.mjs
+
+      - name: Check backend Worker syntax
+        run: node --check pwa-backend/src/worker.js

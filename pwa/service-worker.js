@@ -1,4 +1,4 @@
-const CACHE_VERSION = "eiken-magicwords-pwa-v1.1.23";
+const CACHE_VERSION = "eiken-magicwords-pwa-v1.1.24";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -53,14 +53,73 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        const copy = response.clone();
-        caches.open(CACHE_VERSION).then(cache => cache.put(event.request, copy));
-        return response;
-      });
-    })
-  );
+  if (isNavigationRequest(event.request)) {
+    event.respondWith(networkFirst(event.request));
+    return;
+  }
+  if (isFreshAssetRequest(event.request)) {
+    event.respondWith(networkFirst(event.request));
+    return;
+  }
+  if (isStaticDataRequest(event.request)) {
+    event.respondWith(staleWhileRevalidate(event.request));
+    return;
+  }
+  event.respondWith(cacheFirst(event.request));
 });
+
+function isNavigationRequest(request) {
+  return request.mode === "navigate" ||
+    (request.destination === "document") ||
+    new URL(request.url).pathname.endsWith("/index.html");
+}
+
+function isFreshAssetRequest(request) {
+  const path = new URL(request.url).pathname;
+  return path.endsWith("/service-worker.js") ||
+    path.endsWith("/backend-config.js") ||
+    path.endsWith("/manifest.webmanifest");
+}
+
+function isStaticDataRequest(request) {
+  return new URL(request.url).pathname.endsWith(".js");
+}
+
+async function networkFirst(request) {
+  const cache = await caches.open(CACHE_VERSION);
+  try {
+    const response = await fetch(request, { cache: "no-store" });
+    if (response && response.ok) await cache.put(request, response.clone());
+    return response;
+  } catch (error) {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    if (isNavigationRequest(request)) return caches.match("./index.html");
+    throw error;
+  }
+}
+
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(CACHE_VERSION);
+  const cached = await caches.match(request);
+  const fresh = fetch(request).then(response => {
+    if (response && response.ok) cache.put(request, response.clone());
+    return response;
+  });
+  if (cached) {
+    fresh.catch(() => undefined);
+    return cached;
+  }
+  return fresh;
+}
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  const response = await fetch(request);
+  if (response && response.ok) {
+    const cache = await caches.open(CACHE_VERSION);
+    await cache.put(request, response.clone());
+  }
+  return response;
+}
