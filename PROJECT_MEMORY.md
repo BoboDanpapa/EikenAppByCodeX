@@ -50,6 +50,7 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.26`: Tightened PWA teacher intent detection. Treat "sample" as an example request, refuse Japanese/English small-talk requests locally, and avoid falling back to the card's default example for unclear questions.
 - `v1.1.27`: Removed fake PWA teacher fallback answers from the Gemini path. If the backend/Gemini returns quota, network, incomplete-answer, or repeated-example errors, the PWA shows an explicit Gemini problem message and does not count the question or write teacher history.
 - `v1.1.28`: Fixed PWA teacher microphone capture getting stuck in listening mode. Browser speech recognition is now one-question-per-press, uses non-continuous recognition, actively stops after final speech or stable interim speech, has a hard listening timeout, and releases the microphone button on no-speech/error paths.
+- Friend-facing PWA `v1.1.29`: Temporarily disabled the `先生に聞く` button only in `BoboDanpapa/EikenMagicwordsPWA` because the PWA English teacher is still unstable. The source PWA in `EikenAppByCodeX/pwa/` stays enabled for testing.
 - PWA teacher panel should not display the `のこり` remaining-time row; keep the daily limit internally, but only show current-card time and today's used teacher time.
 
 ## Important Behavior
@@ -138,6 +139,8 @@ Every time a new APK is generated:
 - The PWA build lives in `pwa/` and should remain a self-contained static web app build separate from the Android APK source.
 - The separate GitHub publishing repository is `BoboDanpapa/EikenMagicwordsPWA`.
 - Publish the contents of `pwa/` at the root of `BoboDanpapa/EikenMagicwordsPWA`; do not publish the full Android project there.
+- New release rule from 2026-06-01: unless the user explicitly says to publish to the friend-facing PWA repo, do not sync or push the latest `pwa/` changes to `BoboDanpapa/EikenMagicwordsPWA`. Push normal development changes only to `BoboDanpapa/EikenAppByCodeX` so the user can test there first.
+- The friend-facing repo may intentionally diverge from `pwa/` for stability. As of friend-facing `v1.1.29`, `BoboDanpapa/EikenMagicwordsPWA` has the `先生に聞く` button disabled/grayed out, while `EikenAppByCodeX/pwa/` keeps the teacher feature enabled for testing.
 - GitHub Pages should deploy from the `main` branch and `/ (root)`.
 - Expected GitHub Pages URL:
   `https://bobodanpapa.github.io/EikenMagicwordsPWA/`
