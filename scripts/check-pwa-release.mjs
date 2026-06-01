@@ -130,6 +130,7 @@ assert(!sandbox.isCompleteTeacherAnswer('The opposite of "a lot of" is'), "Incom
 assert(sandbox.isCompleteTeacherAnswer("The opposite is a few books."), "Complete Gemini answer was rejected");
 assert(sandbox.isNewExampleRequest("他の例文を作ってください"), "Japanese new-example request was not detected");
 assert(sandbox.isNewExampleRequest("Give me another example sentence."), "English new-example request was not detected");
+assert(sandbox.isNewExampleRequest("give me another sample please"), "English sample request was not detected");
 assert(
   sandbox.shouldRejectTeacherAnswer("他の例文をください", "Here is another example: I have a lot of books."),
   "Repeated original example was not rejected"
@@ -145,6 +146,13 @@ assert(
 const secondFallback = sandbox.buildFallbackTeacherAnswer("もう一つ例文をください");
 assert(secondFallback.includes("stickers"), `Second fallback did not rotate examples: ${secondFallback}`);
 assert(!secondFallback.includes("a lot of stars"), "Second fallback repeated the prior teacher example");
+const sampleFallback = sandbox.buildFallbackTeacherAnswer("give me another sample please");
+assert(sampleFallback.startsWith("Here is another example:"), `Sample fallback did not use the example path: ${sampleFallback}`);
+assert(!sampleFallback.includes("I have a lot of books"), "Sample fallback repeated the original example");
+const offTopicFallback = sandbox.buildFallbackTeacherAnswer("雑談しましょうか");
+assert(offTopicFallback === "I am your English teacher. Let's talk about this word: a lot of.", `Off-topic fallback was wrong: ${offTopicFallback}`);
+const unclearFallback = sandbox.buildFallbackTeacherAnswer("please help");
+assert(!unclearFallback.includes("I have a lot of books"), "Unclear fallback repeated the card default example");
 
 sandbox.teacherConversationHistory = [];
 for (let i = 1; i <= 5; i += 1) sandbox.addTeacherConversationTurn(`q${i}`, `a${i}`);
@@ -159,6 +167,7 @@ if (checkBackend) {
     "cleanHistory",
     "getQuestionIntent",
     "Detected student intent",
+    "off-topic",
     "Never repeat an example sentence you already gave",
     "Recent conversation for this same word",
     "Use the recent conversation",

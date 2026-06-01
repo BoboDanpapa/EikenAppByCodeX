@@ -58,7 +58,10 @@ function cleanHistory(value) {
 
 function getQuestionIntent(question) {
   const q = String(question || "").toLowerCase();
-  if (/(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new).*(例文|例|sentence|example)|(例文|例|sentence|example).*(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new)/.test(q)) {
+  if (/雑談|おしゃべり|関係ない|関係ない話|天気|ゲーム|冗談|歌|ニュース|政治|free talk|small talk|chat|weather|game|joke|song|news|politics/.test(q)) {
+    return "off-topic";
+  }
+  if (/(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new).*(例文|例|文|sentence|example|sample)|(例文|例|文|sentence|example|sample).*(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new)|give me.*(example|sample)|make.*(sentence|example|sample)/.test(q)) {
     return "new-example";
   }
   if (/反対|反対語|反対言葉|逆|opposite|antonym/.test(q)) return "opposite";
@@ -92,6 +95,7 @@ function buildPrompt(question, context) {
     "Use the detected intent below to avoid generic answers.",
     "If the intent is new-example, answer with a fresh English example sentence first. Do not explain the meaning first.",
     "If the intent is opposite, answer the opposite or say that it depends on the sentence.",
+    "If the intent is off-topic, use the exact off-topic refusal sentence.",
     "If the intent is follow-up, use the recent conversation to understand words like another, it, that, or again.",
     "Do not reuse the provided example sentence.",
     "Never repeat an example sentence you already gave in the recent conversation.",

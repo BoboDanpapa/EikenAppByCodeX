@@ -405,7 +405,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.25</div>
+<div class="version-badge">v1.1.26</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -1297,7 +1297,7 @@ function normalizeTeacherText(value) {
 
 function isNewExampleRequest(questionText) {
     const q = String(questionText || "").toLowerCase();
-    return /(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new).*(例文|例|sentence|example)|(例文|例|sentence|example).*(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new)/.test(q);
+    return /(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new).*(例文|例|文|sentence|example|sample)|(例文|例|文|sentence|example|sample).*(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new)|give me.*(example|sample)|make.*(sentence|example|sample)/.test(q);
 }
 
 function shouldRejectTeacherAnswer(questionText, answerText) {
@@ -1353,16 +1353,16 @@ async function fetchGeminiTeacherAnswer(questionText) {
 function buildFallbackTeacherAnswer(questionText) {
     const context = getTeacherContext();
     const q = String(questionText || "").toLowerCase();
-    const offTopic = /天気|ゲーム|冗談|歌|ニュース|政治|weather|game|joke|song|news|politics|chat/.test(q);
+    const offTopic = /雑談|おしゃべり|関係ない|関係ない話|天気|ゲーム|冗談|歌|ニュース|政治|free talk|small talk|chat|weather|game|joke|song|news|politics/.test(q);
     const wantsMeaning = /意味|いみ|どういう|何|what|mean|meaning|日本語/.test(q);
-    const wantsExample = /例文|例|sentence|example|使い方|use|使う/.test(q);
+    const wantsExample = /例文|例|文|sentence|example|sample|使い方|use|使う/.test(q);
     const wantsPronunciation = /発音|読み|よみ|pronounce|pronunciation|read|say/.test(q);
     const wantsDifference = /違い|ちがい|similar|difference|different|同じ|似/.test(q);
     const wantsOpposite = /反対|反対語|反対言葉|逆|opposite|antonym/.test(q);
     const wantsJapanese = /日本語|和訳|訳|translate|翻訳/.test(q);
 
     if (offTopic) {
-        return `Let's stay with this word: ${context.word}. I can help with its meaning, pronunciation, examples, or similar words.`;
+        return `I am your English teacher. Let's talk about this word: ${context.word}.`;
     }
     if (wantsPronunciation) {
         return `Let's say it slowly: ${context.word}. ${context.word}. Now try it with me.`;
@@ -1382,7 +1382,7 @@ function buildFallbackTeacherAnswer(questionText) {
     if (wantsMeaning || wantsJapanese) {
         return `${context.word} means "${context.jp}" in Japanese. You can remember it with this sentence: ${context.enSent}`;
     }
-    return `I heard your question about ${context.word}. For this word, a useful point is: ${context.enSent}`;
+    return `I heard your question about ${context.word}. Please ask me about its meaning, an example sentence, pronunciation, or a similar word.`;
 }
 
 function buildNewExampleFallback(context) {
@@ -1400,6 +1400,18 @@ function buildNewExampleFallback(context) {
             "The picnic will depend on the weather.",
             "Children depend on adults for help.",
             "Your score can depend on careful reading."
+        ],
+        "preserve": [
+            "We should preserve old photos carefully.",
+            "The museum preserves important paintings.",
+            "Please preserve this memory in your diary.",
+            "Many people work to preserve clean rivers."
+        ],
+        "encourage": [
+            "My coach encourages me before a game.",
+            "Kind words can encourage your friends.",
+            "Teachers encourage students to try again.",
+            "This song encourages me when I feel nervous."
         ]
     };
     const examples = examplesByWord[lower] || [

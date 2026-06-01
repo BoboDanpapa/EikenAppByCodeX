@@ -47,6 +47,7 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.23`: Fixed repeated example answers in the PWA teacher. When the student asks for another/new/different example sentence, the backend prompt must not reuse the card's original example, and the PWA must reject Gemini answers that repeat the original example and use a new-example fallback instead.
 - `v1.1.24`: Added release automation hardening: GitHub Actions for PWA backend deploy/checks, reusable PWA release test scripts, and a service worker strategy that uses network-first for navigation/fresh config so friends get new PWA versions on the next open without manual cache clearing.
 - `v1.1.25`: Improved PWA teacher answer quality for follow-up questions. The backend prompt now detects question intent, uses recent same-word history for follow-ups, and explicitly forbids repeating card or prior teacher examples; the PWA fallback rotates examples instead of returning the same sentence every time.
+- `v1.1.26`: Tightened PWA teacher intent detection. Treat "sample" as an example request, refuse Japanese/English small-talk requests locally, and avoid falling back to the card's default example for unclear questions.
 - PWA teacher panel should not display the `のこり` remaining-time row; keep the daily limit internally, but only show current-card time and today's used teacher time.
 
 ## Important Behavior
@@ -73,6 +74,7 @@ Current design for `先生に聞く`:
 - PWA/Web text-backend teacher must include recent same-word conversation history in backend requests. Keep the history short, current-word-only, and reset it on word changes; use it so the 5 allowed questions behave like one short conversation rather than five isolated Gemini calls.
 - When the student asks for another/new/different example sentence, the PWA/Web teacher must generate a new example using the current word. Do not repeat the card's original `enSent`; validate Gemini answers and fall back if they reuse it.
 - When the student asks follow-up questions such as another one / もう一つ / それ, the PWA/Web teacher should use recent same-word history to infer the intent and must not repeat prior teacher examples.
+- PWA/Web teacher example detection must include both "example" and "sample"; off-topic requests such as 雑談 / small talk should get the fixed refusal instead of the generic card example fallback.
 - PWA service worker must not cache-first `index.html`, `service-worker.js`, `backend-config.js`, or manifest forever. Keep navigation/config fresh enough that a released version appears on the next app open without asking friends to manually clear browser cache.
 - The Live session is kept alive across word changes to reduce reconnects. Pressing `前へ` / `次へ` must not send the new word to Gemini.
 - Lazy context update is intentional: the app sends the current word to Gemini only when the user opens `先生に聞く` for that card, or when starting a new conversation from `マイク`.
