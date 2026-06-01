@@ -86,6 +86,7 @@ for (const required of [
   "TEACHER_RECOGNITION_MAX_LISTEN_MS",
   "isCompleteTeacherAnswer",
   "shouldRejectTeacherAnswer",
+  "isAnotherFollowUpRequest",
   "buildNewExampleFallback"
 ]) {
   assert(html.includes(required), `Missing PWA teacher requirement: ${required}`);
@@ -120,6 +121,7 @@ for (const fn of [
   "isCompleteTeacherAnswer",
   "normalizeTeacherText",
   "isNewExampleRequest",
+  "isAnotherFollowUpRequest",
   "shouldRejectTeacherAnswer",
   "formatTeacherBackendError",
   "buildNewExampleFallback",
@@ -146,6 +148,10 @@ assert(
   sandbox.shouldRejectTeacherAnswer("もう一つ例文をください", fallback),
   "Repeated prior teacher example was not rejected"
 );
+assert(
+  sandbox.shouldRejectTeacherAnswer("another one", fallback),
+  "Repeated prior teacher example was not rejected for terse follow-up"
+);
 const secondFallback = sandbox.buildFallbackTeacherAnswer("もう一つ例文をください");
 assert(secondFallback.includes("stickers"), `Second fallback did not rotate examples: ${secondFallback}`);
 assert(!secondFallback.includes("a lot of stars"), "Second fallback repeated the prior teacher example");
@@ -163,6 +169,10 @@ assert(!scriptSource.includes("scheduleTeacherRecognitionRestart(status);"), "Te
 assert(scriptSource.includes("const finalQuestion = (cycleFinalText || teacherRecognitionHeardText || latestInterimText).trim();"), "Teacher microphone must submit stable interim text when the browser never emits a final result");
 assert(scriptSource.includes("teacherListening = false;\n        stopTeacherTimer(true);\n        if (status) status.innerText = \"質問が聞こえませんでした。もう一度マイクを押して話してください。\";"), "Teacher microphone no-speech end path must release listening state");
 assert(sandbox.formatTeacherBackendError({ status: 429, error: "quota exceeded" }).includes("利用回数制限"), "429 is not shown as a Gemini quota problem");
+assert(
+  sandbox.formatTeacherBackendError({ status: 503, error: "This model is currently experiencing high demand. Please try again later." }).includes("混み合っています"),
+  "High-demand Gemini errors are not shown as a friendly congestion message"
+);
 assert(sandbox.formatTeacherBackendError({ error: "Gemini answer was incomplete." }).includes("Gemini先生で問題"), "Generic Gemini errors are not shown clearly");
 
 sandbox.teacherConversationHistory = [];
@@ -177,6 +187,7 @@ if (checkBackend) {
   for (const required of [
     "cleanHistory",
     "getQuestionIntent",
+    "shouldRetryGeminiError",
     "Detected student intent",
     "off-topic",
     "Never repeat an example sentence you already gave",
@@ -184,6 +195,7 @@ if (checkBackend) {
     "Use the recent conversation",
     "Do not reuse the provided example sentence",
     "Only discuss English learning for the current vocabulary card",
+    "GEMINI_RETRY_DELAY_MS",
     "maxOutputTokens: 420"
   ]) {
     assert(backendSource.includes(required), `Missing backend teacher requirement: ${required}`);

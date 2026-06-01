@@ -405,7 +405,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.28</div>
+<div class="version-badge">v1.1.30</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -1344,9 +1344,14 @@ function isNewExampleRequest(questionText) {
     return /(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new).*(例文|例|文|sentence|example|sample)|(例文|例|文|sentence|example|sample).*(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new)|give me.*(example|sample)|make.*(sentence|example|sample)/.test(q);
 }
 
+function isAnotherFollowUpRequest(questionText) {
+    const q = String(questionText || "").toLowerCase().trim();
+    return /^(もう一つ|もうひとつ|もう1つ|もう一回|もういっかい|別の|他の|another one|another|one more|more|again|different one|new one|other one)[\s。.!?？]*$/.test(q);
+}
+
 function shouldRejectTeacherAnswer(questionText, answerText) {
     const context = getTeacherContext();
-    if (!isNewExampleRequest(questionText)) return false;
+    if (!isNewExampleRequest(questionText) && !isAnotherFollowUpRequest(questionText)) return false;
     const normalizedAnswer = normalizeTeacherText(answerText);
     const forbiddenExamples = [
         context.enSent,
@@ -1387,7 +1392,8 @@ async function fetchGeminiTeacherAnswer(questionText) {
         if (!response.ok) {
             return {
                 error: data.error || `Gemini backend error ${response.status}`,
-                status: response.status
+                status: response.status,
+                retried: Boolean(data.retried)
             };
         }
         const answer = String(data.answer || "").trim();
@@ -1403,8 +1409,14 @@ async function fetchGeminiTeacherAnswer(questionText) {
 
 function formatTeacherBackendError(result) {
     const raw = String(result && result.error ? result.error : "Gemini is not available right now.");
+    if (result && [500, 502, 503, 504].includes(Number(result.status)) && /high demand|overloaded|temporar|try again later|unavailable/i.test(raw)) {
+        return "Gemini先生が今とても混み合っています。少し待ってからもう一度試してください。";
+    }
     if (result && result.status === 429) {
         return "Gemini先生の利用回数制限に当たっています。少し待ってからもう一度試してください。";
+    }
+    if (/high demand|overloaded|temporar|try again later|unavailable/i.test(raw)) {
+        return "Gemini先生が今とても混み合っています。少し待ってからもう一度試してください。";
     }
     if (/quota|rate.?limit|exceeded/i.test(raw)) {
         return "Gemini先生の利用回数制限に当たっています。少し待ってからもう一度試してください。";

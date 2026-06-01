@@ -1,4 +1,5 @@
 const DEFAULT_MODEL = "gemini-2.5-flash";
+const DEFAULT_RETRY_DELAY_MS = 700;
 
 function getGeminiEndpoint(model) {
   return `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
@@ -122,16 +123,28 @@ function extractGeminiText(data) {
   return parts.map(part => part.text || "").join("").trim();
 }
 
-async function askGemini(question, context, env) {
-  if (!env.GEMINI_API_KEY) {
-    return { error: "GEMINI_API_KEY is not configured", status: 500 };
-  }
-  const model = env.GEMINI_MODEL || DEFAULT_MODEL;
+function shouldRetryGeminiError(result) {
+  if (!result || !result.error) return false;
+  if ([429, 500, 502, 503, 504].includes(Number(result.status))) return true;
+  return /high demand|overloaded|temporar|try again later|rate.?limit|quota|unavailable/i.test(String(result.error));
+}
+
+function getRetryDelayMs(env) {
+  const configured = Number(env.GEMINI_RETRY_DELAY_MS);
+  if (!Number.isFinite(configured)) return DEFAULT_RETRY_DELAY_MS;
+  return Math.max(100, Math.min(3000, configured));
+}
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function callGeminiOnce(question, context, model, apiKey) {
   const response = await fetch(getGeminiEndpoint(model), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-goog-api-key": env.GEMINI_API_KEY
+      "x-goog-api-key": apiKey
     },
     body: JSON.stringify({
       contents: [
@@ -159,6 +172,24 @@ async function askGemini(question, context, env) {
   const answer = extractGeminiText(data);
   if (!answer) return { error: "Gemini returned an empty answer", status: 502 };
   return { answer };
+}
+
+async function askGemini(question, context, env) {
+  if (!env.GEMINI_API_KEY) {
+    return { error: "GEMINI_API_KEY is not configured", status: 500 };
+  }
+  const model = env.GEMINI_MODEL || DEFAULT_MODEL;
+  const firstResult = await callGeminiOnce(question, context, model, env.GEMINI_API_KEY);
+  if (!shouldRetryGeminiError(firstResult)) return firstResult;
+  await wait(getRetryDelayMs(env));
+  const secondResult = await callGeminiOnce(question, context, model, env.GEMINI_API_KEY);
+  if (secondResult.error) {
+    return {
+      ...secondResult,
+      retried: true
+    };
+  }
+  return secondResult;
 }
 
 async function handleTeacherAsk(request, env) {
@@ -190,7 +221,10 @@ export default {
       if (request.method === "POST" && url.pathname === "/api/teacher/ask") {
         const result = await handleTeacherAsk(request, env);
         if (result.error) {
-          return jsonResponse(request, env, result.status || 500, { error: result.error });
+          return jsonResponse(request, env, result.status || 500, {
+            error: result.error,
+            retried: Boolean(result.retried)
+          });
         }
         return jsonResponse(request, env, 200, { answer: result.answer });
       }

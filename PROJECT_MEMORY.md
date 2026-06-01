@@ -51,6 +51,7 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.27`: Removed fake PWA teacher fallback answers from the Gemini path. If the backend/Gemini returns quota, network, incomplete-answer, or repeated-example errors, the PWA shows an explicit Gemini problem message and does not count the question or write teacher history.
 - `v1.1.28`: Fixed PWA teacher microphone capture getting stuck in listening mode. Browser speech recognition is now one-question-per-press, uses non-continuous recognition, actively stops after final speech or stable interim speech, has a hard listening timeout, and releases the microphone button on no-speech/error paths.
 - Friend-facing PWA `v1.1.29`: Temporarily disabled the `先生に聞く` button only in `BoboDanpapa/EikenMagicwordsPWA` because the PWA English teacher is still unstable. The source PWA in `EikenAppByCodeX/pwa/` stays enabled for testing.
+- `v1.1.30`: Development PWA teacher resilience update. The Cloudflare Worker retries Gemini high-demand/rate-limit/temporary failures once after a short delay, the PWA shows the friendly Japanese congestion message for high-demand failures, failed Gemini attempts still do not count toward the 5-question limit, and terse follow-ups such as "another one" are checked against prior teacher examples so repeated examples are rejected.
 - PWA teacher panel should not display the `のこり` remaining-time row; keep the daily limit internally, but only show current-card time and today's used teacher time.
 
 ## Important Behavior
