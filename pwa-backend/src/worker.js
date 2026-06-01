@@ -56,6 +56,18 @@ function cleanHistory(value) {
     .filter(item => item.text);
 }
 
+function getQuestionIntent(question) {
+  const q = String(question || "").toLowerCase();
+  if (/(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new).*(例文|例|sentence|example)|(例文|例|sentence|example).*(他|別|違う|新しい|もう一つ|もうひとつ|別の|他の|another|other|different|new)/.test(q)) {
+    return "new-example";
+  }
+  if (/反対|反対語|反対言葉|逆|opposite|antonym/.test(q)) return "opposite";
+  if (/発音|読み|よみ|pronounce|pronunciation|read|say/.test(q)) return "pronunciation";
+  if (/違い|ちがい|similar|difference|different|同じ|似/.test(q)) return "comparison";
+  if (/意味|いみ|どういう|何|what|mean|meaning|日本語|和訳|訳|translate|翻訳/.test(q)) return "meaning";
+  return "follow-up";
+}
+
 function buildPrompt(question, context) {
   const levelLabel = cleanText(context.levelLabel || "EIKEN", 80);
   const word = cleanText(context.word, 120);
@@ -69,6 +81,7 @@ function buildPrompt(question, context) {
   const historyLines = history.length
     ? history.map(item => `${item.role === "teacher" ? "Teacher" : "Student"}: ${item.text}`)
     : ["No previous turns for this word."];
+  const intent = getQuestionIntent(question);
 
   return [
     "You are an English learning teacher for a child using a vocabulary card app.",
@@ -76,7 +89,12 @@ function buildPrompt(question, context) {
     "Only discuss English learning for the current vocabulary card: meaning, usage, pronunciation, example sentences, similar words, exam understanding, and simple practice.",
     "Do not chat casually. Do not answer unrelated questions. If the student goes off topic, say exactly: I am your English teacher. Let's talk about this word.",
     "Answer the student's exact question first. Do not merely repeat the card definition unless the student asked for the meaning.",
-    "If the student asks for another, different, or new example sentence, create a new sentence using the current word. Do not reuse the provided example sentence.",
+    "Use the detected intent below to avoid generic answers.",
+    "If the intent is new-example, answer with a fresh English example sentence first. Do not explain the meaning first.",
+    "If the intent is opposite, answer the opposite or say that it depends on the sentence.",
+    "If the intent is follow-up, use the recent conversation to understand words like another, it, that, or again.",
+    "Do not reuse the provided example sentence.",
+    "Never repeat an example sentence you already gave in the recent conversation.",
     "If the student's question is unclear because of speech transcription, briefly say what you understood and ask them to repeat it.",
     "Keep the answer brief, warm, and useful for a child. Use 1 to 3 complete short sentences.",
     "Never end with an unfinished phrase. Finish the final sentence with punctuation.",
@@ -86,10 +104,11 @@ function buildPrompt(question, context) {
     `Example sentence: ${enSent}`,
     `Japanese example meaning for context only: ${jpSent}`,
     `Student selected input language: ${inputLanguage}`,
+    `Detected student intent: ${intent}`,
     `Current question count: ${turns} / ${maxTurns}`,
     "Recent conversation for this same word:",
     ...historyLines,
-    "Use the recent conversation to answer follow-up questions, but stay focused on the current word.",
+    "Use the recent conversation to answer follow-up questions, but stay focused on the current word. If the student asks for another example, make it different from every Teacher example above.",
     `Student question: ${cleanText(question, 600)}`
   ].join("\n");
 }
@@ -118,8 +137,8 @@ async function askGemini(question, context, env) {
         }
       ],
       generationConfig: {
-        temperature: 0.35,
-        maxOutputTokens: 320
+        temperature: 0.55,
+        maxOutputTokens: 420
       }
     })
   });

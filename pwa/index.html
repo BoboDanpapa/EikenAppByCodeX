@@ -405,7 +405,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.24</div>
+<div class="version-badge">v1.1.25</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -1303,7 +1303,14 @@ function isNewExampleRequest(questionText) {
 function shouldRejectTeacherAnswer(questionText, answerText) {
     const context = getTeacherContext();
     if (!isNewExampleRequest(questionText)) return false;
-    return normalizeTeacherText(answerText).includes(normalizeTeacherText(context.enSent));
+    const normalizedAnswer = normalizeTeacherText(answerText);
+    const forbiddenExamples = [
+        context.enSent,
+        ...teacherConversationHistory
+            .filter(item => item.role === "teacher")
+            .map(item => item.text)
+    ].map(normalizeTeacherText).filter(Boolean);
+    return forbiddenExamples.some(example => normalizedAnswer.includes(example));
 }
 
 function isCompleteTeacherAnswer(answer) {
@@ -1381,13 +1388,34 @@ function buildFallbackTeacherAnswer(questionText) {
 function buildNewExampleFallback(context) {
     const word = String(context.word || "").trim();
     const lower = word.toLowerCase();
-    if (lower === "a lot of") {
-        return `Here is another example: We saw a lot of stars in the sky.`;
-    }
-    if (lower === "depend on") {
-        return `Here is another example: I depend on my alarm clock every morning.`;
-    }
-    return `Here is another example: I can use "${word}" in my English homework.`;
+    const examplesByWord = {
+        "a lot of": [
+            "We saw a lot of stars in the sky.",
+            "She has a lot of stickers in her notebook.",
+            "There are a lot of pencils on the desk.",
+            "I learned a lot of new words today."
+        ],
+        "depend on": [
+            "I depend on my alarm clock every morning.",
+            "The picnic will depend on the weather.",
+            "Children depend on adults for help.",
+            "Your score can depend on careful reading."
+        ]
+    };
+    const examples = examplesByWord[lower] || [
+        `I can use "${word}" in my English homework.`,
+        `Please write "${word}" in your notebook.`,
+        `This sentence helps me remember "${word}".`,
+        `Let's practice "${word}" one more time.`
+    ];
+    const used = [
+        context.enSent,
+        ...teacherConversationHistory
+            .filter(item => item.role === "teacher")
+            .map(item => item.text)
+    ].map(normalizeTeacherText);
+    const next = examples.find(example => !used.some(usedText => usedText.includes(normalizeTeacherText(example)))) || examples[examples.length - 1];
+    return `Here is another example: ${next}`;
 }
 
 function speakTeacherAnswer(answer) {

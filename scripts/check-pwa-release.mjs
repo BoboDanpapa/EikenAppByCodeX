@@ -137,7 +137,16 @@ assert(
 const fallback = sandbox.buildFallbackTeacherAnswer("他の例文をください");
 assert(fallback.includes("a lot of stars"), `Unexpected new-example fallback: ${fallback}`);
 assert(!fallback.includes("I have a lot of books"), "Fallback repeated the original example");
+sandbox.teacherConversationHistory.push({ role: "teacher", text: fallback });
+assert(
+  sandbox.shouldRejectTeacherAnswer("もう一つ例文をください", fallback),
+  "Repeated prior teacher example was not rejected"
+);
+const secondFallback = sandbox.buildFallbackTeacherAnswer("もう一つ例文をください");
+assert(secondFallback.includes("stickers"), `Second fallback did not rotate examples: ${secondFallback}`);
+assert(!secondFallback.includes("a lot of stars"), "Second fallback repeated the prior teacher example");
 
+sandbox.teacherConversationHistory = [];
 for (let i = 1; i <= 5; i += 1) sandbox.addTeacherConversationTurn(`q${i}`, `a${i}`);
 assert(sandbox.teacherConversationHistory.length === 8, "Conversation history was not trimmed to 8 messages");
 assert(sandbox.teacherConversationHistory[0].text === "q2", "Conversation history did not keep the most recent turns");
@@ -148,11 +157,14 @@ if (checkBackend) {
   new Function(backendSource.replace(/export default\s*\{[\s\S]*$/, ""));
   for (const required of [
     "cleanHistory",
+    "getQuestionIntent",
+    "Detected student intent",
+    "Never repeat an example sentence you already gave",
     "Recent conversation for this same word",
     "Use the recent conversation",
     "Do not reuse the provided example sentence",
     "Only discuss English learning for the current vocabulary card",
-    "maxOutputTokens: 320"
+    "maxOutputTokens: 420"
   ]) {
     assert(backendSource.includes(required), `Missing backend teacher requirement: ${required}`);
   }
