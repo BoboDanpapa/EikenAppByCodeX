@@ -15,10 +15,10 @@ This file records durable project context for future Codex sessions. Read this b
 
 ## Current Stable Version
 
-- Current version after the six-course vocabulary release: `1.1.14`
-- Current `versionCode`: `16`
+- Current version after the study-order, action-alignment, and part-of-speech badge release: `1.1.35`
+- Current `versionCode`: `21`
 - Latest local release APK:
-  `releases/eiken-magicwords-v1.1.14-six-course-vocab.apk`
+  `releases/eiken-magicwords-v1.1.35-study-order-pos-badge.apk`
 
 ## Major Version History
 
@@ -53,6 +53,9 @@ This file records durable project context for future Codex sessions. Read this b
 - Friend-facing PWA `v1.1.29`: Temporarily disabled the `先生に聞く` button only in `BoboDanpapa/EikenMagicwordsPWA` because the PWA English teacher is still unstable. The source PWA in `EikenAppByCodeX/pwa/` stays enabled for testing.
 - `v1.1.30`: Development PWA teacher resilience update. The Cloudflare Worker retries Gemini high-demand/rate-limit/temporary failures once after a short delay, the PWA shows the friendly Japanese congestion message for high-demand failures, failed Gemini attempts still do not count toward the 5-question limit, and terse follow-ups such as "another one" are checked against prior teacher examples so repeated examples are rejected.
 - `v1.1.31`: Development PWA teacher truncation fix. The Worker uses a larger output budget and, when Gemini returns `MAX_TOKENS`, retries once with a compact one-sentence instruction instead of returning the raw `Gemini answer was truncated` error. If truncation still fails, the PWA shows a friendly Japanese message and does not count the question.
+- `v1.1.35`: Reordered 英検4級・3級・1級 study-card vocabulary so learner-facing cards start with high-frequency and exam-important items instead of A-starting phrase clusters. Android assets and PWA assets were synced, while the independent quiz deck order remains separate from study order. PWA JavaScript assets now use network-first service-worker fetches so vocabulary updates are not hidden by stale cache on first open.
+- `v1.1.35`: Development PWA keeps the `先生に聞く` teacher button enabled for testing in `BoboDanpapa/EikenAppByCodeX`, while the friend-facing `BoboDanpapa/EikenMagicwordsPWA` release disables only that teacher button. The three study action buttons (`発音を聞く`, `復習に追加`, `先生に聞く`) are laid out as equal-width aligned controls.
+- `v1.1.35`: Restored the study-card part-of-speech corner badge across Android, preview, and PWA. The badge shows `動`, `名`, `形`, `副`, or `熟` in the card's top-right corner, with optional related-word details for selected words.
 - PWA teacher panel should not display the `のこり` remaining-time row; keep the daily limit internally, but only show current-card time and today's used teacher time.
 
 ## Important Behavior

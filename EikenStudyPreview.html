@@ -74,8 +74,9 @@
         .screen-title { color: var(--title-color); margin: 0 0 8px; }
         .muted { color: #777; font-size: 14px; }
         .row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; align-items: stretch; }
-        .study-actions { align-items: center; row-gap: 10px; }
-        .teacher-action-spacer { flex-basis: 18px; width: 18px; height: 1px; }
+        .study-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: stretch; margin: 12px 0 4px; }
+        .study-actions .jelly-btn { width: 100%; min-height: 46px; margin-top: 0; padding-left: 12px; padding-right: 12px; }
+        .teacher-action-spacer { display: none; }
         .input-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin: 20px 0 8px; }
         input { width: 100%; border: 3px solid var(--container-border); border-radius: 20px; color: var(--accent-text); font-family: inherit; font-weight: bold; font-size: 16px; padding: 12px 14px; outline: none; }
         input:focus { border-color: var(--button-main); box-shadow: 0 0 0 4px var(--soft-bg); }
@@ -91,14 +92,24 @@
         .level-card strong { font-size: 28px; display: block; margin-bottom: 10px; }
         .level-card span { color: var(--hot-accent); font-weight: bold; font-size: 14px; }
         .toolbar { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 0 12px 8px; }
-        .card { background: linear-gradient(135deg, var(--card-grad-a), var(--card-grad-b)); color: var(--accent-text); padding: clamp(28px, 8vw, 40px) clamp(14px, 5vw, 20px); border-radius: 25px; margin: 18px 0; cursor: pointer; font-size: clamp(26px, 8vw, 32px); line-height: 1.15; font-weight: bold; border: 3px dashed var(--dash-color); box-shadow: 0 8px 15px var(--container-shadow); transition: transform 0.3s; overflow-wrap: anywhere; word-break: break-word; }
+        .card { position: relative; background: linear-gradient(135deg, var(--card-grad-a), var(--card-grad-b)); color: var(--accent-text); padding: clamp(28px, 8vw, 40px) clamp(14px, 5vw, 20px); border-radius: 25px; margin: 18px 0; cursor: pointer; font-size: clamp(26px, 8vw, 32px); line-height: 1.15; font-weight: bold; border: 3px dashed var(--dash-color); box-shadow: 0 8px 15px var(--container-shadow); transition: transform 0.3s; overflow-wrap: anywhere; word-break: break-word; }
         .card:hover { transform: scale(1.03) rotate(1deg); }
         .details { font-size: clamp(16px, 4.4vw, 18px); margin-top: 20px; font-weight: normal; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 15px; }
+        .pos-corner { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 6px; }
+        .pos-badge { display: inline-flex; justify-content: center; align-items: center; width: 30px; height: 30px; border-radius: 50%; background: white; color: var(--hot-accent); border: 2px solid rgba(216,27,96,0.28); font-size: 13px; line-height: 1; font-weight: bold; box-shadow: 0 2px 8px rgba(216,27,96,0.12); }
+        .pos-toggle { min-height: 28px; border-radius: 999px; border: 2px solid rgba(106,27,154,0.2); background: rgba(255,255,255,0.86); color: var(--accent-text); font-family: inherit; font-size: 11px; line-height: 1; font-weight: bold; padding: 6px 9px; cursor: pointer; }
+        .pos-toggle:active { transform: translateY(1px); }
+        .pos-panel { margin-top: 10px; background: rgba(255,255,255,0.72); border: 2px dashed rgba(206,147,216,0.95); border-radius: 18px; padding: 12px; text-align: left; font-size: 13px; line-height: 1.35; font-weight: bold; }
+        .pos-panel-title { color: var(--accent-text); font-size: 13px; margin-bottom: 8px; }
+        .pos-related-grid { display: grid; gap: 7px; }
+        .pos-related-item { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 8px; align-items: center; color: var(--text-main); background: rgba(255,255,255,0.82); border-radius: 12px; padding: 8px 10px; }
+        .pos-related-item span:first-child { color: var(--hot-accent); font-size: 12px; white-space: nowrap; }
+        .pos-related-item span:last-child { overflow-wrap: anywhere; }
         .sentence { font-style: italic; margin-top: 10px; color: var(--text-main); font-weight: bold; line-height: 1.45; overflow-wrap: anywhere; }
         .btn-speak { background-color: var(--speak-main); color: var(--speak-text); box-shadow: 0 5px 0 var(--speak-shadow); }
-        .btn-star { background-color: #fff59d; color: #f57f17; box-shadow: 0 5px 0 #fbc02d; margin-top: 10px; font-size: 14px; }
+        .btn-star { background-color: #fff59d; color: #f57f17; box-shadow: 0 5px 0 #fbc02d; margin-top: 0; font-size: 14px; }
         .btn-starred { background-color: #ffcc80; color: #e65100; box-shadow: 0 5px 0 #ef6c00; }
-        .btn-teacher-toggle { background-color: #d7ecff; color: #1565c0; box-shadow: 0 4px 0 #90caf9; min-height: 36px; padding: 8px 12px; border-radius: 18px; font-size: 12px; margin-top: 10px; }
+        .btn-teacher-toggle { background-color: #d7ecff; color: #1565c0; box-shadow: 0 5px 0 #90caf9; min-height: 46px; padding: 8px 12px; border-radius: 18px; font-size: 12px; margin-top: 0; }
         .btn-teacher-toggle:active { box-shadow: 0 0 0 #90caf9; }
         .teacher-panel { background: #fff; border: 2px dashed var(--dash-color); border-radius: 18px; margin: -2px 0 18px; padding: 14px; text-align: left; box-shadow: 0 5px 12px var(--container-shadow); }
         .teacher-panel-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; }
@@ -176,10 +187,10 @@
             .level-card { min-height: 138px; }
             .jelly-btn { font-size: 14px; padding: 11px 14px; }
             .row .jelly-btn, .input-row .jelly-btn { flex: 1 1 150px; }
-            .study-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; }
+            .study-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
             .study-actions .jelly-btn { width: 100%; }
             .teacher-action-spacer { display: none; }
-            .btn-teacher-toggle { grid-column: 2; justify-self: stretch; min-height: 36px; padding: 8px 10px; font-size: 12px; }
+            .btn-teacher-toggle { justify-self: stretch; min-height: 46px; padding: 8px 10px; font-size: 12px; }
             .teacher-panel { padding: 12px; }
             .teacher-panel-header { grid-template-columns: 1fr; }
             .pager .jelly-btn { flex: 1 1 0; }
@@ -270,7 +281,15 @@
             <button id="btn-teacher-toggle" class="jelly-btn btn-teacher-toggle" onclick="toggleTeacherPanel(event)">先生に聞く</button>
         </div>
         <div class="card" onclick="toggleCard()">
+            <div class="pos-corner" onclick="event.stopPropagation()">
+                <span id="study-pos-badge" class="pos-badge" title="品詞">...</span>
+                <button id="study-pos-toggle" class="pos-toggle hidden" type="button" onclick="togglePartOfSpeechPanel(event)" aria-expanded="false">関連</button>
+            </div>
             <span id="study-word">Loading...</span>
+            <div id="study-pos-panel" class="pos-panel hidden" onclick="event.stopPropagation()">
+                <div class="pos-panel-title">関連語</div>
+                <div id="study-pos-related" class="pos-related-grid"></div>
+            </div>
             <div id="study-details" class="details hidden">
                 <div id="study-jp" style="font-size: 22px; color: #d81b60;">...</div>
                 <hr style="border-top:2px dashed #ce93d8; margin: 15px 0;">
@@ -384,7 +403,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.14</div>
+<div class="version-badge">v1.1.35</div>
 
 <script src="eiken_grade4_words.js"></script>
 <script src="eiken_grade3_words.js"></script>
@@ -765,8 +784,114 @@ function loadStudyWord() {
     document.getElementById("study-en-sent").innerText = w.enSent;
     document.getElementById("study-jp-sent").innerText = w.jpSent;
     document.getElementById("study-details").classList.add("hidden");
+    renderPartOfSpeechDemo(w);
     resetTeacherPanelForWord();
     updateStarButton();
+}
+
+function renderPartOfSpeechDemo(word) {
+    const badge = document.getElementById("study-pos-badge");
+    const panel = document.getElementById("study-pos-panel");
+    const related = document.getElementById("study-pos-related");
+    const toggle = document.getElementById("study-pos-toggle");
+    if (!badge || !panel || !related || !toggle) return;
+    const entry = buildPartOfSpeechEntry(word);
+    badge.innerText = getPartOfSpeechIcon(entry.label);
+    badge.title = `品詞: ${entry.label}`;
+    badge.setAttribute("aria-label", `品詞: ${entry.label}`);
+    related.innerHTML = entry.related
+        .map(item => `<div class="pos-related-item"><span>${item.label}</span><span>${item.text}</span></div>`)
+        .join("");
+    panel.classList.add("hidden");
+    toggle.classList.toggle("hidden", entry.related.length === 0);
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.innerText = "関連";
+}
+
+function togglePartOfSpeechPanel(e) {
+    if (e) e.stopPropagation();
+    const panel = document.getElementById("study-pos-panel");
+    const toggle = document.getElementById("study-pos-toggle");
+    if (!panel || !toggle) return;
+    const willOpen = panel.classList.contains("hidden");
+    panel.classList.toggle("hidden", !willOpen);
+    toggle.setAttribute("aria-expanded", String(willOpen));
+    toggle.innerText = willOpen ? "閉じる" : "関連";
+}
+
+function buildPartOfSpeechEntry(word) {
+    const en = String(word && word.en ? word.en : "").trim();
+    const jp = String(word && word.jp ? word.jp : "").trim();
+    const lower = en.toLowerCase();
+    const special = getSpecialPartOfSpeechEntry(lower);
+    if (special) return special;
+    const label = inferPartOfSpeechLabel(en, jp);
+    return {
+        label,
+        related: []
+    };
+}
+
+function getPartOfSpeechIcon(label) {
+    if (label === "動詞") return "動";
+    if (label === "名詞") return "名";
+    if (label === "形容詞") return "形";
+    if (label === "副詞") return "副";
+    if (label === "熟語") return "熟";
+    return "語";
+}
+
+function inferPartOfSpeechLabel(en, jp) {
+    const lower = String(en || "").toLowerCase();
+    const meaning = String(jp || "");
+    if (/\s/.test(lower)) return "熟語";
+    if (/ly$/.test(lower) || /に$|く$/.test(meaning)) return "副詞";
+    if (/tion$|sion$|ment$|ness$|ity$|ance$|ence$|er$|or$|ist$/.test(lower) || /こと$|もの$|人$|者$|性$/.test(meaning)) return "名詞";
+    if (/ous$|ful$|less$|able$|ible$|ive$|al$|ic$|ary$|ent$|ant$/.test(lower) || /い$|な$|的$/.test(meaning)) return "形容詞";
+    if (/する$|える$|める$|ける$|ぐ$|す$|つ$|る$|む$|ぶ$|う$/.test(meaning)) return "動詞";
+    return "名詞";
+}
+
+function getSpecialPartOfSpeechEntry(lower) {
+    const entries = {
+        "provide": {
+            label: "動詞",
+            related: [
+                { label: "動詞", text: "provide" },
+                { label: "名詞", text: "provider / provision" },
+                { label: "形容詞", text: "provided" },
+                { label: "熟語", text: "provide A with B / provide B for A" }
+            ]
+        },
+        "require": {
+            label: "動詞",
+            related: [
+                { label: "動詞", text: "require" },
+                { label: "名詞", text: "requirement" },
+                { label: "形容詞", text: "required" },
+                { label: "熟語", text: "be required to do" }
+            ]
+        },
+        "encourage": {
+            label: "動詞",
+            related: [
+                { label: "動詞", text: "encourage" },
+                { label: "名詞", text: "encouragement" },
+                { label: "形容詞", text: "encouraging / encouraged" },
+                { label: "副詞", text: "encouragingly" }
+            ]
+        },
+        "improve": {
+            label: "動詞",
+            related: [
+                { label: "動詞", text: "improve" },
+                { label: "名詞", text: "improvement" },
+                { label: "形容詞", text: "improved" },
+                { label: "熟語", text: "improve in / improve on" }
+            ]
+        }
+    };
+    return entries[lower] || null;
 }
 
 function toggleCard() {

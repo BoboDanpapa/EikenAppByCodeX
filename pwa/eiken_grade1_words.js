@@ -1,507 +1,3005 @@
-// eiken_grade1_words.js - 英検 vocabulary data
-// App-curated Eiken Grade 1 list: 500 total words and phrases.
-// Selection policy: argument-ready phrases first, then academic, policy, society, environment, and abstract vocabulary.
-// Notes: entries are original practice data for the app, not copied from a commercial book list.
+// 英検1級 単語・熟語データ（学習優先順：論説文頻出語・抽象語・重要表現を先に配置した500項目）
+// App schema: en / jp / enSent / jpSent / note(optional)
 
 const eikenGrade1VocabData = [
-  {"en":"a catalyst for","jp":"〜のきっかけ / 触媒","enSent":"Education can be a catalyst for social change.","jpSent":"教育は社会変化のきっかけになり得ます。"},
-  {"en":"a growing body of evidence","jp":"増えつつある証拠","enSent":"A growing body of evidence supports the policy.","jpSent":"増えつつある証拠がその政策を支持しています。"},
-  {"en":"a matter of concern","jp":"懸念事項","enSent":"Food security is a matter of concern.","jpSent":"食料安全保障は懸念事項です。"},
-  {"en":"a wide range of","jp":"幅広い","enSent":"The program offers a wide range of services.","jpSent":"そのプログラムは幅広いサービスを提供しています。"},
-  {"en":"account for","jp":"〜を説明する / 占める","enSent":"Energy use accounts for much of the cost.","jpSent":"エネルギー使用が費用の多くを占めています。"},
-  {"en":"adhere to","jp":"〜を守る / 固執する","enSent":"Companies must adhere to safety standards.","jpSent":"企業は安全基準を守らなければなりません。"},
-  {"en":"alleviate poverty","jp":"貧困を軽減する","enSent":"The project aims to alleviate poverty.","jpSent":"その計画は貧困を軽減することを目的としています。"},
-  {"en":"as a consequence of","jp":"〜の結果として","enSent":"Species disappeared as a consequence of habitat loss.","jpSent":"生息地の喪失の結果として種が消えました。"},
-  {"en":"as a means of","jp":"〜の手段として","enSent":"Many people use technology as a means of communication.","jpSent":"多くの人が技術をコミュニケーションの手段として使います。"},
-  {"en":"as opposed to","jp":"〜ではなく","enSent":"We need cooperation as opposed to competition.","jpSent":"競争ではなく協力が必要です。"},
-  {"en":"be attributed to","jp":"〜に起因する","enSent":"The increase can be attributed to better healthcare.","jpSent":"その増加は医療の改善に起因します。"},
-  {"en":"be compatible with","jp":"〜と両立する","enSent":"Economic growth can be compatible with conservation.","jpSent":"経済成長は保全と両立し得ます。"},
-  {"en":"be conducive to","jp":"〜に役立つ","enSent":"Trust is conducive to effective teamwork.","jpSent":"信頼は効果的なチームワークに役立ちます。"},
-  {"en":"be contingent on","jp":"〜次第である","enSent":"Success is contingent on public support.","jpSent":"成功は国民の支持次第です。"},
-  {"en":"be detrimental to","jp":"〜に有害である","enSent":"Excessive screen time can be detrimental to health.","jpSent":"過度な画面時間は健康に有害になり得ます。"},
-  {"en":"be disproportionately affected","jp":"不均衡に影響を受ける","enSent":"Low-income families are disproportionately affected.","jpSent":"低所得世帯は不均衡に影響を受けます。"},
-  {"en":"be inextricably linked","jp":"切り離せないほど結びついている","enSent":"Climate and agriculture are inextricably linked.","jpSent":"気候と農業は切り離せないほど結びついています。"},
-  {"en":"be prone to","jp":"〜しがちである","enSent":"Coastal cities are prone to flooding.","jpSent":"沿岸都市は洪水が起こりやすいです。"},
-  {"en":"be susceptible to","jp":"〜の影響を受けやすい","enSent":"Children are susceptible to advertising.","jpSent":"子供は広告の影響を受けやすいです。"},
-  {"en":"bring about","jp":"〜を引き起こす","enSent":"Innovation can bring about major change.","jpSent":"革新は大きな変化を引き起こし得ます。"},
-  {"en":"call into question","jp":"〜に疑問を投げかける","enSent":"The scandal called his judgment into question.","jpSent":"その不祥事は彼の判断力に疑問を投げかけました。"},
-  {"en":"come at the expense of","jp":"〜を犠牲にして起こる","enSent":"Growth should not come at the expense of nature.","jpSent":"成長は自然を犠牲にすべきではありません。"},
-  {"en":"come to terms with","jp":"〜を受け入れる","enSent":"Society must come to terms with aging.","jpSent":"社会は高齢化を受け入れなければなりません。"},
-  {"en":"cope with","jp":"〜に対処する","enSent":"Cities must cope with extreme weather.","jpSent":"都市は異常気象に対処しなければなりません。"},
-  {"en":"curb emissions","jp":"排出を抑制する","enSent":"Governments must curb emissions quickly.","jpSent":"政府は排出を早急に抑制しなければなりません。"},
-  {"en":"deal a blow to","jp":"〜に打撃を与える","enSent":"The recession dealt a blow to small businesses.","jpSent":"不況は中小企業に打撃を与えました。"},
-  {"en":"derive from","jp":"〜に由来する","enSent":"Many benefits derive from early education.","jpSent":"多くの利益は早期教育に由来します。"},
-  {"en":"deteriorate into","jp":"悪化して〜になる","enSent":"The debate deteriorated into personal attacks.","jpSent":"議論は悪化して個人攻撃になりました。"},
-  {"en":"draw attention to","jp":"〜に注意を向ける","enSent":"The report draws attention to inequality.","jpSent":"その報告書は不平等に注意を向けています。"},
-  {"en":"exert influence on","jp":"〜に影響を及ぼす","enSent":"Media can exert influence on public opinion.","jpSent":"メディアは世論に影響を及ぼし得ます。"},
-  {"en":"fall short of","jp":"〜に届かない","enSent":"The policy falls short of what is needed.","jpSent":"その政策は必要な水準に届いていません。"},
-  {"en":"give rise to","jp":"〜を生じさせる","enSent":"Rapid development can give rise to conflict.","jpSent":"急速な開発は対立を生じさせることがあります。"},
-  {"en":"have far-reaching implications","jp":"広範な影響を持つ","enSent":"The decision has far-reaching implications.","jpSent":"その決定は広範な影響を持ちます。"},
-  {"en":"in accordance with","jp":"〜に従って","enSent":"The plan was made in accordance with the law.","jpSent":"その計画は法律に従って作られました。"},
-  {"en":"in conjunction with","jp":"〜と連携して","enSent":"Schools work in conjunction with local groups.","jpSent":"学校は地域団体と連携して働いています。"},
-  {"en":"in light of","jp":"〜を踏まえて","enSent":"The rule changed in light of new evidence.","jpSent":"新たな証拠を踏まえて規則が変わりました。"},
-  {"en":"in lieu of","jp":"〜の代わりに","enSent":"They used online meetings in lieu of travel.","jpSent":"彼らは移動の代わりにオンライン会議を使いました。"},
-  {"en":"in retrospect","jp":"振り返ってみると","enSent":"In retrospect, the warning signs were clear.","jpSent":"振り返ってみると、警告の兆候は明らかでした。"},
-  {"en":"in the absence of","jp":"〜がない中で","enSent":"In the absence of data, decisions are risky.","jpSent":"データがない中での決定は危険です。"},
-  {"en":"in the long run","jp":"長期的には","enSent":"Prevention saves money in the long run.","jpSent":"予防は長期的にはお金を節約します。"},
-  {"en":"in the wake of","jp":"〜を受けて","enSent":"New rules were introduced in the wake of the accident.","jpSent":"その事故を受けて新しい規則が導入されました。"},
-  {"en":"keep pace with","jp":"〜に遅れずについていく","enSent":"Schools must keep pace with technology.","jpSent":"学校は技術に遅れずについていく必要があります。"},
-  {"en":"lead to","jp":"〜につながる","enSent":"Poor planning can lead to waste.","jpSent":"不十分な計画は無駄につながります。"},
-  {"en":"make a compelling case for","jp":"〜を説得力をもって主張する","enSent":"The author makes a compelling case for reform.","jpSent":"著者は改革を説得力をもって主張しています。"},
-  {"en":"mitigate the impact of","jp":"〜の影響を軽減する","enSent":"Trees can mitigate the impact of heat.","jpSent":"木は暑さの影響を軽減できます。"},
-  {"en":"on a large scale","jp":"大規模に","enSent":"Recycling should be done on a large scale.","jpSent":"リサイクルは大規模に行われるべきです。"},
-  {"en":"on the grounds that","jp":"〜という理由で","enSent":"The plan was rejected on the grounds that it was costly.","jpSent":"その計画は費用が高いという理由で却下されました。"},
-  {"en":"outweigh the drawbacks","jp":"欠点を上回る","enSent":"The benefits outweigh the drawbacks.","jpSent":"利点は欠点を上回ります。"},
-  {"en":"play a pivotal role in","jp":"〜で重要な役割を果たす","enSent":"Education plays a pivotal role in democracy.","jpSent":"教育は民主主義で重要な役割を果たします。"},
-  {"en":"pose a threat to","jp":"〜に脅威をもたらす","enSent":"Plastic waste poses a threat to marine life.","jpSent":"プラスチックごみは海洋生物に脅威をもたらします。"},
-  {"en":"pave the way for","jp":"〜への道を開く","enSent":"Research can pave the way for new medicine.","jpSent":"研究は新薬への道を開くことがあります。"},
-  {"en":"put forward","jp":"〜を提案する","enSent":"The committee put forward a proposal.","jpSent":"委員会は提案を出しました。"},
-  {"en":"reap the benefits of","jp":"〜の恩恵を受ける","enSent":"Communities can reap the benefits of investment.","jpSent":"地域社会は投資の恩恵を受けられます。"},
-  {"en":"reconcile A with B","jp":"AとBを調和させる","enSent":"We must reconcile growth with conservation.","jpSent":"成長と保全を調和させなければなりません。"},
-  {"en":"serve as","jp":"〜として機能する","enSent":"Libraries serve as centers of learning.","jpSent":"図書館は学びの中心として機能します。"},
-  {"en":"shed light on","jp":"〜を明らかにする","enSent":"The study sheds light on human behavior.","jpSent":"その研究は人間の行動を明らかにします。"},
-  {"en":"stem from","jp":"〜に由来する","enSent":"The problem stems from poor communication.","jpSent":"その問題は不十分な意思疎通に由来します。"},
-  {"en":"take precedence over","jp":"〜より優先される","enSent":"Safety should take precedence over profit.","jpSent":"安全は利益より優先されるべきです。"},
-  {"en":"take into account","jp":"〜を考慮に入れる","enSent":"We must take costs into account.","jpSent":"私たちは費用を考慮に入れなければなりません。"},
-  {"en":"to a certain extent","jp":"ある程度は","enSent":"I agree to a certain extent.","jpSent":"私はある程度は賛成です。"},
-  {"en":"under no circumstances","jp":"いかなる状況でも〜ない","enSent":"Under no circumstances should data be sold.","jpSent":"いかなる状況でもデータは売られるべきではありません。"},
-  {"en":"with regard to","jp":"〜に関して","enSent":"With regard to education, funding is crucial.","jpSent":"教育に関しては、資金が極めて重要です。"},
-  {"en":"aberration","jp":"逸脱、異常","enSent":"The issue of aberration is often discussed in modern society.","jpSent":"逸脱、異常の問題は現代社会でよく議論されます。"},
-  {"en":"abhor","jp":"ひどく嫌う","enSent":"The issue of abhor is often discussed in modern society.","jpSent":"ひどく嫌うの問題は現代社会でよく議論されます。"},
-  {"en":"abolish","jp":"廃止する","enSent":"The issue of abolish is often discussed in modern society.","jpSent":"廃止するの問題は現代社会でよく議論されます。"},
-  {"en":"abrupt","jp":"突然の","enSent":"The issue of abrupt is often discussed in modern society.","jpSent":"突然のの問題は現代社会でよく議論されます。"},
-  {"en":"absurd","jp":"ばかげた","enSent":"The issue of absurd is often discussed in modern society.","jpSent":"ばかげたの問題は現代社会でよく議論されます。"},
-  {"en":"acclaim","jp":"称賛する","enSent":"The issue of acclaim is often discussed in modern society.","jpSent":"称賛するの問題は現代社会でよく議論されます。"},
-  {"en":"accountability","jp":"説明責任","enSent":"The issue of accountability is often discussed in modern society.","jpSent":"説明責任の問題は現代社会でよく議論されます。"},
-  {"en":"accrue","jp":"生じる、蓄積する","enSent":"The issue of accrue is often discussed in modern society.","jpSent":"生じる、蓄積するの問題は現代社会でよく議論されます。"},
-  {"en":"acquisition","jp":"獲得、買収","enSent":"The issue of acquisition is often discussed in modern society.","jpSent":"獲得、買収の問題は現代社会でよく議論されます。"},
-  {"en":"acute","jp":"深刻な、鋭い","enSent":"The issue of acute is often discussed in modern society.","jpSent":"深刻な、鋭いの問題は現代社会でよく議論されます。"},
-  {"en":"admonish","jp":"忠告する","enSent":"The issue of admonish is often discussed in modern society.","jpSent":"忠告するの問題は現代社会でよく議論されます。"},
-  {"en":"adverse","jp":"不利な","enSent":"The issue of adverse is often discussed in modern society.","jpSent":"不利なの問題は現代社会でよく議論されます。"},
-  {"en":"advocate","jp":"提唱する","enSent":"The issue of advocate is often discussed in modern society.","jpSent":"提唱するの問題は現代社会でよく議論されます。"},
-  {"en":"affluent","jp":"裕福な","enSent":"The issue of affluent is often discussed in modern society.","jpSent":"裕福なの問題は現代社会でよく議論されます。"},
-  {"en":"aggravate","jp":"悪化させる","enSent":"The issue of aggravate is often discussed in modern society.","jpSent":"悪化させるの問題は現代社会でよく議論されます。"},
-  {"en":"alleviate","jp":"軽減する","enSent":"The issue of alleviate is often discussed in modern society.","jpSent":"軽減するの問題は現代社会でよく議論されます。"},
-  {"en":"allocate","jp":"配分する","enSent":"The issue of allocate is often discussed in modern society.","jpSent":"配分するの問題は現代社会でよく議論されます。"},
-  {"en":"ambiguous","jp":"曖昧な","enSent":"The issue of ambiguous is often discussed in modern society.","jpSent":"曖昧なの問題は現代社会でよく議論されます。"},
-  {"en":"amend","jp":"修正する","enSent":"The issue of amend is often discussed in modern society.","jpSent":"修正するの問題は現代社会でよく議論されます。"},
-  {"en":"anomaly","jp":"異例、異常","enSent":"The issue of anomaly is often discussed in modern society.","jpSent":"異例、異常の問題は現代社会でよく議論されます。"},
-  {"en":"antagonize","jp":"反感を買う","enSent":"The issue of antagonize is often discussed in modern society.","jpSent":"反感を買うの問題は現代社会でよく議論されます。"},
-  {"en":"apathy","jp":"無関心","enSent":"The issue of apathy is often discussed in modern society.","jpSent":"無関心の問題は現代社会でよく議論されます。"},
-  {"en":"apprehend","jp":"逮捕する、理解する","enSent":"The issue of apprehend is often discussed in modern society.","jpSent":"逮捕する、理解するの問題は現代社会でよく議論されます。"},
-  {"en":"arbitrary","jp":"恣意的な","enSent":"The issue of arbitrary is often discussed in modern society.","jpSent":"恣意的なの問題は現代社会でよく議論されます。"},
-  {"en":"arduous","jp":"困難な","enSent":"The issue of arduous is often discussed in modern society.","jpSent":"困難なの問題は現代社会でよく議論されます。"},
-  {"en":"articulate","jp":"明確に述べる","enSent":"The issue of articulate is often discussed in modern society.","jpSent":"明確に述べるの問題は現代社会でよく議論されます。"},
-  {"en":"aspire","jp":"熱望する","enSent":"The issue of aspire is often discussed in modern society.","jpSent":"熱望するの問題は現代社会でよく議論されます。"},
-  {"en":"assess","jp":"評価する","enSent":"The issue of assess is often discussed in modern society.","jpSent":"評価するの問題は現代社会でよく議論されます。"},
-  {"en":"assimilate","jp":"同化する、吸収する","enSent":"The issue of assimilate is often discussed in modern society.","jpSent":"同化する、吸収するの問題は現代社会でよく議論されます。"},
-  {"en":"attain","jp":"達成する","enSent":"The issue of attain is often discussed in modern society.","jpSent":"達成するの問題は現代社会でよく議論されます。"},
-  {"en":"austerity","jp":"緊縮","enSent":"The issue of austerity is often discussed in modern society.","jpSent":"緊縮の問題は現代社会でよく議論されます。"},
-  {"en":"autonomous","jp":"自律した","enSent":"The issue of autonomous is often discussed in modern society.","jpSent":"自律したの問題は現代社会でよく議論されます。"},
-  {"en":"avert","jp":"避ける","enSent":"The issue of avert is often discussed in modern society.","jpSent":"避けるの問題は現代社会でよく議論されます。"},
-  {"en":"biased","jp":"偏った","enSent":"The issue of biased is often discussed in modern society.","jpSent":"偏ったの問題は現代社会でよく議論されます。"},
-  {"en":"bolster","jp":"強化する","enSent":"The issue of bolster is often discussed in modern society.","jpSent":"強化するの問題は現代社会でよく議論されます。"},
-  {"en":"boycott","jp":"ボイコットする","enSent":"The issue of boycott is often discussed in modern society.","jpSent":"ボイコットするの問題は現代社会でよく議論されます。"},
-  {"en":"breach","jp":"違反、侵害","enSent":"The issue of breach is often discussed in modern society.","jpSent":"違反、侵害の問題は現代社会でよく議論されます。"},
-  {"en":"bureaucracy","jp":"官僚制","enSent":"The issue of bureaucracy is often discussed in modern society.","jpSent":"官僚制の問題は現代社会でよく議論されます。"},
-  {"en":"calamity","jp":"災難","enSent":"The issue of calamity is often discussed in modern society.","jpSent":"災難の問題は現代社会でよく議論されます。"},
-  {"en":"capacity","jp":"能力、収容力","enSent":"The issue of capacity is often discussed in modern society.","jpSent":"能力、収容力の問題は現代社会でよく議論されます。"},
-  {"en":"cessation","jp":"停止","enSent":"The issue of cessation is often discussed in modern society.","jpSent":"停止の問題は現代社会でよく議論されます。"},
-  {"en":"coercion","jp":"強制","enSent":"The issue of coercion is often discussed in modern society.","jpSent":"強制の問題は現代社会でよく議論されます。"},
-  {"en":"coherent","jp":"一貫した","enSent":"The issue of coherent is often discussed in modern society.","jpSent":"一貫したの問題は現代社会でよく議論されます。"},
-  {"en":"coincide","jp":"同時に起こる","enSent":"The issue of coincide is often discussed in modern society.","jpSent":"同時に起こるの問題は現代社会でよく議論されます。"},
-  {"en":"collaborate","jp":"協力する","enSent":"The issue of collaborate is often discussed in modern society.","jpSent":"協力するの問題は現代社会でよく議論されます。"},
-  {"en":"commence","jp":"始まる","enSent":"The issue of commence is often discussed in modern society.","jpSent":"始まるの問題は現代社会でよく議論されます。"},
-  {"en":"commodity","jp":"商品","enSent":"The issue of commodity is often discussed in modern society.","jpSent":"商品の問題は現代社会でよく議論されます。"},
-  {"en":"compensate","jp":"補償する","enSent":"The issue of compensate is often discussed in modern society.","jpSent":"補償するの問題は現代社会でよく議論されます。"},
-  {"en":"complacent","jp":"自己満足した","enSent":"The issue of complacent is often discussed in modern society.","jpSent":"自己満足したの問題は現代社会でよく議論されます。"},
-  {"en":"comprehensive","jp":"包括的な","enSent":"The issue of comprehensive is often discussed in modern society.","jpSent":"包括的なの問題は現代社会でよく議論されます。"},
-  {"en":"concede","jp":"認める、譲歩する","enSent":"The issue of concede is often discussed in modern society.","jpSent":"認める、譲歩するの問題は現代社会でよく議論されます。"},
-  {"en":"concur","jp":"同意する","enSent":"The issue of concur is often discussed in modern society.","jpSent":"同意するの問題は現代社会でよく議論されます。"},
-  {"en":"condemn","jp":"非難する","enSent":"The issue of condemn is often discussed in modern society.","jpSent":"非難するの問題は現代社会でよく議論されます。"},
-  {"en":"confer","jp":"授与する、協議する","enSent":"The issue of confer is often discussed in modern society.","jpSent":"授与する、協議するの問題は現代社会でよく議論されます。"},
-  {"en":"conform","jp":"従う","enSent":"The issue of conform is often discussed in modern society.","jpSent":"従うの問題は現代社会でよく議論されます。"},
-  {"en":"congestion","jp":"混雑","enSent":"The issue of congestion is often discussed in modern society.","jpSent":"混雑の問題は現代社会でよく議論されます。"},
-  {"en":"consecutive","jp":"連続した","enSent":"The issue of consecutive is often discussed in modern society.","jpSent":"連続したの問題は現代社会でよく議論されます。"},
-  {"en":"consensus","jp":"合意","enSent":"The issue of consensus is often discussed in modern society.","jpSent":"合意の問題は現代社会でよく議論されます。"},
-  {"en":"conservation","jp":"保全","enSent":"The issue of conservation is often discussed in modern society.","jpSent":"保全の問題は現代社会でよく議論されます。"},
-  {"en":"consolidate","jp":"統合する","enSent":"The issue of consolidate is often discussed in modern society.","jpSent":"統合するの問題は現代社会でよく議論されます。"},
-  {"en":"constrain","jp":"制約する","enSent":"The issue of constrain is often discussed in modern society.","jpSent":"制約するの問題は現代社会でよく議論されます。"},
-  {"en":"contaminate","jp":"汚染する","enSent":"The issue of contaminate is often discussed in modern society.","jpSent":"汚染するの問題は現代社会でよく議論されます。"},
-  {"en":"contentious","jp":"議論を呼ぶ","enSent":"The issue of contentious is often discussed in modern society.","jpSent":"議論を呼ぶの問題は現代社会でよく議論されます。"},
-  {"en":"contingent","jp":"〜次第の","enSent":"The issue of contingent is often discussed in modern society.","jpSent":"〜次第のの問題は現代社会でよく議論されます。"},
-  {"en":"convene","jp":"招集する","enSent":"The issue of convene is often discussed in modern society.","jpSent":"招集するの問題は現代社会でよく議論されます。"},
-  {"en":"conversely","jp":"反対に","enSent":"The issue of conversely is often discussed in modern society.","jpSent":"反対にの問題は現代社会でよく議論されます。"},
-  {"en":"corroborate","jp":"裏付ける","enSent":"The issue of corroborate is often discussed in modern society.","jpSent":"裏付けるの問題は現代社会でよく議論されます。"},
-  {"en":"credibility","jp":"信頼性","enSent":"The issue of credibility is often discussed in modern society.","jpSent":"信頼性の問題は現代社会でよく議論されます。"},
-  {"en":"curtail","jp":"削減する","enSent":"The issue of curtail is often discussed in modern society.","jpSent":"削減するの問題は現代社会でよく議論されます。"},
-  {"en":"debris","jp":"がれき","enSent":"The issue of debris is often discussed in modern society.","jpSent":"がれきの問題は現代社会でよく議論されます。"},
-  {"en":"decentralize","jp":"分権化する","enSent":"The issue of decentralize is often discussed in modern society.","jpSent":"分権化するの問題は現代社会でよく議論されます。"},
-  {"en":"deforestation","jp":"森林破壊","enSent":"The issue of deforestation is often discussed in modern society.","jpSent":"森林破壊の問題は現代社会でよく議論されます。"},
-  {"en":"delegate","jp":"委任する","enSent":"The issue of delegate is often discussed in modern society.","jpSent":"委任するの問題は現代社会でよく議論されます。"},
-  {"en":"deplete","jp":"使い果たす","enSent":"The issue of deplete is often discussed in modern society.","jpSent":"使い果たすの問題は現代社会でよく議論されます。"},
-  {"en":"deplore","jp":"非難する、嘆く","enSent":"The issue of deplore is often discussed in modern society.","jpSent":"非難する、嘆くの問題は現代社会でよく議論されます。"},
-  {"en":"deprivation","jp":"剥奪、欠乏","enSent":"The issue of deprivation is often discussed in modern society.","jpSent":"剥奪、欠乏の問題は現代社会でよく議論されます。"},
-  {"en":"deregulation","jp":"規制緩和","enSent":"The issue of deregulation is often discussed in modern society.","jpSent":"規制緩和の問題は現代社会でよく議論されます。"},
-  {"en":"deter","jp":"思いとどまらせる","enSent":"The issue of deter is often discussed in modern society.","jpSent":"思いとどまらせるの問題は現代社会でよく議論されます。"},
-  {"en":"detrimental","jp":"有害な","enSent":"The issue of detrimental is often discussed in modern society.","jpSent":"有害なの問題は現代社会でよく議論されます。"},
-  {"en":"devastate","jp":"壊滅させる","enSent":"The issue of devastate is often discussed in modern society.","jpSent":"壊滅させるの問題は現代社会でよく議論されます。"},
-  {"en":"deviate","jp":"逸脱する","enSent":"The issue of deviate is often discussed in modern society.","jpSent":"逸脱するの問題は現代社会でよく議論されます。"},
-  {"en":"diminish","jp":"減少する","enSent":"The issue of diminish is often discussed in modern society.","jpSent":"減少するの問題は現代社会でよく議論されます。"},
-  {"en":"discrepancy","jp":"食い違い","enSent":"The issue of discrepancy is often discussed in modern society.","jpSent":"食い違いの問題は現代社会でよく議論されます。"},
-  {"en":"discriminate","jp":"差別する、区別する","enSent":"The issue of discriminate is often discussed in modern society.","jpSent":"差別する、区別するの問題は現代社会でよく議論されます。"},
-  {"en":"displace","jp":"住む場所を奪う","enSent":"The issue of displace is often discussed in modern society.","jpSent":"住む場所を奪うの問題は現代社会でよく議論されます。"},
-  {"en":"disseminate","jp":"広める","enSent":"The issue of disseminate is often discussed in modern society.","jpSent":"広めるの問題は現代社会でよく議論されます。"},
-  {"en":"diversity","jp":"多様性","enSent":"The issue of diversity is often discussed in modern society.","jpSent":"多様性の問題は現代社会でよく議論されます。"},
-  {"en":"divert","jp":"そらす","enSent":"The issue of divert is often discussed in modern society.","jpSent":"そらすの問題は現代社会でよく議論されます。"},
-  {"en":"domestic","jp":"国内の、家庭の","enSent":"The issue of domestic is often discussed in modern society.","jpSent":"国内の、家庭のの問題は現代社会でよく議論されます。"},
-  {"en":"drastic","jp":"抜本的な","enSent":"The issue of drastic is often discussed in modern society.","jpSent":"抜本的なの問題は現代社会でよく議論されます。"},
-  {"en":"drought","jp":"干ばつ","enSent":"The issue of drought is often discussed in modern society.","jpSent":"干ばつの問題は現代社会でよく議論されます。"},
-  {"en":"dwindle","jp":"減少する","enSent":"The issue of dwindle is often discussed in modern society.","jpSent":"減少するの問題は現代社会でよく議論されます。"},
-  {"en":"ecological","jp":"生態系の","enSent":"The issue of ecological is often discussed in modern society.","jpSent":"生態系のの問題は現代社会でよく議論されます。"},
-  {"en":"eligible","jp":"資格のある","enSent":"The issue of eligible is often discussed in modern society.","jpSent":"資格のあるの問題は現代社会でよく議論されます。"},
-  {"en":"eliminate","jp":"排除する","enSent":"The issue of eliminate is often discussed in modern society.","jpSent":"排除するの問題は現代社会でよく議論されます。"},
-  {"en":"eloquent","jp":"雄弁な","enSent":"The issue of eloquent is often discussed in modern society.","jpSent":"雄弁なの問題は現代社会でよく議論されます。"},
-  {"en":"embargo","jp":"禁輸","enSent":"The issue of embargo is often discussed in modern society.","jpSent":"禁輸の問題は現代社会でよく議論されます。"},
-  {"en":"empirical","jp":"経験的な、実証的な","enSent":"The issue of empirical is often discussed in modern society.","jpSent":"経験的な、実証的なの問題は現代社会でよく議論されます。"},
-  {"en":"enact","jp":"制定する","enSent":"The issue of enact is often discussed in modern society.","jpSent":"制定するの問題は現代社会でよく議論されます。"},
-  {"en":"encompass","jp":"含む","enSent":"The issue of encompass is often discussed in modern society.","jpSent":"含むの問題は現代社会でよく議論されます。"},
-  {"en":"endeavor","jp":"努力する","enSent":"The issue of endeavor is often discussed in modern society.","jpSent":"努力するの問題は現代社会でよく議論されます。"},
-  {"en":"endorse","jp":"支持する","enSent":"The issue of endorse is often discussed in modern society.","jpSent":"支持するの問題は現代社会でよく議論されます。"},
-  {"en":"enforce","jp":"施行する","enSent":"The issue of enforce is often discussed in modern society.","jpSent":"施行するの問題は現代社会でよく議論されます。"},
-  {"en":"enhance","jp":"高める","enSent":"The issue of enhance is often discussed in modern society.","jpSent":"高めるの問題は現代社会でよく議論されます。"},
-  {"en":"entail","jp":"伴う","enSent":"The issue of entail is often discussed in modern society.","jpSent":"伴うの問題は現代社会でよく議論されます。"},
-  {"en":"entrepreneur","jp":"起業家","enSent":"The issue of entrepreneur is often discussed in modern society.","jpSent":"起業家の問題は現代社会でよく議論されます。"},
-  {"en":"epidemic","jp":"流行病","enSent":"The issue of epidemic is often discussed in modern society.","jpSent":"流行病の問題は現代社会でよく議論されます。"},
-  {"en":"equitable","jp":"公平な","enSent":"The issue of equitable is often discussed in modern society.","jpSent":"公平なの問題は現代社会でよく議論されます。"},
-  {"en":"eradicate","jp":"根絶する","enSent":"The issue of eradicate is often discussed in modern society.","jpSent":"根絶するの問題は現代社会でよく議論されます。"},
-  {"en":"escalate","jp":"激化する","enSent":"The issue of escalate is often discussed in modern society.","jpSent":"激化するの問題は現代社会でよく議論されます。"},
-  {"en":"ethical","jp":"倫理的な","enSent":"The issue of ethical is often discussed in modern society.","jpSent":"倫理的なの問題は現代社会でよく議論されます。"},
-  {"en":"evade","jp":"回避する","enSent":"The issue of evade is often discussed in modern society.","jpSent":"回避するの問題は現代社会でよく議論されます。"},
-  {"en":"exacerbate","jp":"悪化させる","enSent":"The issue of exacerbate is often discussed in modern society.","jpSent":"悪化させるの問題は現代社会でよく議論されます。"},
-  {"en":"exert","jp":"及ぼす","enSent":"The issue of exert is often discussed in modern society.","jpSent":"及ぼすの問題は現代社会でよく議論されます。"},
-  {"en":"exile","jp":"亡命","enSent":"The issue of exile is often discussed in modern society.","jpSent":"亡命の問題は現代社会でよく議論されます。"},
-  {"en":"expedite","jp":"促進する","enSent":"The issue of expedite is often discussed in modern society.","jpSent":"促進するの問題は現代社会でよく議論されます。"},
-  {"en":"explicit","jp":"明確な","enSent":"The issue of explicit is often discussed in modern society.","jpSent":"明確なの問題は現代社会でよく議論されます。"},
-  {"en":"exploit","jp":"搾取する、利用する","enSent":"The issue of exploit is often discussed in modern society.","jpSent":"搾取する、利用するの問題は現代社会でよく議論されます。"},
-  {"en":"facilitate","jp":"促進する","enSent":"The issue of facilitate is often discussed in modern society.","jpSent":"促進するの問題は現代社会でよく議論されます。"},
-  {"en":"feasible","jp":"実行可能な","enSent":"The issue of feasible is often discussed in modern society.","jpSent":"実行可能なの問題は現代社会でよく議論されます。"},
-  {"en":"fiscal","jp":"財政の","enSent":"The issue of fiscal is often discussed in modern society.","jpSent":"財政のの問題は現代社会でよく議論されます。"},
-  {"en":"fluctuate","jp":"変動する","enSent":"The issue of fluctuate is often discussed in modern society.","jpSent":"変動するの問題は現代社会でよく議論されます。"},
-  {"en":"foresee","jp":"予見する","enSent":"The issue of foresee is often discussed in modern society.","jpSent":"予見するの問題は現代社会でよく議論されます。"},
-  {"en":"formidable","jp":"手ごわい","enSent":"The issue of formidable is often discussed in modern society.","jpSent":"手ごわいの問題は現代社会でよく議論されます。"},
-  {"en":"foster","jp":"育成する","enSent":"The issue of foster is often discussed in modern society.","jpSent":"育成するの問題は現代社会でよく議論されます。"},
-  {"en":"fragile","jp":"もろい","enSent":"The issue of fragile is often discussed in modern society.","jpSent":"もろいの問題は現代社会でよく議論されます。"},
-  {"en":"fraud","jp":"詐欺","enSent":"The issue of fraud is often discussed in modern society.","jpSent":"詐欺の問題は現代社会でよく議論されます。"},
-  {"en":"friction","jp":"摩擦","enSent":"The issue of friction is often discussed in modern society.","jpSent":"摩擦の問題は現代社会でよく議論されます。"},
-  {"en":"fundamental","jp":"根本的な","enSent":"The issue of fundamental is often discussed in modern society.","jpSent":"根本的なの問題は現代社会でよく議論されます。"},
-  {"en":"generate","jp":"生み出す","enSent":"The issue of generate is often discussed in modern society.","jpSent":"生み出すの問題は現代社会でよく議論されます。"},
-  {"en":"grievance","jp":"不満、苦情","enSent":"The issue of grievance is often discussed in modern society.","jpSent":"不満、苦情の問題は現代社会でよく議論されます。"},
-  {"en":"hamper","jp":"妨げる","enSent":"The issue of hamper is often discussed in modern society.","jpSent":"妨げるの問題は現代社会でよく議論されます。"},
-  {"en":"harness","jp":"活用する","enSent":"The issue of harness is often discussed in modern society.","jpSent":"活用するの問題は現代社会でよく議論されます。"},
-  {"en":"hinder","jp":"妨げる","enSent":"The issue of hinder is often discussed in modern society.","jpSent":"妨げるの問題は現代社会でよく議論されます。"},
-  {"en":"homogeneous","jp":"同質の","enSent":"The issue of homogeneous is often discussed in modern society.","jpSent":"同質のの問題は現代社会でよく議論されます。"},
-  {"en":"humanitarian","jp":"人道的な","enSent":"The issue of humanitarian is often discussed in modern society.","jpSent":"人道的なの問題は現代社会でよく議論されます。"},
-  {"en":"hypothesis","jp":"仮説","enSent":"The issue of hypothesis is often discussed in modern society.","jpSent":"仮説の問題は現代社会でよく議論されます。"},
-  {"en":"illiteracy","jp":"非識字","enSent":"The issue of illiteracy is often discussed in modern society.","jpSent":"非識字の問題は現代社会でよく議論されます。"},
-  {"en":"imminent","jp":"差し迫った","enSent":"The issue of imminent is often discussed in modern society.","jpSent":"差し迫ったの問題は現代社会でよく議論されます。"},
-  {"en":"impartial","jp":"公平な","enSent":"The issue of impartial is often discussed in modern society.","jpSent":"公平なの問題は現代社会でよく議論されます。"},
-  {"en":"impede","jp":"妨げる","enSent":"The issue of impede is often discussed in modern society.","jpSent":"妨げるの問題は現代社会でよく議論されます。"},
-  {"en":"imperative","jp":"不可欠な","enSent":"The issue of imperative is often discussed in modern society.","jpSent":"不可欠なの問題は現代社会でよく議論されます。"},
-  {"en":"implement","jp":"実施する","enSent":"The issue of implement is often discussed in modern society.","jpSent":"実施するの問題は現代社会でよく議論されます。"},
-  {"en":"implication","jp":"含意、影響","enSent":"The issue of implication is often discussed in modern society.","jpSent":"含意、影響の問題は現代社会でよく議論されます。"},
-  {"en":"impose","jp":"課す","enSent":"The issue of impose is often discussed in modern society.","jpSent":"課すの問題は現代社会でよく議論されます。"},
-  {"en":"incentive","jp":"動機、奨励策","enSent":"The issue of incentive is often discussed in modern society.","jpSent":"動機、奨励策の問題は現代社会でよく議論されます。"},
-  {"en":"incompatible","jp":"両立しない","enSent":"The issue of incompatible is often discussed in modern society.","jpSent":"両立しないの問題は現代社会でよく議論されます。"},
-  {"en":"indigenous","jp":"先住の","enSent":"The issue of indigenous is often discussed in modern society.","jpSent":"先住のの問題は現代社会でよく議論されます。"},
-  {"en":"inevitable","jp":"避けられない","enSent":"The issue of inevitable is often discussed in modern society.","jpSent":"避けられないの問題は現代社会でよく議論されます。"},
-  {"en":"infrastructure","jp":"社会基盤","enSent":"The issue of infrastructure is often discussed in modern society.","jpSent":"社会基盤の問題は現代社会でよく議論されます。"},
-  {"en":"infringe","jp":"侵害する","enSent":"The issue of infringe is often discussed in modern society.","jpSent":"侵害するの問題は現代社会でよく議論されます。"},
-  {"en":"innovation","jp":"革新","enSent":"The issue of innovation is often discussed in modern society.","jpSent":"革新の問題は現代社会でよく議論されます。"},
-  {"en":"insight","jp":"洞察","enSent":"The issue of insight is often discussed in modern society.","jpSent":"洞察の問題は現代社会でよく議論されます。"},
-  {"en":"integrity","jp":"誠実さ、完全性","enSent":"The issue of integrity is often discussed in modern society.","jpSent":"誠実さ、完全性の問題は現代社会でよく議論されます。"},
-  {"en":"intervene","jp":"介入する","enSent":"The issue of intervene is often discussed in modern society.","jpSent":"介入するの問題は現代社会でよく議論されます。"},
-  {"en":"intimidate","jp":"脅す","enSent":"The issue of intimidate is often discussed in modern society.","jpSent":"脅すの問題は現代社会でよく議論されます。"},
-  {"en":"intrinsic","jp":"本質的な","enSent":"The issue of intrinsic is often discussed in modern society.","jpSent":"本質的なの問題は現代社会でよく議論されます。"},
-  {"en":"jeopardize","jp":"危険にさらす","enSent":"The issue of jeopardize is often discussed in modern society.","jpSent":"危険にさらすの問題は現代社会でよく議論されます。"},
-  {"en":"legislation","jp":"法律、立法","enSent":"The issue of legislation is often discussed in modern society.","jpSent":"法律、立法の問題は現代社会でよく議論されます。"},
-  {"en":"legitimate","jp":"正当な","enSent":"The issue of legitimate is often discussed in modern society.","jpSent":"正当なの問題は現代社会でよく議論されます。"},
-  {"en":"leverage","jp":"活用する","enSent":"The issue of leverage is often discussed in modern society.","jpSent":"活用するの問題は現代社会でよく議論されます。"},
-  {"en":"liability","jp":"責任、負債","enSent":"The issue of liability is often discussed in modern society.","jpSent":"責任、負債の問題は現代社会でよく議論されます。"},
-  {"en":"lucrative","jp":"利益の多い","enSent":"The issue of lucrative is often discussed in modern society.","jpSent":"利益の多いの問題は現代社会でよく議論されます。"},
-  {"en":"marginalize","jp":"疎外する","enSent":"The issue of marginalize is often discussed in modern society.","jpSent":"疎外するの問題は現代社会でよく議論されます。"},
-  {"en":"meticulous","jp":"細心の","enSent":"The issue of meticulous is often discussed in modern society.","jpSent":"細心のの問題は現代社会でよく議論されます。"},
-  {"en":"migrate","jp":"移住する","enSent":"The issue of migrate is often discussed in modern society.","jpSent":"移住するの問題は現代社会でよく議論されます。"},
-  {"en":"mitigate","jp":"軽減する","enSent":"The issue of mitigate is often discussed in modern society.","jpSent":"軽減するの問題は現代社会でよく議論されます。"},
-  {"en":"mobilize","jp":"動員する","enSent":"The issue of mobilize is often discussed in modern society.","jpSent":"動員するの問題は現代社会でよく議論されます。"},
-  {"en":"monetary","jp":"通貨の、金銭の","enSent":"The issue of monetary is often discussed in modern society.","jpSent":"通貨の、金銭のの問題は現代社会でよく議論されます。"},
-  {"en":"monopoly","jp":"独占","enSent":"The issue of monopoly is often discussed in modern society.","jpSent":"独占の問題は現代社会でよく議論されます。"},
-  {"en":"mundane","jp":"ありふれた","enSent":"The issue of mundane is often discussed in modern society.","jpSent":"ありふれたの問題は現代社会でよく議論されます。"},
-  {"en":"negligible","jp":"取るに足りない","enSent":"The issue of negligible is often discussed in modern society.","jpSent":"取るに足りないの問題は現代社会でよく議論されます。"},
-  {"en":"notorious","jp":"悪名高い","enSent":"The issue of notorious is often discussed in modern society.","jpSent":"悪名高いの問題は現代社会でよく議論されます。"},
-  {"en":"obesity","jp":"肥満","enSent":"The issue of obesity is often discussed in modern society.","jpSent":"肥満の問題は現代社会でよく議論されます。"},
-  {"en":"obsolete","jp":"時代遅れの","enSent":"The issue of obsolete is often discussed in modern society.","jpSent":"時代遅れのの問題は現代社会でよく議論されます。"},
-  {"en":"obstruct","jp":"妨害する","enSent":"The issue of obstruct is often discussed in modern society.","jpSent":"妨害するの問題は現代社会でよく議論されます。"},
-  {"en":"offset","jp":"相殺する","enSent":"The issue of offset is often discussed in modern society.","jpSent":"相殺するの問題は現代社会でよく議論されます。"},
-  {"en":"oppression","jp":"抑圧","enSent":"The issue of oppression is often discussed in modern society.","jpSent":"抑圧の問題は現代社会でよく議論されます。"},
-  {"en":"outbreak","jp":"発生","enSent":"The issue of outbreak is often discussed in modern society.","jpSent":"発生の問題は現代社会でよく議論されます。"},
-  {"en":"outsource","jp":"外部委託する","enSent":"The issue of outsource is often discussed in modern society.","jpSent":"外部委託するの問題は現代社会でよく議論されます。"},
-  {"en":"overhaul","jp":"全面的に見直す","enSent":"The issue of overhaul is often discussed in modern society.","jpSent":"全面的に見直すの問題は現代社会でよく議論されます。"},
-  {"en":"oversee","jp":"監督する","enSent":"The issue of oversee is often discussed in modern society.","jpSent":"監督するの問題は現代社会でよく議論されます。"},
-  {"en":"paradigm","jp":"枠組み","enSent":"The issue of paradigm is often discussed in modern society.","jpSent":"枠組みの問題は現代社会でよく議論されます。"},
-  {"en":"paramount","jp":"極めて重要な","enSent":"The issue of paramount is often discussed in modern society.","jpSent":"極めて重要なの問題は現代社会でよく議論されます。"},
-  {"en":"perpetuate","jp":"永続させる","enSent":"The issue of perpetuate is often discussed in modern society.","jpSent":"永続させるの問題は現代社会でよく議論されます。"},
-  {"en":"plausible","jp":"もっともらしい","enSent":"The issue of plausible is often discussed in modern society.","jpSent":"もっともらしいの問題は現代社会でよく議論されます。"},
-  {"en":"pledge","jp":"誓約する","enSent":"The issue of pledge is often discussed in modern society.","jpSent":"誓約するの問題は現代社会でよく議論されます。"},
-  {"en":"polarize","jp":"二極化させる","enSent":"The issue of polarize is often discussed in modern society.","jpSent":"二極化させるの問題は現代社会でよく議論されます。"},
-  {"en":"precarious","jp":"不安定な","enSent":"The issue of precarious is often discussed in modern society.","jpSent":"不安定なの問題は現代社会でよく議論されます。"},
-  {"en":"precedent","jp":"前例","enSent":"The issue of precedent is often discussed in modern society.","jpSent":"前例の問題は現代社会でよく議論されます。"},
-  {"en":"predicament","jp":"苦境","enSent":"The issue of predicament is often discussed in modern society.","jpSent":"苦境の問題は現代社会でよく議論されます。"},
-  {"en":"preliminary","jp":"予備的な","enSent":"The issue of preliminary is often discussed in modern society.","jpSent":"予備的なの問題は現代社会でよく議論されます。"},
-  {"en":"preserve","jp":"保存する","enSent":"The issue of preserve is often discussed in modern society.","jpSent":"保存するの問題は現代社会でよく議論されます。"},
-  {"en":"prevalent","jp":"普及している","enSent":"The issue of prevalent is often discussed in modern society.","jpSent":"普及しているの問題は現代社会でよく議論されます。"},
-  {"en":"prioritize","jp":"優先する","enSent":"The issue of prioritize is often discussed in modern society.","jpSent":"優先するの問題は現代社会でよく議論されます。"},
-  {"en":"profound","jp":"深い、重大な","enSent":"The issue of profound is often discussed in modern society.","jpSent":"深い、重大なの問題は現代社会でよく議論されます。"},
-  {"en":"prohibit","jp":"禁止する","enSent":"The issue of prohibit is often discussed in modern society.","jpSent":"禁止するの問題は現代社会でよく議論されます。"},
-  {"en":"proliferation","jp":"急増、拡散","enSent":"The issue of proliferation is often discussed in modern society.","jpSent":"急増、拡散の問題は現代社会でよく議論されます。"},
-  {"en":"prominent","jp":"著名な","enSent":"The issue of prominent is often discussed in modern society.","jpSent":"著名なの問題は現代社会でよく議論されます。"},
-  {"en":"prosperity","jp":"繁栄","enSent":"The issue of prosperity is often discussed in modern society.","jpSent":"繁栄の問題は現代社会でよく議論されます。"},
-  {"en":"protocol","jp":"手順、議定書","enSent":"The issue of protocol is often discussed in modern society.","jpSent":"手順、議定書の問題は現代社会でよく議論されます。"},
-  {"en":"provocative","jp":"挑発的な","enSent":"The issue of provocative is often discussed in modern society.","jpSent":"挑発的なの問題は現代社会でよく議論されます。"},
-  {"en":"proximity","jp":"近接","enSent":"The issue of proximity is often discussed in modern society.","jpSent":"近接の問題は現代社会でよく議論されます。"},
-  {"en":"quota","jp":"割り当て","enSent":"The issue of quota is often discussed in modern society.","jpSent":"割り当ての問題は現代社会でよく議論されます。"},
-  {"en":"rationale","jp":"根拠","enSent":"The issue of rationale is often discussed in modern society.","jpSent":"根拠の問題は現代社会でよく議論されます。"},
-  {"en":"recession","jp":"景気後退","enSent":"The issue of recession is often discussed in modern society.","jpSent":"景気後退の問題は現代社会でよく議論されます。"},
-  {"en":"reciprocal","jp":"相互の","enSent":"The issue of reciprocal is often discussed in modern society.","jpSent":"相互のの問題は現代社会でよく議論されます。"},
-  {"en":"reconcile","jp":"調和させる","enSent":"The issue of reconcile is often discussed in modern society.","jpSent":"調和させるの問題は現代社会でよく議論されます。"},
-  {"en":"redundant","jp":"余分な","enSent":"The issue of redundant is often discussed in modern society.","jpSent":"余分なの問題は現代社会でよく議論されます。"},
-  {"en":"refugee","jp":"難民","enSent":"The issue of refugee is often discussed in modern society.","jpSent":"難民の問題は現代社会でよく議論されます。"},
-  {"en":"regulate","jp":"規制する","enSent":"The issue of regulate is often discussed in modern society.","jpSent":"規制するの問題は現代社会でよく議論されます。"},
-  {"en":"reinforce","jp":"強化する","enSent":"The issue of reinforce is often discussed in modern society.","jpSent":"強化するの問題は現代社会でよく議論されます。"},
-  {"en":"reluctant","jp":"気が進まない","enSent":"The issue of reluctant is often discussed in modern society.","jpSent":"気が進まないの問題は現代社会でよく議論されます。"},
-  {"en":"remedy","jp":"解決策、治療","enSent":"The issue of remedy is often discussed in modern society.","jpSent":"解決策、治療の問題は現代社会でよく議論されます。"},
-  {"en":"render","jp":"〜にする","enSent":"The issue of render is often discussed in modern society.","jpSent":"〜にするの問題は現代社会でよく議論されます。"},
-  {"en":"renounce","jp":"放棄する","enSent":"The issue of renounce is often discussed in modern society.","jpSent":"放棄するの問題は現代社会でよく議論されます。"},
-  {"en":"repercussion","jp":"影響、反響","enSent":"The issue of repercussion is often discussed in modern society.","jpSent":"影響、反響の問題は現代社会でよく議論されます。"},
-  {"en":"resilient","jp":"回復力のある","enSent":"The issue of resilient is often discussed in modern society.","jpSent":"回復力のあるの問題は現代社会でよく議論されます。"},
-  {"en":"restrain","jp":"抑制する","enSent":"The issue of restrain is often discussed in modern society.","jpSent":"抑制するの問題は現代社会でよく議論されます。"},
-  {"en":"retrieve","jp":"取り戻す","enSent":"The issue of retrieve is often discussed in modern society.","jpSent":"取り戻すの問題は現代社会でよく議論されます。"},
-  {"en":"revenue","jp":"収入","enSent":"The issue of revenue is often discussed in modern society.","jpSent":"収入の問題は現代社会でよく議論されます。"},
-  {"en":"revitalize","jp":"再活性化する","enSent":"The issue of revitalize is often discussed in modern society.","jpSent":"再活性化するの問題は現代社会でよく議論されます。"},
-  {"en":"rigorous","jp":"厳密な","enSent":"The issue of rigorous is often discussed in modern society.","jpSent":"厳密なの問題は現代社会でよく議論されます。"},
-  {"en":"rural","jp":"田舎の","enSent":"The issue of rural is often discussed in modern society.","jpSent":"田舎のの問題は現代社会でよく議論されます。"},
-  {"en":"scrutiny","jp":"精査","enSent":"The issue of scrutiny is often discussed in modern society.","jpSent":"精査の問題は現代社会でよく議論されます。"},
-  {"en":"secular","jp":"世俗的な","enSent":"The issue of secular is often discussed in modern society.","jpSent":"世俗的なの問題は現代社会でよく議論されます。"},
-  {"en":"segregation","jp":"隔離、分離","enSent":"The issue of segregation is often discussed in modern society.","jpSent":"隔離、分離の問題は現代社会でよく議論されます。"},
-  {"en":"skeptical","jp":"懐疑的な","enSent":"The issue of skeptical is often discussed in modern society.","jpSent":"懐疑的なの問題は現代社会でよく議論されます。"},
-  {"en":"sovereignty","jp":"主権","enSent":"The issue of sovereignty is often discussed in modern society.","jpSent":"主権の問題は現代社会でよく議論されます。"},
-  {"en":"sporadic","jp":"散発的な","enSent":"The issue of sporadic is often discussed in modern society.","jpSent":"散発的なの問題は現代社会でよく議論されます。"},
-  {"en":"stagnant","jp":"停滞した","enSent":"The issue of stagnant is often discussed in modern society.","jpSent":"停滞したの問題は現代社会でよく議論されます。"},
-  {"en":"subsidy","jp":"補助金","enSent":"The issue of subsidy is often discussed in modern society.","jpSent":"補助金の問題は現代社会でよく議論されます。"},
-  {"en":"substantial","jp":"かなりの","enSent":"The issue of substantial is often discussed in modern society.","jpSent":"かなりのの問題は現代社会でよく議論されます。"},
-  {"en":"surplus","jp":"余剰","enSent":"The issue of surplus is often discussed in modern society.","jpSent":"余剰の問題は現代社会でよく議論されます。"},
-  {"en":"sustainable","jp":"持続可能な","enSent":"The issue of sustainable is often discussed in modern society.","jpSent":"持続可能なの問題は現代社会でよく議論されます。"},
-  {"en":"tangible","jp":"具体的な","enSent":"The issue of tangible is often discussed in modern society.","jpSent":"具体的なの問題は現代社会でよく議論されます。"},
-  {"en":"tolerate","jp":"容認する","enSent":"The issue of tolerate is often discussed in modern society.","jpSent":"容認するの問題は現代社会でよく議論されます。"},
-  {"en":"transparent","jp":"透明な","enSent":"The issue of transparent is often discussed in modern society.","jpSent":"透明なの問題は現代社会でよく議論されます。"},
-  {"en":"unanimous","jp":"全会一致の","enSent":"The issue of unanimous is often discussed in modern society.","jpSent":"全会一致のの問題は現代社会でよく議論されます。"},
-  {"en":"undermine","jp":"弱体化させる","enSent":"The issue of undermine is often discussed in modern society.","jpSent":"弱体化させるの問題は現代社会でよく議論されます。"},
-  {"en":"unprecedented","jp":"前例のない","enSent":"The issue of unprecedented is often discussed in modern society.","jpSent":"前例のないの問題は現代社会でよく議論されます。"},
-  {"en":"utilize","jp":"活用する","enSent":"The issue of utilize is often discussed in modern society.","jpSent":"活用するの問題は現代社会でよく議論されます。"},
-  {"en":"viable","jp":"実行可能な","enSent":"The issue of viable is often discussed in modern society.","jpSent":"実行可能なの問題は現代社会でよく議論されます。"},
-  {"en":"vulnerable","jp":"弱い、傷つきやすい","enSent":"The issue of vulnerable is often discussed in modern society.","jpSent":"弱い、傷つきやすいの問題は現代社会でよく議論されます。"},
-  {"en":"warrant","jp":"正当化する","enSent":"The issue of warrant is often discussed in modern society.","jpSent":"正当化するの問題は現代社会でよく議論されます。"},
-  {"en":"widespread","jp":"広範囲の","enSent":"The issue of widespread is often discussed in modern society.","jpSent":"広範囲のの問題は現代社会でよく議論されます。"},
-  {"en":"abstention","jp":"棄権","enSent":"The issue of abstention is often discussed in modern society.","jpSent":"棄権の問題は現代社会でよく議論されます。"},
-  {"en":"adversity","jp":"逆境","enSent":"The issue of adversity is often discussed in modern society.","jpSent":"逆境の問題は現代社会でよく議論されます。"},
-  {"en":"affiliation","jp":"所属、提携","enSent":"The issue of affiliation is often discussed in modern society.","jpSent":"所属、提携の問題は現代社会でよく議論されます。"},
-  {"en":"agrarian","jp":"農業の","enSent":"The issue of agrarian is often discussed in modern society.","jpSent":"農業のの問題は現代社会でよく議論されます。"},
-  {"en":"alienation","jp":"疎外","enSent":"The issue of alienation is often discussed in modern society.","jpSent":"疎外の問題は現代社会でよく議論されます。"},
-  {"en":"amnesty","jp":"恩赦","enSent":"The issue of amnesty is often discussed in modern society.","jpSent":"恩赦の問題は現代社会でよく議論されます。"},
-  {"en":"annexation","jp":"併合","enSent":"The issue of annexation is often discussed in modern society.","jpSent":"併合の問題は現代社会でよく議論されます。"},
-  {"en":"anthropology","jp":"人類学","enSent":"The issue of anthropology is often discussed in modern society.","jpSent":"人類学の問題は現代社会でよく議論されます。"},
-  {"en":"appraisal","jp":"評価","enSent":"The issue of appraisal is often discussed in modern society.","jpSent":"評価の問題は現代社会でよく議論されます。"},
-  {"en":"arbitration","jp":"仲裁","enSent":"The issue of arbitration is often discussed in modern society.","jpSent":"仲裁の問題は現代社会でよく議論されます。"},
-  {"en":"assimilation","jp":"同化","enSent":"The issue of assimilation is often discussed in modern society.","jpSent":"同化の問題は現代社会でよく議論されます。"},
-  {"en":"atrocity","jp":"残虐行為","enSent":"The issue of atrocity is often discussed in modern society.","jpSent":"残虐行為の問題は現代社会でよく議論されます。"},
-  {"en":"autonomy","jp":"自治、自律","enSent":"The issue of autonomy is often discussed in modern society.","jpSent":"自治、自律の問題は現代社会でよく議論されます。"},
-  {"en":"bankruptcy","jp":"破産","enSent":"The issue of bankruptcy is often discussed in modern society.","jpSent":"破産の問題は現代社会でよく議論されます。"},
-  {"en":"biodiversity","jp":"生物多様性","enSent":"The issue of biodiversity is often discussed in modern society.","jpSent":"生物多様性の問題は現代社会でよく議論されます。"},
-  {"en":"censorship","jp":"検閲","enSent":"The issue of censorship is often discussed in modern society.","jpSent":"検閲の問題は現代社会でよく議論されます。"},
-  {"en":"chronology","jp":"年代順","enSent":"The issue of chronology is often discussed in modern society.","jpSent":"年代順の問題は現代社会でよく議論されます。"},
-  {"en":"coalition","jp":"連合","enSent":"The issue of coalition is often discussed in modern society.","jpSent":"連合の問題は現代社会でよく議論されます。"},
-  {"en":"collusion","jp":"共謀","enSent":"The issue of collusion is often discussed in modern society.","jpSent":"共謀の問題は現代社会でよく議論されます。"},
-  {"en":"complicity","jp":"加担、共犯関係","enSent":"The issue of complicity is often discussed in modern society.","jpSent":"加担、共犯関係の問題は現代社会でよく議論されます。"},
-  {"en":"concession","jp":"譲歩、利権","enSent":"The issue of concession is often discussed in modern society.","jpSent":"譲歩、利権の問題は現代社会でよく議論されます。"},
-  {"en":"conformity","jp":"順応","enSent":"The issue of conformity is often discussed in modern society.","jpSent":"順応の問題は現代社会でよく議論されます。"},
-  {"en":"conscience","jp":"良心","enSent":"The issue of conscience is often discussed in modern society.","jpSent":"良心の問題は現代社会でよく議論されます。"},
-  {"en":"conscription","jp":"徴兵","enSent":"The issue of conscription is often discussed in modern society.","jpSent":"徴兵の問題は現代社会でよく議論されます。"},
-  {"en":"consolation","jp":"慰め","enSent":"The issue of consolation is often discussed in modern society.","jpSent":"慰めの問題は現代社会でよく議論されます。"},
-  {"en":"contempt","jp":"軽蔑","enSent":"The issue of contempt is often discussed in modern society.","jpSent":"軽蔑の問題は現代社会でよく議論されます。"},
-  {"en":"contradiction","jp":"矛盾","enSent":"The issue of contradiction is often discussed in modern society.","jpSent":"矛盾の問題は現代社会でよく議論されます。"},
-  {"en":"credence","jp":"信用","enSent":"The issue of credence is often discussed in modern society.","jpSent":"信用の問題は現代社会でよく議論されます。"},
-  {"en":"culmination","jp":"頂点、集大成","enSent":"The issue of culmination is often discussed in modern society.","jpSent":"頂点、集大成の問題は現代社会でよく議論されます。"},
-  {"en":"deference","jp":"敬意、服従","enSent":"The issue of deference is often discussed in modern society.","jpSent":"敬意、服従の問題は現代社会でよく議論されます。"},
-  {"en":"defiance","jp":"反抗","enSent":"The issue of defiance is often discussed in modern society.","jpSent":"反抗の問題は現代社会でよく議論されます。"},
-  {"en":"degradation","jp":"悪化、劣化","enSent":"The issue of degradation is often discussed in modern society.","jpSent":"悪化、劣化の問題は現代社会でよく議論されます。"},
-  {"en":"deliberation","jp":"熟考、審議","enSent":"The issue of deliberation is often discussed in modern society.","jpSent":"熟考、審議の問題は現代社会でよく議論されます。"},
-  {"en":"deterrent","jp":"抑止力","enSent":"The issue of deterrent is often discussed in modern society.","jpSent":"抑止力の問題は現代社会でよく議論されます。"},
-  {"en":"displacement","jp":"移住、置き換え","enSent":"The issue of displacement is often discussed in modern society.","jpSent":"移住、置き換えの問題は現代社会でよく議論されます。"},
-  {"en":"dissent","jp":"反対意見","enSent":"The issue of dissent is often discussed in modern society.","jpSent":"反対意見の問題は現代社会でよく議論されます。"},
-  {"en":"divergence","jp":"分岐、相違","enSent":"The issue of divergence is often discussed in modern society.","jpSent":"分岐、相違の問題は現代社会でよく議論されます。"},
-  {"en":"dominion","jp":"支配権","enSent":"The issue of dominion is often discussed in modern society.","jpSent":"支配権の問題は現代社会でよく議論されます。"},
-  {"en":"embezzlement","jp":"横領","enSent":"The issue of embezzlement is often discussed in modern society.","jpSent":"横領の問題は現代社会でよく議論されます。"},
-  {"en":"enforcement","jp":"施行","enSent":"The issue of enforcement is often discussed in modern society.","jpSent":"施行の問題は現代社会でよく議論されます。"},
-  {"en":"epitome","jp":"典型","enSent":"The issue of epitome is often discussed in modern society.","jpSent":"典型の問題は現代社会でよく議論されます。"},
-  {"en":"expenditure","jp":"支出","enSent":"The issue of expenditure is often discussed in modern society.","jpSent":"支出の問題は現代社会でよく議論されます。"},
-  {"en":"famine","jp":"飢饉","enSent":"The issue of famine is often discussed in modern society.","jpSent":"飢饉の問題は現代社会でよく議論されます。"},
-  {"en":"fidelity","jp":"忠実さ","enSent":"The issue of fidelity is often discussed in modern society.","jpSent":"忠実さの問題は現代社会でよく議論されます。"},
-  {"en":"hierarchy","jp":"階層","enSent":"The issue of hierarchy is often discussed in modern society.","jpSent":"階層の問題は現代社会でよく議論されます。"},
-  {"en":"hostility","jp":"敵意","enSent":"The issue of hostility is often discussed in modern society.","jpSent":"敵意の問題は現代社会でよく議論されます。"},
-  {"en":"immunity","jp":"免疫、免除","enSent":"The issue of immunity is often discussed in modern society.","jpSent":"免疫、免除の問題は現代社会でよく議論されます。"},
-  {"en":"incarceration","jp":"投獄","enSent":"The issue of incarceration is often discussed in modern society.","jpSent":"投獄の問題は現代社会でよく議論されます。"},
-  {"en":"inception","jp":"始まり","enSent":"The issue of inception is often discussed in modern society.","jpSent":"始まりの問題は現代社会でよく議論されます。"},
-  {"en":"inference","jp":"推論","enSent":"The issue of inference is often discussed in modern society.","jpSent":"推論の問題は現代社会でよく議論されます。"},
-  {"en":"jurisdiction","jp":"管轄権","enSent":"The issue of jurisdiction is often discussed in modern society.","jpSent":"管轄権の問題は現代社会でよく議論されます。"},
-  {"en":"livelihood","jp":"生計","enSent":"The issue of livelihood is often discussed in modern society.","jpSent":"生計の問題は現代社会でよく議論されます。"},
-  {"en":"malnutrition","jp":"栄養失調","enSent":"The issue of malnutrition is often discussed in modern society.","jpSent":"栄養失調の問題は現代社会でよく議論されます。"},
-  {"en":"moratorium","jp":"一時停止","enSent":"The issue of moratorium is often discussed in modern society.","jpSent":"一時停止の問題は現代社会でよく議論されます。"},
-  {"en":"negligence","jp":"過失","enSent":"The issue of negligence is often discussed in modern society.","jpSent":"過失の問題は現代社会でよく議論されます。"},
-  {"en":"obligation","jp":"義務","enSent":"The issue of obligation is often discussed in modern society.","jpSent":"義務の問題は現代社会でよく議論されます。"},
-  {"en":"oversight","jp":"監視、見落とし","enSent":"The issue of oversight is often discussed in modern society.","jpSent":"監視、見落としの問題は現代社会でよく議論されます。"},
-  {"en":"persecution","jp":"迫害","enSent":"The issue of persecution is often discussed in modern society.","jpSent":"迫害の問題は現代社会でよく議論されます。"},
-  {"en":"plight","jp":"苦境","enSent":"The issue of plight is often discussed in modern society.","jpSent":"苦境の問題は現代社会でよく議論されます。"},
-  {"en":"precedence","jp":"優先","enSent":"The issue of precedence is often discussed in modern society.","jpSent":"優先の問題は現代社会でよく議論されます。"},
-  {"en":"proponent","jp":"支持者","enSent":"The issue of proponent is often discussed in modern society.","jpSent":"支持者の問題は現代社会でよく議論されます。"},
-  {"en":"reconciliation","jp":"和解","enSent":"The issue of reconciliation is often discussed in modern society.","jpSent":"和解の問題は現代社会でよく議論されます。"},
-  {"en":"retribution","jp":"報復","enSent":"The issue of retribution is often discussed in modern society.","jpSent":"報復の問題は現代社会でよく議論されます。"},
-  {"en":"sanction","jp":"制裁、認可","enSent":"The issue of sanction is often discussed in modern society.","jpSent":"制裁、認可の問題は現代社会でよく議論されます。"},
-  {"en":"solvency","jp":"支払い能力","enSent":"The issue of solvency is often discussed in modern society.","jpSent":"支払い能力の問題は現代社会でよく議論されます。"},
-  {"en":"stigma","jp":"汚名","enSent":"The issue of stigma is often discussed in modern society.","jpSent":"汚名の問題は現代社会でよく議論されます。"},
-  {"en":"subordination","jp":"従属","enSent":"The issue of subordination is often discussed in modern society.","jpSent":"従属の問題は現代社会でよく議論されます。"},
-  {"en":"testimony","jp":"証言","enSent":"The issue of testimony is often discussed in modern society.","jpSent":"証言の問題は現代社会でよく議論されます。"},
-  {"en":"tribunal","jp":"法廷","enSent":"The issue of tribunal is often discussed in modern society.","jpSent":"法廷の問題は現代社会でよく議論されます。"},
-  {"en":"upheaval","jp":"激変","enSent":"The issue of upheaval is often discussed in modern society.","jpSent":"激変の問題は現代社会でよく議論されます。"},
-  {"en":"whistleblower","jp":"内部告発者","enSent":"The issue of whistleblower is often discussed in modern society.","jpSent":"内部告発者の問題は現代社会でよく議論されます。"},
-  {"en":"abate","jp":"弱まる","enSent":"Governments may need to abate the problem carefully.","jpSent":"政府はその問題を慎重に弱まる必要があるかもしれません。"},
-  {"en":"abdicate","jp":"退位する、放棄する","enSent":"Governments may need to abdicate the problem carefully.","jpSent":"政府はその問題を慎重に退位する、放棄する必要があるかもしれません。"},
-  {"en":"abrogate","jp":"廃止する","enSent":"Governments may need to abrogate the problem carefully.","jpSent":"政府はその問題を慎重に廃止する必要があるかもしれません。"},
-  {"en":"acquiesce","jp":"黙認する","enSent":"Governments may need to acquiesce the problem carefully.","jpSent":"政府はその問題を慎重に黙認する必要があるかもしれません。"},
-  {"en":"adjudicate","jp":"裁く","enSent":"Governments may need to adjudicate the problem carefully.","jpSent":"政府はその問題を慎重に裁く必要があるかもしれません。"},
-  {"en":"alienate","jp":"疎外する","enSent":"Governments may need to alienate the problem carefully.","jpSent":"政府はその問題を慎重に疎外する必要があるかもしれません。"},
-  {"en":"ameliorate","jp":"改善する","enSent":"Governments may need to ameliorate the problem carefully.","jpSent":"政府はその問題を慎重に改善する必要があるかもしれません。"},
-  {"en":"annex","jp":"併合する","enSent":"Governments may need to annex the problem carefully.","jpSent":"政府はその問題を慎重に併合する必要があるかもしれません。"},
-  {"en":"ascertain","jp":"確認する","enSent":"Governments may need to ascertain the problem carefully.","jpSent":"政府はその問題を慎重に確認する必要があるかもしれません。"},
-  {"en":"attribute","jp":"帰する","enSent":"Governments may need to attribute the problem carefully.","jpSent":"政府はその問題を慎重に帰する必要があるかもしれません。"},
-  {"en":"circumvent","jp":"回避する","enSent":"Governments may need to circumvent the problem carefully.","jpSent":"政府はその問題を慎重に回避する必要があるかもしれません。"},
-  {"en":"coerce","jp":"強制する","enSent":"Governments may need to coerce the problem carefully.","jpSent":"政府はその問題を慎重に強制する必要があるかもしれません。"},
-  {"en":"commemorate","jp":"記念する","enSent":"Governments may need to commemorate the problem carefully.","jpSent":"政府はその問題を慎重に記念する必要があるかもしれません。"},
-  {"en":"compound","jp":"悪化させる","enSent":"Governments may need to compound the problem carefully.","jpSent":"政府はその問題を慎重に悪化させる必要があるかもしれません。"},
-  {"en":"contemplate","jp":"熟考する","enSent":"Governments may need to contemplate the problem carefully.","jpSent":"政府はその問題を慎重に熟考する必要があるかもしれません。"},
-  {"en":"contravene","jp":"違反する","enSent":"Governments may need to contravene the problem carefully.","jpSent":"政府はその問題を慎重に違反する必要があるかもしれません。"},
-  {"en":"defy","jp":"反抗する","enSent":"Governments may need to defy the problem carefully.","jpSent":"政府はその問題を慎重に反抗する必要があるかもしれません。"},
-  {"en":"denounce","jp":"非難する","enSent":"Governments may need to denounce the problem carefully.","jpSent":"政府はその問題を慎重に非難する必要があるかもしれません。"},
-  {"en":"deport","jp":"国外追放する","enSent":"Governments may need to deport the problem carefully.","jpSent":"政府はその問題を慎重に国外追放する必要があるかもしれません。"},
-  {"en":"deregulate","jp":"規制緩和する","enSent":"Governments may need to deregulate the problem carefully.","jpSent":"政府はその問題を慎重に規制緩和する必要があるかもしれません。"},
-  {"en":"disavow","jp":"否認する","enSent":"Governments may need to disavow the problem carefully.","jpSent":"政府はその問題を慎重に否認する必要があるかもしれません。"},
-  {"en":"elicit","jp":"引き出す","enSent":"Governments may need to elicit the problem carefully.","jpSent":"政府はその問題を慎重に引き出す必要があるかもしれません。"},
-  {"en":"emulate","jp":"見習う","enSent":"Governments may need to emulate the problem carefully.","jpSent":"政府はその問題を慎重に見習う必要があるかもしれません。"},
-  {"en":"encroach","jp":"侵害する","enSent":"Governments may need to encroach the problem carefully.","jpSent":"政府はその問題を慎重に侵害する必要があるかもしれません。"},
-  {"en":"engender","jp":"生じさせる","enSent":"Governments may need to engender the problem carefully.","jpSent":"政府はその問題を慎重に生じさせる必要があるかもしれません。"},
-  {"en":"exonerate","jp":"無罪にする","enSent":"Governments may need to exonerate the problem carefully.","jpSent":"政府はその問題を慎重に無罪にする必要があるかもしれません。"},
-  {"en":"expel","jp":"追放する","enSent":"Governments may need to expel the problem carefully.","jpSent":"政府はその問題を慎重に追放する必要があるかもしれません。"},
-  {"en":"forgo","jp":"控える","enSent":"Governments may need to forgo the problem carefully.","jpSent":"政府はその問題を慎重に控える必要があるかもしれません。"},
-  {"en":"galvanize","jp":"奮起させる","enSent":"Governments may need to galvanize the problem carefully.","jpSent":"政府はその問題を慎重に奮起させる必要があるかもしれません。"},
-  {"en":"implicate","jp":"関与を示す","enSent":"Governments may need to implicate the problem carefully.","jpSent":"政府はその問題を慎重に関与を示す必要があるかもしれません。"},
-  {"en":"incite","jp":"扇動する","enSent":"Governments may need to incite the problem carefully.","jpSent":"政府はその問題を慎重に扇動する必要があるかもしれません。"},
-  {"en":"instigate","jp":"扇動する","enSent":"Governments may need to instigate the problem carefully.","jpSent":"政府はその問題を慎重に扇動する必要があるかもしれません。"},
-  {"en":"legitimize","jp":"正当化する","enSent":"Governments may need to legitimize the problem carefully.","jpSent":"政府はその問題を慎重に正当化する必要があるかもしれません。"},
-  {"en":"mediate","jp":"仲裁する","enSent":"Governments may need to mediate the problem carefully.","jpSent":"政府はその問題を慎重に仲裁する必要があるかもしれません。"},
-  {"en":"misconstrue","jp":"誤解する","enSent":"Governments may need to misconstrue the problem carefully.","jpSent":"政府はその問題を慎重に誤解する必要があるかもしれません。"},
-  {"en":"nullify","jp":"無効にする","enSent":"Governments may need to nullify the problem carefully.","jpSent":"政府はその問題を慎重に無効にする必要があるかもしれません。"},
-  {"en":"ostracize","jp":"排斥する","enSent":"Governments may need to ostracize the problem carefully.","jpSent":"政府はその問題を慎重に排斥する必要があるかもしれません。"},
-  {"en":"outpace","jp":"上回る","enSent":"Governments may need to outpace the problem carefully.","jpSent":"政府はその問題を慎重に上回る必要があるかもしれません。"},
-  {"en":"permeate","jp":"浸透する","enSent":"Governments may need to permeate the problem carefully.","jpSent":"政府はその問題を慎重に浸透する必要があるかもしれません。"},
-  {"en":"postulate","jp":"仮定する","enSent":"Governments may need to postulate the problem carefully.","jpSent":"政府はその問題を慎重に仮定する必要があるかもしれません。"},
-  {"en":"ratify","jp":"批准する","enSent":"Governments may need to ratify the problem carefully.","jpSent":"政府はその問題を慎重に批准する必要があるかもしれません。"},
-  {"en":"rectify","jp":"是正する","enSent":"Governments may need to rectify the problem carefully.","jpSent":"政府はその問題を慎重に是正する必要があるかもしれません。"},
-  {"en":"repudiate","jp":"拒絶する","enSent":"Governments may need to repudiate the problem carefully.","jpSent":"政府はその問題を慎重に拒絶する必要があるかもしれません。"},
-  {"en":"rescind","jp":"撤回する","enSent":"Governments may need to rescind the problem carefully.","jpSent":"政府はその問題を慎重に撤回する必要があるかもしれません。"},
-  {"en":"scrutinize","jp":"精査する","enSent":"Governments may need to scrutinize the problem carefully.","jpSent":"政府はその問題を慎重に精査する必要があるかもしれません。"},
-  {"en":"substantiate","jp":"実証する","enSent":"Governments may need to substantiate the problem carefully.","jpSent":"政府はその問題を慎重に実証する必要があるかもしれません。"},
-  {"en":"supersede","jp":"取って代わる","enSent":"Governments may need to supersede the problem carefully.","jpSent":"政府はその問題を慎重に取って代わる必要があるかもしれません。"},
-  {"en":"surmount","jp":"克服する","enSent":"Governments may need to surmount the problem carefully.","jpSent":"政府はその問題を慎重に克服する必要があるかもしれません。"},
-  {"en":"vindicate","jp":"正当性を証明する","enSent":"Governments may need to vindicate the problem carefully.","jpSent":"政府はその問題を慎重に正当性を証明する必要があるかもしれません。"},
-  {"en":"apathetic","jp":"無関心な","enSent":"This is a apathetic issue in many countries.","jpSent":"これは多くの国で無関心な問題です。"},
-  {"en":"belligerent","jp":"好戦的な","enSent":"This is a belligerent issue in many countries.","jpSent":"これは多くの国で好戦的な問題です。"},
-  {"en":"clandestine","jp":"秘密の","enSent":"This is a clandestine issue in many countries.","jpSent":"これは多くの国で秘密の問題です。"},
-  {"en":"conspicuous","jp":"目立つ","enSent":"This is a conspicuous issue in many countries.","jpSent":"これは多くの国で目立つ問題です。"},
-  {"en":"culpable","jp":"責任がある","enSent":"This is a culpable issue in many countries.","jpSent":"これは多くの国で責任がある問題です。"},
-  {"en":"daunting","jp":"手ごわい","enSent":"This is a daunting issue in many countries.","jpSent":"これは多くの国で手ごわい問題です。"},
-  {"en":"definitive","jp":"決定的な","enSent":"This is a definitive issue in many countries.","jpSent":"これは多くの国で決定的な問題です。"},
-  {"en":"deplorable","jp":"嘆かわしい","enSent":"This is a deplorable issue in many countries.","jpSent":"これは多くの国で嘆かわしい問題です。"},
-  {"en":"dubious","jp":"疑わしい","enSent":"This is a dubious issue in many countries.","jpSent":"これは多くの国で疑わしい問題です。"},
-  {"en":"elusive","jp":"捉えにくい","enSent":"This is a elusive issue in many countries.","jpSent":"これは多くの国で捉えにくい問題です。"},
-  {"en":"endemic","jp":"風土病の、固有の","enSent":"This is a endemic issue in many countries.","jpSent":"これは多くの国で風土病の、固有の問題です。"},
-  {"en":"exorbitant","jp":"法外な","enSent":"This is a exorbitant issue in many countries.","jpSent":"これは多くの国で法外な問題です。"},
-  {"en":"impeccable","jp":"非の打ち所がない","enSent":"This is a impeccable issue in many countries.","jpSent":"これは多くの国で非の打ち所がない問題です。"},
-  {"en":"indispensable","jp":"不可欠な","enSent":"This is a indispensable issue in many countries.","jpSent":"これは多くの国で不可欠な問題です。"},
-  {"en":"inherent","jp":"固有の","enSent":"This is a inherent issue in many countries.","jpSent":"これは多くの国で固有の問題です。"},
-  {"en":"insidious","jp":"陰湿な","enSent":"This is a insidious issue in many countries.","jpSent":"これは多くの国で陰湿な問題です。"},
-  {"en":"nominal","jp":"名目上の","enSent":"This is a nominal issue in many countries.","jpSent":"これは多くの国で名目上の問題です。"},
-  {"en":"pervasive","jp":"広く行き渡った","enSent":"This is a pervasive issue in many countries.","jpSent":"これは多くの国で広く行き渡った問題です。"},
-  {"en":"preemptive","jp":"先制の","enSent":"This is a preemptive issue in many countries.","jpSent":"これは多くの国で先制の問題です。"},
-  {"en":"prudent","jp":"慎重な","enSent":"This is a prudent issue in many countries.","jpSent":"これは多くの国で慎重な問題です。"},
-  {"en":"reclusive","jp":"隠遁した","enSent":"This is a reclusive issue in many countries.","jpSent":"これは多くの国で隠遁した問題です。"},
-  {"en":"residual","jp":"残りの","enSent":"This is a residual issue in many countries.","jpSent":"これは多くの国で残りの問題です。"},
-  {"en":"salient","jp":"顕著な","enSent":"This is a salient issue in many countries.","jpSent":"これは多くの国で顕著な問題です。"},
-  {"en":"stringent","jp":"厳しい","enSent":"This is a stringent issue in many countries.","jpSent":"これは多くの国で厳しい問題です。"},
-  {"en":"tenacious","jp":"粘り強い","enSent":"This is a tenacious issue in many countries.","jpSent":"これは多くの国で粘り強い問題です。"},
-  {"en":"volatile","jp":"不安定な","enSent":"This is a volatile issue in many countries.","jpSent":"これは多くの国で不安定な問題です。"},
-  {"en":"zealous","jp":"熱心な","enSent":"This is a zealous issue in many countries.","jpSent":"これは多くの国で熱心な問題です。"},
-  {"en":"ostensibly","jp":"表向きは","enSent":"The situation changed ostensibly.","jpSent":"状況は表向きは変化しました。"},
-  {"en":"predominantly","jp":"主に","enSent":"The situation changed predominantly.","jpSent":"状況は主に変化しました。"},
-  {"en":"reluctantly","jp":"しぶしぶ","enSent":"The situation changed reluctantly.","jpSent":"状況はしぶしぶ変化しました。"},
-  {"en":"subsequently","jp":"その後","enSent":"The situation changed subsequently.","jpSent":"状況はその後変化しました。"},
-  {"en":"unequivocally","jp":"明確に","enSent":"The situation changed unequivocally.","jpSent":"状況は明確に変化しました。"},
-  {"en":"acquittal","jp":"無罪判決","enSent":"The acquittal surprised many observers.","jpSent":"その無罪判決は多くの観察者を驚かせました。"},
-  {"en":"adversary","jp":"敵対者","enSent":"The two adversaries finally agreed to negotiate.","jpSent":"二人の敵対者はついに交渉に同意しました。"},
-  {"en":"affinity","jp":"親和性","enSent":"There is an affinity between education and democracy.","jpSent":"教育と民主主義には親和性があります。"},
-  {"en":"animosity","jp":"敵意","enSent":"The treaty reduced animosity between the countries.","jpSent":"その条約は両国間の敵意を減らしました。"},
-  {"en":"arable","jp":"耕作可能な","enSent":"Arable land is becoming scarce in some regions.","jpSent":"一部の地域では耕作可能な土地が不足しつつあります。"},
-  {"en":"bipartisan","jp":"超党派の","enSent":"The reform received bipartisan support.","jpSent":"その改革は超党派の支持を受けました。"},
-  {"en":"brevity","jp":"簡潔さ","enSent":"Brevity is valuable in public speeches.","jpSent":"演説では簡潔さが価値を持ちます。"},
-  {"en":"capricious","jp":"気まぐれな","enSent":"Capricious weather harms local farmers.","jpSent":"気まぐれな天候は地元の農家に害を与えます。"},
-  {"en":"civic","jp":"市民の","enSent":"Civic education is essential for democracy.","jpSent":"市民教育は民主主義に不可欠です。"},
-  {"en":"cohesion","jp":"結束","enSent":"Social cohesion can reduce conflict.","jpSent":"社会的結束は対立を減らすことがあります。"},
-  {"en":"communal","jp":"共同体の","enSent":"Communal spaces help people interact.","jpSent":"共同体の空間は人々の交流を助けます。"},
-  {"en":"conjecture","jp":"推測","enSent":"The claim remains a matter of conjecture.","jpSent":"その主張はいまだ推測の域を出ません。"},
-  {"en":"demise","jp":"終焉、死","enSent":"The demise of the industry affected the town.","jpSent":"その産業の終焉は町に影響を与えました。"},
-  {"en":"devoid of","jp":"〜を欠いている","enSent":"The report is devoid of reliable evidence.","jpSent":"その報告書は信頼できる証拠を欠いています。"},
-  {"en":"disenfranchise","jp":"権利を奪う","enSent":"Unfair rules can disenfranchise minority groups.","jpSent":"不公平な規則は少数派の権利を奪うことがあります。"},
-  {"en":"eclectic","jp":"多様なものを取り入れた","enSent":"The school offers an eclectic curriculum.","jpSent":"その学校は多様なものを取り入れたカリキュラムを提供しています。"},
-  {"en":"egalitarian","jp":"平等主義の","enSent":"The policy reflects egalitarian values.","jpSent":"その政策は平等主義の価値観を反映しています。"},
-  {"en":"enfranchise","jp":"参政権を与える","enSent":"The reform aimed to enfranchise more citizens.","jpSent":"その改革はより多くの市民に参政権を与えることを目的としました。"},
-  {"en":"exemplify","jp":"例示する","enSent":"The case exemplifies the need for reform.","jpSent":"その事例は改革の必要性を例示しています。"},
-  {"en":"expulsion","jp":"追放","enSent":"The expulsion of residents caused criticism.","jpSent":"住民の追放は批判を招きました。"},
-  {"en":"fiduciary","jp":"信託上の","enSent":"Managers have a fiduciary duty to clients.","jpSent":"管理者には顧客に対する信託上の義務があります。"},
-  {"en":"formulate","jp":"策定する","enSent":"Experts formulated a new strategy.","jpSent":"専門家は新しい戦略を策定しました。"},
-  {"en":"gentrification","jp":"高級住宅地化","enSent":"Gentrification can displace local residents.","jpSent":"高級住宅地化は地元住民を追い出すことがあります。"},
-  {"en":"hasten","jp":"早める","enSent":"Automation may hasten changes in employment.","jpSent":"自動化は雇用の変化を早めるかもしれません。"},
-  {"en":"ideological","jp":"思想上の","enSent":"The debate revealed ideological differences.","jpSent":"その議論は思想上の違いを明らかにしました。"},
-  {"en":"impoverish","jp":"貧しくする","enSent":"Conflict can impoverish entire communities.","jpSent":"紛争は地域全体を貧しくすることがあります。"},
-  {"en":"incumbent","jp":"現職の","enSent":"The incumbent mayor promised reform.","jpSent":"現職の市長は改革を約束しました。"},
-  {"en":"inhibit","jp":"抑制する","enSent":"Fear can inhibit creativity.","jpSent":"恐怖は創造性を抑制することがあります。"},
-  {"en":"litigation","jp":"訴訟","enSent":"The company faced costly litigation.","jpSent":"その会社は高額な訴訟に直面しました。"},
-  {"en":"mandate","jp":"命令、権限","enSent":"The government received a mandate for change.","jpSent":"政府は変革への権限を得ました。"},
-  {"en":"morale","jp":"士気","enSent":"Clear goals can improve morale.","jpSent":"明確な目標は士気を高めます。"},
-  {"en":"nullification","jp":"無効化","enSent":"Nullification of the contract caused confusion.","jpSent":"契約の無効化は混乱を招きました。"},
-  {"en":"paramountcy","jp":"優越、最高位","enSent":"The paramountcy of safety must be recognized.","jpSent":"安全の優越性は認識されなければなりません。"},
-  {"en":"partisan","jp":"党派的な","enSent":"Partisan arguments delayed the decision.","jpSent":"党派的な議論が決定を遅らせました。"},
-  {"en":"paucity","jp":"不足","enSent":"There is a paucity of reliable data.","jpSent":"信頼できるデータが不足しています。"},
-  {"en":"pragmatic","jp":"実用的な","enSent":"A pragmatic approach is needed.","jpSent":"実用的な取り組みが必要です。"},
-  {"en":"redress","jp":"是正、補償","enSent":"Victims demanded redress from the company.","jpSent":"被害者は会社に補償を求めました。"},
-  {"en":"relinquish","jp":"手放す","enSent":"The leader refused to relinquish power.","jpSent":"その指導者は権力を手放すことを拒みました。"},
-  {"en":"requisite","jp":"必要な","enSent":"Workers need requisite skills for the job.","jpSent":"労働者はその仕事に必要な技能を必要とします。"},
-  {"en":"solicit","jp":"求める","enSent":"The committee solicited public comments.","jpSent":"委員会は市民の意見を求めました。"}
+  {
+    "en": "implement",
+    "jp": "実施する",
+    "enSent": "The issue of implement is often discussed in modern society.",
+    "jpSent": "実施するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "mitigate",
+    "jp": "軽減する",
+    "enSent": "The issue of mitigate is often discussed in modern society.",
+    "jpSent": "軽減するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "undermine",
+    "jp": "弱体化させる",
+    "enSent": "The issue of undermine is often discussed in modern society.",
+    "jpSent": "弱体化させるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "facilitate",
+    "jp": "促進する",
+    "enSent": "The issue of facilitate is often discussed in modern society.",
+    "jpSent": "促進するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "enhance",
+    "jp": "高める",
+    "enSent": "The issue of enhance is often discussed in modern society.",
+    "jpSent": "高めるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "exacerbate",
+    "jp": "悪化させる",
+    "enSent": "The issue of exacerbate is often discussed in modern society.",
+    "jpSent": "悪化させるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "alleviate",
+    "jp": "軽減する",
+    "enSent": "The issue of alleviate is often discussed in modern society.",
+    "jpSent": "軽減するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "eliminate",
+    "jp": "排除する",
+    "enSent": "The issue of eliminate is often discussed in modern society.",
+    "jpSent": "排除するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "regulate",
+    "jp": "規制する",
+    "enSent": "The issue of regulate is often discussed in modern society.",
+    "jpSent": "規制するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "enforce",
+    "jp": "施行する",
+    "enSent": "The issue of enforce is often discussed in modern society.",
+    "jpSent": "施行するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "impose",
+    "jp": "課す",
+    "enSent": "The issue of impose is often discussed in modern society.",
+    "jpSent": "課すの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "constrain",
+    "jp": "制約する",
+    "enSent": "The issue of constrain is often discussed in modern society.",
+    "jpSent": "制約するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "curtail",
+    "jp": "削減する",
+    "enSent": "The issue of curtail is often discussed in modern society.",
+    "jpSent": "削減するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "hamper",
+    "jp": "妨げる",
+    "enSent": "The issue of hamper is often discussed in modern society.",
+    "jpSent": "妨げるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "hinder",
+    "jp": "妨げる",
+    "enSent": "The issue of hinder is often discussed in modern society.",
+    "jpSent": "妨げるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "impede",
+    "jp": "妨げる",
+    "enSent": "The issue of impede is often discussed in modern society.",
+    "jpSent": "妨げるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "jeopardize",
+    "jp": "危険にさらす",
+    "enSent": "The issue of jeopardize is often discussed in modern society.",
+    "jpSent": "危険にさらすの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "foster",
+    "jp": "育成する",
+    "enSent": "The issue of foster is often discussed in modern society.",
+    "jpSent": "育成するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "bolster",
+    "jp": "強化する",
+    "enSent": "The issue of bolster is often discussed in modern society.",
+    "jpSent": "強化するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "reinforce",
+    "jp": "強化する",
+    "enSent": "The issue of reinforce is often discussed in modern society.",
+    "jpSent": "強化するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "mobilize",
+    "jp": "動員する",
+    "enSent": "The issue of mobilize is often discussed in modern society.",
+    "jpSent": "動員するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "allocate",
+    "jp": "配分する",
+    "enSent": "The issue of allocate is often discussed in modern society.",
+    "jpSent": "配分するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "assess",
+    "jp": "評価する",
+    "enSent": "The issue of assess is often discussed in modern society.",
+    "jpSent": "評価するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "attain",
+    "jp": "達成する",
+    "enSent": "The issue of attain is often discussed in modern society.",
+    "jpSent": "達成するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "advocate",
+    "jp": "提唱する",
+    "enSent": "The issue of advocate is often discussed in modern society.",
+    "jpSent": "提唱するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "concede",
+    "jp": "認める、譲歩する",
+    "enSent": "The issue of concede is often discussed in modern society.",
+    "jpSent": "認める、譲歩するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "condemn",
+    "jp": "非難する",
+    "enSent": "The issue of condemn is often discussed in modern society.",
+    "jpSent": "非難するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "confer",
+    "jp": "授与する、協議する",
+    "enSent": "The issue of confer is often discussed in modern society.",
+    "jpSent": "授与する、協議するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "conform",
+    "jp": "従う",
+    "enSent": "The issue of conform is often discussed in modern society.",
+    "jpSent": "従うの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "convene",
+    "jp": "招集する",
+    "enSent": "The issue of convene is often discussed in modern society.",
+    "jpSent": "招集するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "collaborate",
+    "jp": "協力する",
+    "enSent": "The issue of collaborate is often discussed in modern society.",
+    "jpSent": "協力するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "commence",
+    "jp": "始まる",
+    "enSent": "The issue of commence is often discussed in modern society.",
+    "jpSent": "始まるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "consolidate",
+    "jp": "統合する",
+    "enSent": "The issue of consolidate is often discussed in modern society.",
+    "jpSent": "統合するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "contaminate",
+    "jp": "汚染する",
+    "enSent": "The issue of contaminate is often discussed in modern society.",
+    "jpSent": "汚染するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "deplete",
+    "jp": "使い果たす",
+    "enSent": "The issue of deplete is often discussed in modern society.",
+    "jpSent": "使い果たすの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "deplore",
+    "jp": "非難する、嘆く",
+    "enSent": "The issue of deplore is often discussed in modern society.",
+    "jpSent": "非難する、嘆くの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "diminish",
+    "jp": "減少する",
+    "enSent": "The issue of diminish is often discussed in modern society.",
+    "jpSent": "減少するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "discriminate",
+    "jp": "差別する、区別する",
+    "enSent": "The issue of discriminate is often discussed in modern society.",
+    "jpSent": "差別する、区別するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "displace",
+    "jp": "住む場所を奪う",
+    "enSent": "The issue of displace is often discussed in modern society.",
+    "jpSent": "住む場所を奪うの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "disseminate",
+    "jp": "広める",
+    "enSent": "The issue of disseminate is often discussed in modern society.",
+    "jpSent": "広めるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "divert",
+    "jp": "そらす",
+    "enSent": "The issue of divert is often discussed in modern society.",
+    "jpSent": "そらすの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "enact",
+    "jp": "制定する",
+    "enSent": "The issue of enact is often discussed in modern society.",
+    "jpSent": "制定するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "encompass",
+    "jp": "含む",
+    "enSent": "The issue of encompass is often discussed in modern society.",
+    "jpSent": "含むの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "endorse",
+    "jp": "支持する",
+    "enSent": "The issue of endorse is often discussed in modern society.",
+    "jpSent": "支持するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "entail",
+    "jp": "伴う",
+    "enSent": "The issue of entail is often discussed in modern society.",
+    "jpSent": "伴うの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "eradicate",
+    "jp": "根絶する",
+    "enSent": "The issue of eradicate is often discussed in modern society.",
+    "jpSent": "根絶するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "evade",
+    "jp": "回避する",
+    "enSent": "The issue of evade is often discussed in modern society.",
+    "jpSent": "回避するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "exploit",
+    "jp": "搾取する、利用する",
+    "enSent": "The issue of exploit is often discussed in modern society.",
+    "jpSent": "搾取する、利用するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "generate",
+    "jp": "生み出す",
+    "enSent": "The issue of generate is often discussed in modern society.",
+    "jpSent": "生み出すの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "harness",
+    "jp": "活用する",
+    "enSent": "The issue of harness is often discussed in modern society.",
+    "jpSent": "活用するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "infringe",
+    "jp": "侵害する",
+    "enSent": "The issue of infringe is often discussed in modern society.",
+    "jpSent": "侵害するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "intervene",
+    "jp": "介入する",
+    "enSent": "The issue of intervene is often discussed in modern society.",
+    "jpSent": "介入するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "intimidate",
+    "jp": "脅す",
+    "enSent": "The issue of intimidate is often discussed in modern society.",
+    "jpSent": "脅すの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "leverage",
+    "jp": "活用する",
+    "enSent": "The issue of leverage is often discussed in modern society.",
+    "jpSent": "活用するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "marginalize",
+    "jp": "疎外する",
+    "enSent": "The issue of marginalize is often discussed in modern society.",
+    "jpSent": "疎外するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "obstruct",
+    "jp": "妨害する",
+    "enSent": "The issue of obstruct is often discussed in modern society.",
+    "jpSent": "妨害するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "offset",
+    "jp": "相殺する",
+    "enSent": "The issue of offset is often discussed in modern society.",
+    "jpSent": "相殺するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "overhaul",
+    "jp": "全面的に見直す",
+    "enSent": "The issue of overhaul is often discussed in modern society.",
+    "jpSent": "全面的に見直すの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "oversee",
+    "jp": "監督する",
+    "enSent": "The issue of oversee is often discussed in modern society.",
+    "jpSent": "監督するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "perpetuate",
+    "jp": "永続させる",
+    "enSent": "The issue of perpetuate is often discussed in modern society.",
+    "jpSent": "永続させるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "polarize",
+    "jp": "二極化させる",
+    "enSent": "The issue of polarize is often discussed in modern society.",
+    "jpSent": "二極化させるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "preserve",
+    "jp": "保存する",
+    "enSent": "The issue of preserve is often discussed in modern society.",
+    "jpSent": "保存するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "prioritize",
+    "jp": "優先する",
+    "enSent": "The issue of prioritize is often discussed in modern society.",
+    "jpSent": "優先するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "prohibit",
+    "jp": "禁止する",
+    "enSent": "The issue of prohibit is often discussed in modern society.",
+    "jpSent": "禁止するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "reconcile",
+    "jp": "調和させる",
+    "enSent": "The issue of reconcile is often discussed in modern society.",
+    "jpSent": "調和させるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "remedy",
+    "jp": "解決策、治療",
+    "enSent": "The issue of remedy is often discussed in modern society.",
+    "jpSent": "解決策、治療の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "render",
+    "jp": "〜にする",
+    "enSent": "The issue of render is often discussed in modern society.",
+    "jpSent": "〜にするの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "renounce",
+    "jp": "放棄する",
+    "enSent": "The issue of renounce is often discussed in modern society.",
+    "jpSent": "放棄するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "retrieve",
+    "jp": "取り戻す",
+    "enSent": "The issue of retrieve is often discussed in modern society.",
+    "jpSent": "取り戻すの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "revitalize",
+    "jp": "再活性化する",
+    "enSent": "The issue of revitalize is often discussed in modern society.",
+    "jpSent": "再活性化するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "scrutinize",
+    "jp": "精査する",
+    "enSent": "Governments may need to scrutinize the problem carefully.",
+    "jpSent": "政府はその問題を慎重に精査する必要があるかもしれません。"
+  },
+  {
+    "en": "substantiate",
+    "jp": "実証する",
+    "enSent": "Governments may need to substantiate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に実証する必要があるかもしれません。"
+  },
+  {
+    "en": "surmount",
+    "jp": "克服する",
+    "enSent": "Governments may need to surmount the problem carefully.",
+    "jpSent": "政府はその問題を慎重に克服する必要があるかもしれません。"
+  },
+  {
+    "en": "utilize",
+    "jp": "活用する",
+    "enSent": "The issue of utilize is often discussed in modern society.",
+    "jpSent": "活用するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "vulnerable",
+    "jp": "弱い、傷つきやすい",
+    "enSent": "The issue of vulnerable is often discussed in modern society.",
+    "jpSent": "弱い、傷つきやすいの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "sustainable",
+    "jp": "持続可能な",
+    "enSent": "The issue of sustainable is often discussed in modern society.",
+    "jpSent": "持続可能なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "prevalent",
+    "jp": "普及している",
+    "enSent": "The issue of prevalent is often discussed in modern society.",
+    "jpSent": "普及しているの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "inevitable",
+    "jp": "避けられない",
+    "enSent": "The issue of inevitable is often discussed in modern society.",
+    "jpSent": "避けられないの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "imperative",
+    "jp": "不可欠な",
+    "enSent": "The issue of imperative is often discussed in modern society.",
+    "jpSent": "不可欠なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "substantial",
+    "jp": "かなりの",
+    "enSent": "The issue of substantial is often discussed in modern society.",
+    "jpSent": "かなりのの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "fundamental",
+    "jp": "根本的な",
+    "enSent": "The issue of fundamental is often discussed in modern society.",
+    "jpSent": "根本的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "comprehensive",
+    "jp": "包括的な",
+    "enSent": "The issue of comprehensive is often discussed in modern society.",
+    "jpSent": "包括的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "feasible",
+    "jp": "実行可能な",
+    "enSent": "The issue of feasible is often discussed in modern society.",
+    "jpSent": "実行可能なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "viable",
+    "jp": "実行可能な",
+    "enSent": "The issue of viable is often discussed in modern society.",
+    "jpSent": "実行可能なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "transparent",
+    "jp": "透明な",
+    "enSent": "The issue of transparent is often discussed in modern society.",
+    "jpSent": "透明なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "legitimate",
+    "jp": "正当な",
+    "enSent": "The issue of legitimate is often discussed in modern society.",
+    "jpSent": "正当なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "ethical",
+    "jp": "倫理的な",
+    "enSent": "The issue of ethical is often discussed in modern society.",
+    "jpSent": "倫理的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "autonomous",
+    "jp": "自律した",
+    "enSent": "The issue of autonomous is often discussed in modern society.",
+    "jpSent": "自律したの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "equitable",
+    "jp": "公平な",
+    "enSent": "The issue of equitable is often discussed in modern society.",
+    "jpSent": "公平なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "detrimental",
+    "jp": "有害な",
+    "enSent": "The issue of detrimental is often discussed in modern society.",
+    "jpSent": "有害なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "prominent",
+    "jp": "著名な",
+    "enSent": "The issue of prominent is often discussed in modern society.",
+    "jpSent": "著名なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "profound",
+    "jp": "深い、重大な",
+    "enSent": "The issue of profound is often discussed in modern society.",
+    "jpSent": "深い、重大なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "precarious",
+    "jp": "不安定な",
+    "enSent": "The issue of precarious is often discussed in modern society.",
+    "jpSent": "不安定なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "plausible",
+    "jp": "もっともらしい",
+    "enSent": "The issue of plausible is often discussed in modern society.",
+    "jpSent": "もっともらしいの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "rigorous",
+    "jp": "厳密な",
+    "enSent": "The issue of rigorous is often discussed in modern society.",
+    "jpSent": "厳密なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "resilient",
+    "jp": "回復力のある",
+    "enSent": "The issue of resilient is often discussed in modern society.",
+    "jpSent": "回復力のあるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "skeptical",
+    "jp": "懐疑的な",
+    "enSent": "The issue of skeptical is often discussed in modern society.",
+    "jpSent": "懐疑的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "stringent",
+    "jp": "厳しい",
+    "enSent": "This is a stringent issue in many countries.",
+    "jpSent": "これは多くの国で厳しい問題です。"
+  },
+  {
+    "en": "volatile",
+    "jp": "不安定な",
+    "enSent": "This is a volatile issue in many countries.",
+    "jpSent": "これは多くの国で不安定な問題です。"
+  },
+  {
+    "en": "unprecedented",
+    "jp": "前例のない",
+    "enSent": "The issue of unprecedented is often discussed in modern society.",
+    "jpSent": "前例のないの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "widespread",
+    "jp": "広範囲の",
+    "enSent": "The issue of widespread is often discussed in modern society.",
+    "jpSent": "広範囲のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "inherent",
+    "jp": "固有の",
+    "enSent": "This is a inherent issue in many countries.",
+    "jpSent": "これは多くの国で固有の問題です。"
+  },
+  {
+    "en": "indispensable",
+    "jp": "不可欠な",
+    "enSent": "This is a indispensable issue in many countries.",
+    "jpSent": "これは多くの国で不可欠な問題です。"
+  },
+  {
+    "en": "salient",
+    "jp": "顕著な",
+    "enSent": "This is a salient issue in many countries.",
+    "jpSent": "これは多くの国で顕著な問題です。"
+  },
+  {
+    "en": "pervasive",
+    "jp": "広く行き渡った",
+    "enSent": "This is a pervasive issue in many countries.",
+    "jpSent": "これは多くの国で広く行き渡った問題です。"
+  },
+  {
+    "en": "notorious",
+    "jp": "悪名高い",
+    "enSent": "The issue of notorious is often discussed in modern society.",
+    "jpSent": "悪名高いの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "fragile",
+    "jp": "もろい",
+    "enSent": "The issue of fragile is often discussed in modern society.",
+    "jpSent": "もろいの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "imminent",
+    "jp": "差し迫った",
+    "enSent": "The issue of imminent is often discussed in modern society.",
+    "jpSent": "差し迫ったの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "impartial",
+    "jp": "公平な",
+    "enSent": "The issue of impartial is often discussed in modern society.",
+    "jpSent": "公平なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "ambiguous",
+    "jp": "曖昧な",
+    "enSent": "The issue of ambiguous is often discussed in modern society.",
+    "jpSent": "曖昧なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "arbitrary",
+    "jp": "恣意的な",
+    "enSent": "The issue of arbitrary is often discussed in modern society.",
+    "jpSent": "恣意的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "coherent",
+    "jp": "一貫した",
+    "enSent": "The issue of coherent is often discussed in modern society.",
+    "jpSent": "一貫したの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "contentious",
+    "jp": "議論を呼ぶ",
+    "enSent": "The issue of contentious is often discussed in modern society.",
+    "jpSent": "議論を呼ぶの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "drastic",
+    "jp": "抜本的な",
+    "enSent": "The issue of drastic is often discussed in modern society.",
+    "jpSent": "抜本的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "empirical",
+    "jp": "経験的な、実証的な",
+    "enSent": "The issue of empirical is often discussed in modern society.",
+    "jpSent": "経験的な、実証的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "explicit",
+    "jp": "明確な",
+    "enSent": "The issue of explicit is often discussed in modern society.",
+    "jpSent": "明確なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "formidable",
+    "jp": "手ごわい",
+    "enSent": "The issue of formidable is often discussed in modern society.",
+    "jpSent": "手ごわいの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "meticulous",
+    "jp": "細心の",
+    "enSent": "The issue of meticulous is often discussed in modern society.",
+    "jpSent": "細心のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "paramount",
+    "jp": "極めて重要な",
+    "enSent": "The issue of paramount is often discussed in modern society.",
+    "jpSent": "極めて重要なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "prudent",
+    "jp": "慎重な",
+    "enSent": "This is a prudent issue in many countries.",
+    "jpSent": "これは多くの国で慎重な問題です。"
+  },
+  {
+    "en": "accountability",
+    "jp": "説明責任",
+    "enSent": "The issue of accountability is often discussed in modern society.",
+    "jpSent": "説明責任の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "infrastructure",
+    "jp": "社会基盤",
+    "enSent": "The issue of infrastructure is often discussed in modern society.",
+    "jpSent": "社会基盤の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "legislation",
+    "jp": "法律、立法",
+    "enSent": "The issue of legislation is often discussed in modern society.",
+    "jpSent": "法律、立法の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "implication",
+    "jp": "含意、影響",
+    "enSent": "The issue of implication is often discussed in modern society.",
+    "jpSent": "含意、影響の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "incentive",
+    "jp": "動機、奨励策",
+    "enSent": "The issue of incentive is often discussed in modern society.",
+    "jpSent": "動機、奨励策の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "innovation",
+    "jp": "革新",
+    "enSent": "The issue of innovation is often discussed in modern society.",
+    "jpSent": "革新の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "integrity",
+    "jp": "誠実さ、完全性",
+    "enSent": "The issue of integrity is often discussed in modern society.",
+    "jpSent": "誠実さ、完全性の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "liability",
+    "jp": "責任、負債",
+    "enSent": "The issue of liability is often discussed in modern society.",
+    "jpSent": "責任、負債の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "revenue",
+    "jp": "収入",
+    "enSent": "The issue of revenue is often discussed in modern society.",
+    "jpSent": "収入の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "scrutiny",
+    "jp": "精査",
+    "enSent": "The issue of scrutiny is often discussed in modern society.",
+    "jpSent": "精査の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "sovereignty",
+    "jp": "主権",
+    "enSent": "The issue of sovereignty is often discussed in modern society.",
+    "jpSent": "主権の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "prosperity",
+    "jp": "繁栄",
+    "enSent": "The issue of prosperity is often discussed in modern society.",
+    "jpSent": "繁栄の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "recession",
+    "jp": "景気後退",
+    "enSent": "The issue of recession is often discussed in modern society.",
+    "jpSent": "景気後退の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "refugee",
+    "jp": "難民",
+    "enSent": "The issue of refugee is often discussed in modern society.",
+    "jpSent": "難民の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "subsidy",
+    "jp": "補助金",
+    "enSent": "The issue of subsidy is often discussed in modern society.",
+    "jpSent": "補助金の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "deforestation",
+    "jp": "森林破壊",
+    "enSent": "The issue of deforestation is often discussed in modern society.",
+    "jpSent": "森林破壊の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "biodiversity",
+    "jp": "生物多様性",
+    "enSent": "The issue of biodiversity is often discussed in modern society.",
+    "jpSent": "生物多様性の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "deprivation",
+    "jp": "剥奪、欠乏",
+    "enSent": "The issue of deprivation is often discussed in modern society.",
+    "jpSent": "剥奪、欠乏の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "discrepancy",
+    "jp": "食い違い",
+    "enSent": "The issue of discrepancy is often discussed in modern society.",
+    "jpSent": "食い違いの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "diversity",
+    "jp": "多様性",
+    "enSent": "The issue of diversity is often discussed in modern society.",
+    "jpSent": "多様性の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "epidemic",
+    "jp": "流行病",
+    "enSent": "The issue of epidemic is often discussed in modern society.",
+    "jpSent": "流行病の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "fraud",
+    "jp": "詐欺",
+    "enSent": "The issue of fraud is often discussed in modern society.",
+    "jpSent": "詐欺の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "grievance",
+    "jp": "不満、苦情",
+    "enSent": "The issue of grievance is often discussed in modern society.",
+    "jpSent": "不満、苦情の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "hypothesis",
+    "jp": "仮説",
+    "enSent": "The issue of hypothesis is often discussed in modern society.",
+    "jpSent": "仮説の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "illiteracy",
+    "jp": "非識字",
+    "enSent": "The issue of illiteracy is often discussed in modern society.",
+    "jpSent": "非識字の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "monopoly",
+    "jp": "独占",
+    "enSent": "The issue of monopoly is often discussed in modern society.",
+    "jpSent": "独占の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "obesity",
+    "jp": "肥満",
+    "enSent": "The issue of obesity is often discussed in modern society.",
+    "jpSent": "肥満の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "oppression",
+    "jp": "抑圧",
+    "enSent": "The issue of oppression is often discussed in modern society.",
+    "jpSent": "抑圧の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "outbreak",
+    "jp": "発生",
+    "enSent": "The issue of outbreak is often discussed in modern society.",
+    "jpSent": "発生の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "paradigm",
+    "jp": "枠組み",
+    "enSent": "The issue of paradigm is often discussed in modern society.",
+    "jpSent": "枠組みの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "precedent",
+    "jp": "前例",
+    "enSent": "The issue of precedent is often discussed in modern society.",
+    "jpSent": "前例の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "predicament",
+    "jp": "苦境",
+    "enSent": "The issue of predicament is often discussed in modern society.",
+    "jpSent": "苦境の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "proliferation",
+    "jp": "急増、拡散",
+    "enSent": "The issue of proliferation is often discussed in modern society.",
+    "jpSent": "急増、拡散の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "protocol",
+    "jp": "手順、議定書",
+    "enSent": "The issue of protocol is often discussed in modern society.",
+    "jpSent": "手順、議定書の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "rationale",
+    "jp": "根拠",
+    "enSent": "The issue of rationale is often discussed in modern society.",
+    "jpSent": "根拠の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "repercussion",
+    "jp": "影響、反響",
+    "enSent": "The issue of repercussion is often discussed in modern society.",
+    "jpSent": "影響、反響の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "sanction",
+    "jp": "制裁、認可",
+    "enSent": "The issue of sanction is often discussed in modern society.",
+    "jpSent": "制裁、認可の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "testimony",
+    "jp": "証言",
+    "enSent": "The issue of testimony is often discussed in modern society.",
+    "jpSent": "証言の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "tribunal",
+    "jp": "法廷",
+    "enSent": "The issue of tribunal is often discussed in modern society.",
+    "jpSent": "法廷の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "upheaval",
+    "jp": "激変",
+    "enSent": "The issue of upheaval is often discussed in modern society.",
+    "jpSent": "激変の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "whistleblower",
+    "jp": "内部告発者",
+    "enSent": "The issue of whistleblower is often discussed in modern society.",
+    "jpSent": "内部告発者の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "lead to",
+    "jp": "〜につながる",
+    "enSent": "Poor planning can lead to waste.",
+    "jpSent": "不十分な計画は無駄につながります。"
+  },
+  {
+    "en": "give rise to",
+    "jp": "〜を生じさせる",
+    "enSent": "Rapid development can give rise to conflict.",
+    "jpSent": "急速な開発は対立を生じさせることがあります。"
+  },
+  {
+    "en": "stem from",
+    "jp": "〜に由来する",
+    "enSent": "The problem stems from poor communication.",
+    "jpSent": "その問題は不十分な意思疎通に由来します。"
+  },
+  {
+    "en": "bring about",
+    "jp": "〜を引き起こす",
+    "enSent": "Innovation can bring about major change.",
+    "jpSent": "革新は大きな変化を引き起こし得ます。"
+  },
+  {
+    "en": "account for",
+    "jp": "〜を説明する / 占める",
+    "enSent": "Energy use accounts for much of the cost.",
+    "jpSent": "エネルギー使用が費用の多くを占めています。"
+  },
+  {
+    "en": "take into account",
+    "jp": "〜を考慮に入れる",
+    "enSent": "We must take costs into account.",
+    "jpSent": "私たちは費用を考慮に入れなければなりません。"
+  },
+  {
+    "en": "pose a threat to",
+    "jp": "〜に脅威をもたらす",
+    "enSent": "Plastic waste poses a threat to marine life.",
+    "jpSent": "プラスチックごみは海洋生物に脅威をもたらします。"
+  },
+  {
+    "en": "play a pivotal role in",
+    "jp": "〜で重要な役割を果たす",
+    "enSent": "Education plays a pivotal role in democracy.",
+    "jpSent": "教育は民主主義で重要な役割を果たします。"
+  },
+  {
+    "en": "shed light on",
+    "jp": "〜を明らかにする",
+    "enSent": "The study sheds light on human behavior.",
+    "jpSent": "その研究は人間の行動を明らかにします。"
+  },
+  {
+    "en": "pave the way for",
+    "jp": "〜への道を開く",
+    "enSent": "Research can pave the way for new medicine.",
+    "jpSent": "研究は新薬への道を開くことがあります。"
+  },
+  {
+    "en": "fall short of",
+    "jp": "〜に届かない",
+    "enSent": "The policy falls short of what is needed.",
+    "jpSent": "その政策は必要な水準に届いていません。"
+  },
+  {
+    "en": "come to terms with",
+    "jp": "〜を受け入れる",
+    "enSent": "Society must come to terms with aging.",
+    "jpSent": "社会は高齢化を受け入れなければなりません。"
+  },
+  {
+    "en": "in light of",
+    "jp": "〜を踏まえて",
+    "enSent": "The rule changed in light of new evidence.",
+    "jpSent": "新たな証拠を踏まえて規則が変わりました。"
+  },
+  {
+    "en": "in the wake of",
+    "jp": "〜を受けて",
+    "enSent": "New rules were introduced in the wake of the accident.",
+    "jpSent": "その事故を受けて新しい規則が導入されました。"
+  },
+  {
+    "en": "in the long run",
+    "jp": "長期的には",
+    "enSent": "Prevention saves money in the long run.",
+    "jpSent": "予防は長期的にはお金を節約します。"
+  },
+  {
+    "en": "with regard to",
+    "jp": "〜に関して",
+    "enSent": "With regard to education, funding is crucial.",
+    "jpSent": "教育に関しては、資金が極めて重要です。"
+  },
+  {
+    "en": "on the grounds that",
+    "jp": "〜という理由で",
+    "enSent": "The plan was rejected on the grounds that it was costly.",
+    "jpSent": "その計画は費用が高いという理由で却下されました。"
+  },
+  {
+    "en": "as a consequence of",
+    "jp": "〜の結果として",
+    "enSent": "Species disappeared as a consequence of habitat loss.",
+    "jpSent": "生息地の喪失の結果として種が消えました。"
+  },
+  {
+    "en": "outweigh the drawbacks",
+    "jp": "欠点を上回る",
+    "enSent": "The benefits outweigh the drawbacks.",
+    "jpSent": "利点は欠点を上回ります。"
+  },
+  {
+    "en": "mitigate the impact of",
+    "jp": "〜の影響を軽減する",
+    "enSent": "Trees can mitigate the impact of heat.",
+    "jpSent": "木は暑さの影響を軽減できます。"
+  },
+  {
+    "en": "have far-reaching implications",
+    "jp": "広範な影響を持つ",
+    "enSent": "The decision has far-reaching implications.",
+    "jpSent": "その決定は広範な影響を持ちます。"
+  },
+  {
+    "en": "make a compelling case for",
+    "jp": "〜を説得力をもって主張する",
+    "enSent": "The author makes a compelling case for reform.",
+    "jpSent": "著者は改革を説得力をもって主張しています。"
+  },
+  {
+    "en": "take precedence over",
+    "jp": "〜より優先される",
+    "enSent": "Safety should take precedence over profit.",
+    "jpSent": "安全は利益より優先されるべきです。"
+  },
+  {
+    "en": "commemorate",
+    "jp": "記念する",
+    "enSent": "Governments may need to commemorate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に記念する必要があるかもしれません。"
+  },
+  {
+    "en": "endeavor",
+    "jp": "努力する",
+    "enSent": "The issue of endeavor is often discussed in modern society.",
+    "jpSent": "努力するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "abhor",
+    "jp": "ひどく嫌う",
+    "enSent": "The issue of abhor is often discussed in modern society.",
+    "jpSent": "ひどく嫌うの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "rectify",
+    "jp": "是正する",
+    "enSent": "Governments may need to rectify the problem carefully.",
+    "jpSent": "政府はその問題を慎重に是正する必要があるかもしれません。"
+  },
+  {
+    "en": "expedite",
+    "jp": "促進する",
+    "enSent": "The issue of expedite is often discussed in modern society.",
+    "jpSent": "促進するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "emulate",
+    "jp": "見習う",
+    "enSent": "Governments may need to emulate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に見習う必要があるかもしれません。"
+  },
+  {
+    "en": "misconstrue",
+    "jp": "誤解する",
+    "enSent": "Governments may need to misconstrue the problem carefully.",
+    "jpSent": "政府はその問題を慎重に誤解する必要があるかもしれません。"
+  },
+  {
+    "en": "exert",
+    "jp": "及ぼす",
+    "enSent": "The issue of exert is often discussed in modern society.",
+    "jpSent": "及ぼすの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "hasten",
+    "jp": "早める",
+    "enSent": "Automation may hasten changes in employment.",
+    "jpSent": "自動化は雇用の変化を早めるかもしれません。"
+  },
+  {
+    "en": "adjudicate",
+    "jp": "裁く",
+    "enSent": "Governments may need to adjudicate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に裁く必要があるかもしれません。"
+  },
+  {
+    "en": "escalate",
+    "jp": "激化する",
+    "enSent": "The issue of escalate is often discussed in modern society.",
+    "jpSent": "激化するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "compensate",
+    "jp": "補償する",
+    "enSent": "The issue of compensate is often discussed in modern society.",
+    "jpSent": "補償するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "abolish",
+    "jp": "廃止する",
+    "enSent": "The issue of abolish is often discussed in modern society.",
+    "jpSent": "廃止するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "avert",
+    "jp": "避ける",
+    "enSent": "The issue of avert is often discussed in modern society.",
+    "jpSent": "避けるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "forgo",
+    "jp": "控える",
+    "enSent": "Governments may need to forgo the problem carefully.",
+    "jpSent": "政府はその問題を慎重に控える必要があるかもしれません。"
+  },
+  {
+    "en": "vindicate",
+    "jp": "正当性を証明する",
+    "enSent": "Governments may need to vindicate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に正当性を証明する必要があるかもしれません。"
+  },
+  {
+    "en": "exonerate",
+    "jp": "無罪にする",
+    "enSent": "Governments may need to exonerate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に無罪にする必要があるかもしれません。"
+  },
+  {
+    "en": "corroborate",
+    "jp": "裏付ける",
+    "enSent": "The issue of corroborate is often discussed in modern society.",
+    "jpSent": "裏付けるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "delegate",
+    "jp": "委任する",
+    "enSent": "The issue of delegate is often discussed in modern society.",
+    "jpSent": "委任するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "postulate",
+    "jp": "仮定する",
+    "enSent": "Governments may need to postulate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に仮定する必要があるかもしれません。"
+  },
+  {
+    "en": "aggravate",
+    "jp": "悪化させる",
+    "enSent": "The issue of aggravate is often discussed in modern society.",
+    "jpSent": "悪化させるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "disavow",
+    "jp": "否認する",
+    "enSent": "Governments may need to disavow the problem carefully.",
+    "jpSent": "政府はその問題を慎重に否認する必要があるかもしれません。"
+  },
+  {
+    "en": "denounce",
+    "jp": "非難する",
+    "enSent": "Governments may need to denounce the problem carefully.",
+    "jpSent": "政府はその問題を慎重に非難する必要があるかもしれません。"
+  },
+  {
+    "en": "redress",
+    "jp": "是正、補償",
+    "enSent": "Victims demanded redress from the company.",
+    "jpSent": "被害者は会社に補償を求めました。"
+  },
+  {
+    "en": "mediate",
+    "jp": "仲裁する",
+    "enSent": "Governments may need to mediate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に仲裁する必要があるかもしれません。"
+  },
+  {
+    "en": "ascertain",
+    "jp": "確認する",
+    "enSent": "Governments may need to ascertain the problem carefully.",
+    "jpSent": "政府はその問題を慎重に確認する必要があるかもしれません。"
+  },
+  {
+    "en": "disenfranchise",
+    "jp": "権利を奪う",
+    "enSent": "Unfair rules can disenfranchise minority groups.",
+    "jpSent": "不公平な規則は少数派の権利を奪うことがあります。"
+  },
+  {
+    "en": "impoverish",
+    "jp": "貧しくする",
+    "enSent": "Conflict can impoverish entire communities.",
+    "jpSent": "紛争は地域全体を貧しくすることがあります。"
+  },
+  {
+    "en": "deter",
+    "jp": "思いとどまらせる",
+    "enSent": "The issue of deter is often discussed in modern society.",
+    "jpSent": "思いとどまらせるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "concur",
+    "jp": "同意する",
+    "enSent": "The issue of concur is often discussed in modern society.",
+    "jpSent": "同意するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "repudiate",
+    "jp": "拒絶する",
+    "enSent": "Governments may need to repudiate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に拒絶する必要があるかもしれません。"
+  },
+  {
+    "en": "foresee",
+    "jp": "予見する",
+    "enSent": "The issue of foresee is often discussed in modern society.",
+    "jpSent": "予見するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "relinquish",
+    "jp": "手放す",
+    "enSent": "The leader refused to relinquish power.",
+    "jpSent": "その指導者は権力を手放すことを拒みました。"
+  },
+  {
+    "en": "outsource",
+    "jp": "外部委託する",
+    "enSent": "The issue of outsource is often discussed in modern society.",
+    "jpSent": "外部委託するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "instigate",
+    "jp": "扇動する",
+    "enSent": "Governments may need to instigate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に扇動する必要があるかもしれません。"
+  },
+  {
+    "en": "admonish",
+    "jp": "忠告する",
+    "enSent": "The issue of admonish is often discussed in modern society.",
+    "jpSent": "忠告するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "defy",
+    "jp": "反抗する",
+    "enSent": "Governments may need to defy the problem carefully.",
+    "jpSent": "政府はその問題を慎重に反抗する必要があるかもしれません。"
+  },
+  {
+    "en": "abdicate",
+    "jp": "退位する、放棄する",
+    "enSent": "Governments may need to abdicate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に退位する、放棄する必要があるかもしれません。"
+  },
+  {
+    "en": "elicit",
+    "jp": "引き出す",
+    "enSent": "Governments may need to elicit the problem carefully.",
+    "jpSent": "政府はその問題を慎重に引き出す必要があるかもしれません。"
+  },
+  {
+    "en": "legitimize",
+    "jp": "正当化する",
+    "enSent": "Governments may need to legitimize the problem carefully.",
+    "jpSent": "政府はその問題を慎重に正当化する必要があるかもしれません。"
+  },
+  {
+    "en": "devastate",
+    "jp": "壊滅させる",
+    "enSent": "The issue of devastate is often discussed in modern society.",
+    "jpSent": "壊滅させるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "deregulate",
+    "jp": "規制緩和する",
+    "enSent": "Governments may need to deregulate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に規制緩和する必要があるかもしれません。"
+  },
+  {
+    "en": "compound",
+    "jp": "悪化させる",
+    "enSent": "Governments may need to compound the problem carefully.",
+    "jpSent": "政府はその問題を慎重に悪化させる必要があるかもしれません。"
+  },
+  {
+    "en": "articulate",
+    "jp": "明確に述べる",
+    "enSent": "The issue of articulate is often discussed in modern society.",
+    "jpSent": "明確に述べるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "assimilate",
+    "jp": "同化する、吸収する",
+    "enSent": "The issue of assimilate is often discussed in modern society.",
+    "jpSent": "同化する、吸収するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "nullify",
+    "jp": "無効にする",
+    "enSent": "Governments may need to nullify the problem carefully.",
+    "jpSent": "政府はその問題を慎重に無効にする必要があるかもしれません。"
+  },
+  {
+    "en": "antagonize",
+    "jp": "反感を買う",
+    "enSent": "The issue of antagonize is often discussed in modern society.",
+    "jpSent": "反感を買うの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "warrant",
+    "jp": "正当化する",
+    "enSent": "The issue of warrant is often discussed in modern society.",
+    "jpSent": "正当化するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "expel",
+    "jp": "追放する",
+    "enSent": "Governments may need to expel the problem carefully.",
+    "jpSent": "政府はその問題を慎重に追放する必要があるかもしれません。"
+  },
+  {
+    "en": "exemplify",
+    "jp": "例示する",
+    "enSent": "The case exemplifies the need for reform.",
+    "jpSent": "その事例は改革の必要性を例示しています。"
+  },
+  {
+    "en": "restrain",
+    "jp": "抑制する",
+    "enSent": "The issue of restrain is often discussed in modern society.",
+    "jpSent": "抑制するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "solicit",
+    "jp": "求める",
+    "enSent": "The committee solicited public comments.",
+    "jpSent": "委員会は市民の意見を求めました。"
+  },
+  {
+    "en": "supersede",
+    "jp": "取って代わる",
+    "enSent": "Governments may need to supersede the problem carefully.",
+    "jpSent": "政府はその問題を慎重に取って代わる必要があるかもしれません。"
+  },
+  {
+    "en": "decentralize",
+    "jp": "分権化する",
+    "enSent": "The issue of decentralize is often discussed in modern society.",
+    "jpSent": "分権化するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "enfranchise",
+    "jp": "参政権を与える",
+    "enSent": "The reform aimed to enfranchise more citizens.",
+    "jpSent": "その改革はより多くの市民に参政権を与えることを目的としました。"
+  },
+  {
+    "en": "alienate",
+    "jp": "疎外する",
+    "enSent": "Governments may need to alienate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に疎外する必要があるかもしれません。"
+  },
+  {
+    "en": "deviate",
+    "jp": "逸脱する",
+    "enSent": "The issue of deviate is often discussed in modern society.",
+    "jpSent": "逸脱するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "engender",
+    "jp": "生じさせる",
+    "enSent": "Governments may need to engender the problem carefully.",
+    "jpSent": "政府はその問題を慎重に生じさせる必要があるかもしれません。"
+  },
+  {
+    "en": "encroach",
+    "jp": "侵害する",
+    "enSent": "Governments may need to encroach the problem carefully.",
+    "jpSent": "政府はその問題を慎重に侵害する必要があるかもしれません。"
+  },
+  {
+    "en": "ameliorate",
+    "jp": "改善する",
+    "enSent": "Governments may need to ameliorate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に改善する必要があるかもしれません。"
+  },
+  {
+    "en": "acquiesce",
+    "jp": "黙認する",
+    "enSent": "Governments may need to acquiesce the problem carefully.",
+    "jpSent": "政府はその問題を慎重に黙認する必要があるかもしれません。"
+  },
+  {
+    "en": "deport",
+    "jp": "国外追放する",
+    "enSent": "Governments may need to deport the problem carefully.",
+    "jpSent": "政府はその問題を慎重に国外追放する必要があるかもしれません。"
+  },
+  {
+    "en": "galvanize",
+    "jp": "奮起させる",
+    "enSent": "Governments may need to galvanize the problem carefully.",
+    "jpSent": "政府はその問題を慎重に奮起させる必要があるかもしれません。"
+  },
+  {
+    "en": "rescind",
+    "jp": "撤回する",
+    "enSent": "Governments may need to rescind the problem carefully.",
+    "jpSent": "政府はその問題を慎重に撤回する必要があるかもしれません。"
+  },
+  {
+    "en": "attribute",
+    "jp": "帰する",
+    "enSent": "Governments may need to attribute the problem carefully.",
+    "jpSent": "政府はその問題を慎重に帰する必要があるかもしれません。"
+  },
+  {
+    "en": "outpace",
+    "jp": "上回る",
+    "enSent": "Governments may need to outpace the problem carefully.",
+    "jpSent": "政府はその問題を慎重に上回る必要があるかもしれません。"
+  },
+  {
+    "en": "circumvent",
+    "jp": "回避する",
+    "enSent": "Governments may need to circumvent the problem carefully.",
+    "jpSent": "政府はその問題を慎重に回避する必要があるかもしれません。"
+  },
+  {
+    "en": "incite",
+    "jp": "扇動する",
+    "enSent": "Governments may need to incite the problem carefully.",
+    "jpSent": "政府はその問題を慎重に扇動する必要があるかもしれません。"
+  },
+  {
+    "en": "ostracize",
+    "jp": "排斥する",
+    "enSent": "Governments may need to ostracize the problem carefully.",
+    "jpSent": "政府はその問題を慎重に排斥する必要があるかもしれません。"
+  },
+  {
+    "en": "apprehend",
+    "jp": "逮捕する、理解する",
+    "enSent": "The issue of apprehend is often discussed in modern society.",
+    "jpSent": "逮捕する、理解するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "formulate",
+    "jp": "策定する",
+    "enSent": "Experts formulated a new strategy.",
+    "jpSent": "専門家は新しい戦略を策定しました。"
+  },
+  {
+    "en": "accrue",
+    "jp": "生じる、蓄積する",
+    "enSent": "The issue of accrue is often discussed in modern society.",
+    "jpSent": "生じる、蓄積するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "ratify",
+    "jp": "批准する",
+    "enSent": "Governments may need to ratify the problem carefully.",
+    "jpSent": "政府はその問題を慎重に批准する必要があるかもしれません。"
+  },
+  {
+    "en": "implicate",
+    "jp": "関与を示す",
+    "enSent": "Governments may need to implicate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に関与を示す必要があるかもしれません。"
+  },
+  {
+    "en": "contemplate",
+    "jp": "熟考する",
+    "enSent": "Governments may need to contemplate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に熟考する必要があるかもしれません。"
+  },
+  {
+    "en": "annex",
+    "jp": "併合する",
+    "enSent": "Governments may need to annex the problem carefully.",
+    "jpSent": "政府はその問題を慎重に併合する必要があるかもしれません。"
+  },
+  {
+    "en": "inhibit",
+    "jp": "抑制する",
+    "enSent": "Fear can inhibit creativity.",
+    "jpSent": "恐怖は創造性を抑制することがあります。"
+  },
+  {
+    "en": "tolerate",
+    "jp": "容認する",
+    "enSent": "The issue of tolerate is often discussed in modern society.",
+    "jpSent": "容認するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "migrate",
+    "jp": "移住する",
+    "enSent": "The issue of migrate is often discussed in modern society.",
+    "jpSent": "移住するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "contravene",
+    "jp": "違反する",
+    "enSent": "Governments may need to contravene the problem carefully.",
+    "jpSent": "政府はその問題を慎重に違反する必要があるかもしれません。"
+  },
+  {
+    "en": "amend",
+    "jp": "修正する",
+    "enSent": "The issue of amend is often discussed in modern society.",
+    "jpSent": "修正するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "boycott",
+    "jp": "ボイコットする",
+    "enSent": "The issue of boycott is often discussed in modern society.",
+    "jpSent": "ボイコットするの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "aspire",
+    "jp": "熱望する",
+    "enSent": "The issue of aspire is often discussed in modern society.",
+    "jpSent": "熱望するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "coerce",
+    "jp": "強制する",
+    "enSent": "Governments may need to coerce the problem carefully.",
+    "jpSent": "政府はその問題を慎重に強制する必要があるかもしれません。"
+  },
+  {
+    "en": "abrogate",
+    "jp": "廃止する",
+    "enSent": "Governments may need to abrogate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に廃止する必要があるかもしれません。"
+  },
+  {
+    "en": "abate",
+    "jp": "弱まる",
+    "enSent": "Governments may need to abate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に弱まる必要があるかもしれません。"
+  },
+  {
+    "en": "permeate",
+    "jp": "浸透する",
+    "enSent": "Governments may need to permeate the problem carefully.",
+    "jpSent": "政府はその問題を慎重に浸透する必要があるかもしれません。"
+  },
+  {
+    "en": "contradiction",
+    "jp": "矛盾",
+    "enSent": "The issue of contradiction is often discussed in modern society.",
+    "jpSent": "矛盾の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "quota",
+    "jp": "割り当て",
+    "enSent": "The issue of quota is often discussed in modern society.",
+    "jpSent": "割り当ての問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "drought",
+    "jp": "干ばつ",
+    "enSent": "The issue of drought is often discussed in modern society.",
+    "jpSent": "干ばつの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "stigma",
+    "jp": "汚名",
+    "enSent": "The issue of stigma is often discussed in modern society.",
+    "jpSent": "汚名の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "enforcement",
+    "jp": "施行",
+    "enSent": "The issue of enforcement is often discussed in modern society.",
+    "jpSent": "施行の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "assimilation",
+    "jp": "同化",
+    "enSent": "The issue of assimilation is often discussed in modern society.",
+    "jpSent": "同化の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "dissent",
+    "jp": "反対意見",
+    "enSent": "The issue of dissent is often discussed in modern society.",
+    "jpSent": "反対意見の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "livelihood",
+    "jp": "生計",
+    "enSent": "The issue of livelihood is often discussed in modern society.",
+    "jpSent": "生計の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "solvency",
+    "jp": "支払い能力",
+    "enSent": "The issue of solvency is often discussed in modern society.",
+    "jpSent": "支払い能力の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "concession",
+    "jp": "譲歩、利権",
+    "enSent": "The issue of concession is often discussed in modern society.",
+    "jpSent": "譲歩、利権の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "cessation",
+    "jp": "停止",
+    "enSent": "The issue of cessation is often discussed in modern society.",
+    "jpSent": "停止の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "jurisdiction",
+    "jp": "管轄権",
+    "enSent": "The issue of jurisdiction is often discussed in modern society.",
+    "jpSent": "管轄権の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "austerity",
+    "jp": "緊縮",
+    "enSent": "The issue of austerity is often discussed in modern society.",
+    "jpSent": "緊縮の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "affiliation",
+    "jp": "所属、提携",
+    "enSent": "The issue of affiliation is often discussed in modern society.",
+    "jpSent": "所属、提携の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "autonomy",
+    "jp": "自治、自律",
+    "enSent": "The issue of autonomy is often discussed in modern society.",
+    "jpSent": "自治、自律の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "conscience",
+    "jp": "良心",
+    "enSent": "The issue of conscience is often discussed in modern society.",
+    "jpSent": "良心の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "debris",
+    "jp": "がれき",
+    "enSent": "The issue of debris is often discussed in modern society.",
+    "jpSent": "がれきの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "precedence",
+    "jp": "優先",
+    "enSent": "The issue of precedence is often discussed in modern society.",
+    "jpSent": "優先の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "defiance",
+    "jp": "反抗",
+    "enSent": "The issue of defiance is often discussed in modern society.",
+    "jpSent": "反抗の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "congestion",
+    "jp": "混雑",
+    "enSent": "The issue of congestion is often discussed in modern society.",
+    "jpSent": "混雑の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "moratorium",
+    "jp": "一時停止",
+    "enSent": "The issue of moratorium is often discussed in modern society.",
+    "jpSent": "一時停止の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "persecution",
+    "jp": "迫害",
+    "enSent": "The issue of persecution is often discussed in modern society.",
+    "jpSent": "迫害の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "degradation",
+    "jp": "悪化、劣化",
+    "enSent": "The issue of degradation is often discussed in modern society.",
+    "jpSent": "悪化、劣化の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "displacement",
+    "jp": "移住、置き換え",
+    "enSent": "The issue of displacement is often discussed in modern society.",
+    "jpSent": "移住、置き換えの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "deference",
+    "jp": "敬意、服従",
+    "enSent": "The issue of deference is often discussed in modern society.",
+    "jpSent": "敬意、服従の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "apathy",
+    "jp": "無関心",
+    "enSent": "The issue of apathy is often discussed in modern society.",
+    "jpSent": "無関心の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "complicity",
+    "jp": "加担、共犯関係",
+    "enSent": "The issue of complicity is often discussed in modern society.",
+    "jpSent": "加担、共犯関係の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "annexation",
+    "jp": "併合",
+    "enSent": "The issue of annexation is often discussed in modern society.",
+    "jpSent": "併合の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "embezzlement",
+    "jp": "横領",
+    "enSent": "The issue of embezzlement is often discussed in modern society.",
+    "jpSent": "横領の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "conservation",
+    "jp": "保全",
+    "enSent": "The issue of conservation is often discussed in modern society.",
+    "jpSent": "保全の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "alienation",
+    "jp": "疎外",
+    "enSent": "The issue of alienation is often discussed in modern society.",
+    "jpSent": "疎外の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "arbitration",
+    "jp": "仲裁",
+    "enSent": "The issue of arbitration is often discussed in modern society.",
+    "jpSent": "仲裁の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "consensus",
+    "jp": "合意",
+    "enSent": "The issue of consensus is often discussed in modern society.",
+    "jpSent": "合意の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "oversight",
+    "jp": "監視、見落とし",
+    "enSent": "The issue of oversight is often discussed in modern society.",
+    "jpSent": "監視、見落としの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "calamity",
+    "jp": "災難",
+    "enSent": "The issue of calamity is often discussed in modern society.",
+    "jpSent": "災難の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "reconciliation",
+    "jp": "和解",
+    "enSent": "The issue of reconciliation is often discussed in modern society.",
+    "jpSent": "和解の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "culmination",
+    "jp": "頂点、集大成",
+    "enSent": "The issue of culmination is often discussed in modern society.",
+    "jpSent": "頂点、集大成の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "aberration",
+    "jp": "逸脱、異常",
+    "enSent": "The issue of aberration is often discussed in modern society.",
+    "jpSent": "逸脱、異常の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "credence",
+    "jp": "信用",
+    "enSent": "The issue of credence is often discussed in modern society.",
+    "jpSent": "信用の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "deterrent",
+    "jp": "抑止力",
+    "enSent": "The issue of deterrent is often discussed in modern society.",
+    "jpSent": "抑止力の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "proponent",
+    "jp": "支持者",
+    "enSent": "The issue of proponent is often discussed in modern society.",
+    "jpSent": "支持者の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "amnesty",
+    "jp": "恩赦",
+    "enSent": "The issue of amnesty is often discussed in modern society.",
+    "jpSent": "恩赦の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "anthropology",
+    "jp": "人類学",
+    "enSent": "The issue of anthropology is often discussed in modern society.",
+    "jpSent": "人類学の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "adversity",
+    "jp": "逆境",
+    "enSent": "The issue of adversity is often discussed in modern society.",
+    "jpSent": "逆境の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "collusion",
+    "jp": "共謀",
+    "enSent": "The issue of collusion is often discussed in modern society.",
+    "jpSent": "共謀の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "conscription",
+    "jp": "徴兵",
+    "enSent": "The issue of conscription is often discussed in modern society.",
+    "jpSent": "徴兵の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "embargo",
+    "jp": "禁輸",
+    "enSent": "The issue of embargo is often discussed in modern society.",
+    "jpSent": "禁輸の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "contempt",
+    "jp": "軽蔑",
+    "enSent": "The issue of contempt is often discussed in modern society.",
+    "jpSent": "軽蔑の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "proximity",
+    "jp": "近接",
+    "enSent": "The issue of proximity is often discussed in modern society.",
+    "jpSent": "近接の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "famine",
+    "jp": "飢饉",
+    "enSent": "The issue of famine is often discussed in modern society.",
+    "jpSent": "飢饉の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "hierarchy",
+    "jp": "階層",
+    "enSent": "The issue of hierarchy is often discussed in modern society.",
+    "jpSent": "階層の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "bankruptcy",
+    "jp": "破産",
+    "enSent": "The issue of bankruptcy is often discussed in modern society.",
+    "jpSent": "破産の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "deliberation",
+    "jp": "熟考、審議",
+    "enSent": "The issue of deliberation is often discussed in modern society.",
+    "jpSent": "熟考、審議の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "appraisal",
+    "jp": "評価",
+    "enSent": "The issue of appraisal is often discussed in modern society.",
+    "jpSent": "評価の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "subordination",
+    "jp": "従属",
+    "enSent": "The issue of subordination is often discussed in modern society.",
+    "jpSent": "従属の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "conformity",
+    "jp": "順応",
+    "enSent": "The issue of conformity is often discussed in modern society.",
+    "jpSent": "順応の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "friction",
+    "jp": "摩擦",
+    "enSent": "The issue of friction is often discussed in modern society.",
+    "jpSent": "摩擦の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "atrocity",
+    "jp": "残虐行為",
+    "enSent": "The issue of atrocity is often discussed in modern society.",
+    "jpSent": "残虐行為の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "credibility",
+    "jp": "信頼性",
+    "enSent": "The issue of credibility is often discussed in modern society.",
+    "jpSent": "信頼性の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "inference",
+    "jp": "推論",
+    "enSent": "The issue of inference is often discussed in modern society.",
+    "jpSent": "推論の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "commodity",
+    "jp": "商品",
+    "enSent": "The issue of commodity is often discussed in modern society.",
+    "jpSent": "商品の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "censorship",
+    "jp": "検閲",
+    "enSent": "The issue of censorship is often discussed in modern society.",
+    "jpSent": "検閲の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "entrepreneur",
+    "jp": "起業家",
+    "enSent": "The issue of entrepreneur is often discussed in modern society.",
+    "jpSent": "起業家の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "incarceration",
+    "jp": "投獄",
+    "enSent": "The issue of incarceration is often discussed in modern society.",
+    "jpSent": "投獄の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "immunity",
+    "jp": "免疫、免除",
+    "enSent": "The issue of immunity is often discussed in modern society.",
+    "jpSent": "免疫、免除の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "surplus",
+    "jp": "余剰",
+    "enSent": "The issue of surplus is often discussed in modern society.",
+    "jpSent": "余剰の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "expenditure",
+    "jp": "支出",
+    "enSent": "The issue of expenditure is often discussed in modern society.",
+    "jpSent": "支出の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "obligation",
+    "jp": "義務",
+    "enSent": "The issue of obligation is often discussed in modern society.",
+    "jpSent": "義務の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "plight",
+    "jp": "苦境",
+    "enSent": "The issue of plight is often discussed in modern society.",
+    "jpSent": "苦境の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "malnutrition",
+    "jp": "栄養失調",
+    "enSent": "The issue of malnutrition is often discussed in modern society.",
+    "jpSent": "栄養失調の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "abstention",
+    "jp": "棄権",
+    "enSent": "The issue of abstention is often discussed in modern society.",
+    "jpSent": "棄権の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "coalition",
+    "jp": "連合",
+    "enSent": "The issue of coalition is often discussed in modern society.",
+    "jpSent": "連合の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "capacity",
+    "jp": "能力、収容力",
+    "enSent": "The issue of capacity is often discussed in modern society.",
+    "jpSent": "能力、収容力の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "bureaucracy",
+    "jp": "官僚制",
+    "enSent": "The issue of bureaucracy is often discussed in modern society.",
+    "jpSent": "官僚制の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "divergence",
+    "jp": "分岐、相違",
+    "enSent": "The issue of divergence is often discussed in modern society.",
+    "jpSent": "分岐、相違の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "retribution",
+    "jp": "報復",
+    "enSent": "The issue of retribution is often discussed in modern society.",
+    "jpSent": "報復の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "hostility",
+    "jp": "敵意",
+    "enSent": "The issue of hostility is often discussed in modern society.",
+    "jpSent": "敵意の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "acquisition",
+    "jp": "獲得、買収",
+    "enSent": "The issue of acquisition is often discussed in modern society.",
+    "jpSent": "獲得、買収の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "coercion",
+    "jp": "強制",
+    "enSent": "The issue of coercion is often discussed in modern society.",
+    "jpSent": "強制の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "negligence",
+    "jp": "過失",
+    "enSent": "The issue of negligence is often discussed in modern society.",
+    "jpSent": "過失の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "monetary",
+    "jp": "通貨の、金銭の",
+    "enSent": "The issue of monetary is often discussed in modern society.",
+    "jpSent": "通貨の、金銭のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "stagnant",
+    "jp": "停滞した",
+    "enSent": "The issue of stagnant is often discussed in modern society.",
+    "jpSent": "停滞したの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "lucrative",
+    "jp": "利益の多い",
+    "enSent": "The issue of lucrative is often discussed in modern society.",
+    "jpSent": "利益の多いの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "eclectic",
+    "jp": "多様なものを取り入れた",
+    "enSent": "The school offers an eclectic curriculum.",
+    "jpSent": "その学校は多様なものを取り入れたカリキュラムを提供しています。"
+  },
+  {
+    "en": "biased",
+    "jp": "偏った",
+    "enSent": "The issue of biased is often discussed in modern society.",
+    "jpSent": "偏ったの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "abrupt",
+    "jp": "突然の",
+    "enSent": "The issue of abrupt is often discussed in modern society.",
+    "jpSent": "突然のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "arable",
+    "jp": "耕作可能な",
+    "enSent": "Arable land is becoming scarce in some regions.",
+    "jpSent": "一部の地域では耕作可能な土地が不足しつつあります。"
+  },
+  {
+    "en": "zealous",
+    "jp": "熱心な",
+    "enSent": "This is a zealous issue in many countries.",
+    "jpSent": "これは多くの国で熱心な問題です。"
+  },
+  {
+    "en": "secular",
+    "jp": "世俗的な",
+    "enSent": "The issue of secular is often discussed in modern society.",
+    "jpSent": "世俗的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "incumbent",
+    "jp": "現職の",
+    "enSent": "The incumbent mayor promised reform.",
+    "jpSent": "現職の市長は改革を約束しました。"
+  },
+  {
+    "en": "mandate",
+    "jp": "命令、権限",
+    "enSent": "The government received a mandate for change.",
+    "jpSent": "政府は変革への権限を得ました。"
+  },
+  {
+    "en": "provocative",
+    "jp": "挑発的な",
+    "enSent": "The issue of provocative is often discussed in modern society.",
+    "jpSent": "挑発的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "endemic",
+    "jp": "風土病の、固有の",
+    "enSent": "This is a endemic issue in many countries.",
+    "jpSent": "これは多くの国で風土病の、固有の問題です。"
+  },
+  {
+    "en": "fluctuate",
+    "jp": "変動する",
+    "enSent": "The issue of fluctuate is often discussed in modern society.",
+    "jpSent": "変動するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "dubious",
+    "jp": "疑わしい",
+    "enSent": "This is a dubious issue in many countries.",
+    "jpSent": "これは多くの国で疑わしい問題です。"
+  },
+  {
+    "en": "insidious",
+    "jp": "陰湿な",
+    "enSent": "This is a insidious issue in many countries.",
+    "jpSent": "これは多くの国で陰湿な問題です。"
+  },
+  {
+    "en": "brevity",
+    "jp": "簡潔さ",
+    "enSent": "Brevity is valuable in public speeches.",
+    "jpSent": "演説では簡潔さが価値を持ちます。"
+  },
+  {
+    "en": "nominal",
+    "jp": "名目上の",
+    "enSent": "This is a nominal issue in many countries.",
+    "jpSent": "これは多くの国で名目上の問題です。"
+  },
+  {
+    "en": "exorbitant",
+    "jp": "法外な",
+    "enSent": "This is a exorbitant issue in many countries.",
+    "jpSent": "これは多くの国で法外な問題です。"
+  },
+  {
+    "en": "acclaim",
+    "jp": "称賛する",
+    "enSent": "The issue of acclaim is often discussed in modern society.",
+    "jpSent": "称賛するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "reclusive",
+    "jp": "隠遁した",
+    "enSent": "This is a reclusive issue in many countries.",
+    "jpSent": "これは多くの国で隠遁した問題です。"
+  },
+  {
+    "en": "obsolete",
+    "jp": "時代遅れの",
+    "enSent": "The issue of obsolete is often discussed in modern society.",
+    "jpSent": "時代遅れのの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "incompatible",
+    "jp": "両立しない",
+    "enSent": "The issue of incompatible is often discussed in modern society.",
+    "jpSent": "両立しないの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "mundane",
+    "jp": "ありふれた",
+    "enSent": "The issue of mundane is often discussed in modern society.",
+    "jpSent": "ありふれたの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "eloquent",
+    "jp": "雄弁な",
+    "enSent": "The issue of eloquent is often discussed in modern society.",
+    "jpSent": "雄弁なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "arduous",
+    "jp": "困難な",
+    "enSent": "The issue of arduous is often discussed in modern society.",
+    "jpSent": "困難なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "deregulation",
+    "jp": "規制緩和",
+    "enSent": "The issue of deregulation is often discussed in modern society.",
+    "jpSent": "規制緩和の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "rural",
+    "jp": "田舎の",
+    "enSent": "The issue of rural is often discussed in modern society.",
+    "jpSent": "田舎のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "deplorable",
+    "jp": "嘆かわしい",
+    "enSent": "This is a deplorable issue in many countries.",
+    "jpSent": "これは多くの国で嘆かわしい問題です。"
+  },
+  {
+    "en": "elusive",
+    "jp": "捉えにくい",
+    "enSent": "This is a elusive issue in many countries.",
+    "jpSent": "これは多くの国で捉えにくい問題です。"
+  },
+  {
+    "en": "reluctant",
+    "jp": "気が進まない",
+    "enSent": "The issue of reluctant is often discussed in modern society.",
+    "jpSent": "気が進まないの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "paramountcy",
+    "jp": "優越、最高位",
+    "enSent": "The paramountcy of safety must be recognized.",
+    "jpSent": "安全の優越性は認識されなければなりません。"
+  },
+  {
+    "en": "eligible",
+    "jp": "資格のある",
+    "enSent": "The issue of eligible is often discussed in modern society.",
+    "jpSent": "資格のあるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "acquittal",
+    "jp": "無罪判決",
+    "enSent": "The acquittal surprised many observers.",
+    "jpSent": "その無罪判決は多くの観察者を驚かせました。"
+  },
+  {
+    "en": "impeccable",
+    "jp": "非の打ち所がない",
+    "enSent": "This is a impeccable issue in many countries.",
+    "jpSent": "これは多くの国で非の打ち所がない問題です。"
+  },
+  {
+    "en": "partisan",
+    "jp": "党派的な",
+    "enSent": "Partisan arguments delayed the decision.",
+    "jpSent": "党派的な議論が決定を遅らせました。"
+  },
+  {
+    "en": "chronology",
+    "jp": "年代順",
+    "enSent": "The issue of chronology is often discussed in modern society.",
+    "jpSent": "年代順の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "epitome",
+    "jp": "典型",
+    "enSent": "The issue of epitome is often discussed in modern society.",
+    "jpSent": "典型の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "reciprocal",
+    "jp": "相互の",
+    "enSent": "The issue of reciprocal is often discussed in modern society.",
+    "jpSent": "相互のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "demise",
+    "jp": "終焉、死",
+    "enSent": "The demise of the industry affected the town.",
+    "jpSent": "その産業の終焉は町に影響を与えました。"
+  },
+  {
+    "en": "coincide",
+    "jp": "同時に起こる",
+    "enSent": "The issue of coincide is often discussed in modern society.",
+    "jpSent": "同時に起こるの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "bipartisan",
+    "jp": "超党派の",
+    "enSent": "The reform received bipartisan support.",
+    "jpSent": "その改革は超党派の支持を受けました。"
+  },
+  {
+    "en": "adverse",
+    "jp": "不利な",
+    "enSent": "The issue of adverse is often discussed in modern society.",
+    "jpSent": "不利なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "absurd",
+    "jp": "ばかげた",
+    "enSent": "The issue of absurd is often discussed in modern society.",
+    "jpSent": "ばかげたの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "preliminary",
+    "jp": "予備的な",
+    "enSent": "The issue of preliminary is often discussed in modern society.",
+    "jpSent": "予備的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "agrarian",
+    "jp": "農業の",
+    "enSent": "The issue of agrarian is often discussed in modern society.",
+    "jpSent": "農業のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "definitive",
+    "jp": "決定的な",
+    "enSent": "This is a definitive issue in many countries.",
+    "jpSent": "これは多くの国で決定的な問題です。"
+  },
+  {
+    "en": "egalitarian",
+    "jp": "平等主義の",
+    "enSent": "The policy reflects egalitarian values.",
+    "jpSent": "その政策は平等主義の価値観を反映しています。"
+  },
+  {
+    "en": "insight",
+    "jp": "洞察",
+    "enSent": "The issue of insight is often discussed in modern society.",
+    "jpSent": "洞察の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "consolation",
+    "jp": "慰め",
+    "enSent": "The issue of consolation is often discussed in modern society.",
+    "jpSent": "慰めの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "nullification",
+    "jp": "無効化",
+    "enSent": "Nullification of the contract caused confusion.",
+    "jpSent": "契約の無効化は混乱を招きました。"
+  },
+  {
+    "en": "fidelity",
+    "jp": "忠実さ",
+    "enSent": "The issue of fidelity is often discussed in modern society.",
+    "jpSent": "忠実さの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "unanimous",
+    "jp": "全会一致の",
+    "enSent": "The issue of unanimous is often discussed in modern society.",
+    "jpSent": "全会一致のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "residual",
+    "jp": "残りの",
+    "enSent": "This is a residual issue in many countries.",
+    "jpSent": "これは多くの国で残りの問題です。"
+  },
+  {
+    "en": "civic",
+    "jp": "市民の",
+    "enSent": "Civic education is essential for democracy.",
+    "jpSent": "市民教育は民主主義に不可欠です。"
+  },
+  {
+    "en": "affinity",
+    "jp": "親和性",
+    "enSent": "There is an affinity between education and democracy.",
+    "jpSent": "教育と民主主義には親和性があります。"
+  },
+  {
+    "en": "fiscal",
+    "jp": "財政の",
+    "enSent": "The issue of fiscal is often discussed in modern society.",
+    "jpSent": "財政のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "ecological",
+    "jp": "生態系の",
+    "enSent": "The issue of ecological is often discussed in modern society.",
+    "jpSent": "生態系のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "segregation",
+    "jp": "隔離、分離",
+    "enSent": "The issue of segregation is often discussed in modern society.",
+    "jpSent": "隔離、分離の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "dominion",
+    "jp": "支配権",
+    "enSent": "The issue of dominion is often discussed in modern society.",
+    "jpSent": "支配権の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "litigation",
+    "jp": "訴訟",
+    "enSent": "The company faced costly litigation.",
+    "jpSent": "その会社は高額な訴訟に直面しました。"
+  },
+  {
+    "en": "morale",
+    "jp": "士気",
+    "enSent": "Clear goals can improve morale.",
+    "jpSent": "明確な目標は士気を高めます。"
+  },
+  {
+    "en": "fiduciary",
+    "jp": "信託上の",
+    "enSent": "Managers have a fiduciary duty to clients.",
+    "jpSent": "管理者には顧客に対する信託上の義務があります。"
+  },
+  {
+    "en": "exile",
+    "jp": "亡命",
+    "enSent": "The issue of exile is often discussed in modern society.",
+    "jpSent": "亡命の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "communal",
+    "jp": "共同体の",
+    "enSent": "Communal spaces help people interact.",
+    "jpSent": "共同体の空間は人々の交流を助けます。"
+  },
+  {
+    "en": "paucity",
+    "jp": "不足",
+    "enSent": "There is a paucity of reliable data.",
+    "jpSent": "信頼できるデータが不足しています。"
+  },
+  {
+    "en": "consecutive",
+    "jp": "連続した",
+    "enSent": "The issue of consecutive is often discussed in modern society.",
+    "jpSent": "連続したの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "requisite",
+    "jp": "必要な",
+    "enSent": "Workers need requisite skills for the job.",
+    "jpSent": "労働者はその仕事に必要な技能を必要とします。"
+  },
+  {
+    "en": "sporadic",
+    "jp": "散発的な",
+    "enSent": "The issue of sporadic is often discussed in modern society.",
+    "jpSent": "散発的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "animosity",
+    "jp": "敵意",
+    "enSent": "The treaty reduced animosity between the countries.",
+    "jpSent": "その条約は両国間の敵意を減らしました。"
+  },
+  {
+    "en": "humanitarian",
+    "jp": "人道的な",
+    "enSent": "The issue of humanitarian is often discussed in modern society.",
+    "jpSent": "人道的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "conjecture",
+    "jp": "推測",
+    "enSent": "The claim remains a matter of conjecture.",
+    "jpSent": "その主張はいまだ推測の域を出ません。"
+  },
+  {
+    "en": "clandestine",
+    "jp": "秘密の",
+    "enSent": "This is a clandestine issue in many countries.",
+    "jpSent": "これは多くの国で秘密の問題です。"
+  },
+  {
+    "en": "cohesion",
+    "jp": "結束",
+    "enSent": "Social cohesion can reduce conflict.",
+    "jpSent": "社会的結束は対立を減らすことがあります。"
+  },
+  {
+    "en": "gentrification",
+    "jp": "高級住宅地化",
+    "enSent": "Gentrification can displace local residents.",
+    "jpSent": "高級住宅地化は地元住民を追い出すことがあります。"
+  },
+  {
+    "en": "negligible",
+    "jp": "取るに足りない",
+    "enSent": "The issue of negligible is often discussed in modern society.",
+    "jpSent": "取るに足りないの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "indigenous",
+    "jp": "先住の",
+    "enSent": "The issue of indigenous is often discussed in modern society.",
+    "jpSent": "先住のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "capricious",
+    "jp": "気まぐれな",
+    "enSent": "Capricious weather harms local farmers.",
+    "jpSent": "気まぐれな天候は地元の農家に害を与えます。"
+  },
+  {
+    "en": "ideological",
+    "jp": "思想上の",
+    "enSent": "The debate revealed ideological differences.",
+    "jpSent": "その議論は思想上の違いを明らかにしました。"
+  },
+  {
+    "en": "intrinsic",
+    "jp": "本質的な",
+    "enSent": "The issue of intrinsic is often discussed in modern society.",
+    "jpSent": "本質的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "tangible",
+    "jp": "具体的な",
+    "enSent": "The issue of tangible is often discussed in modern society.",
+    "jpSent": "具体的なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "pragmatic",
+    "jp": "実用的な",
+    "enSent": "A pragmatic approach is needed.",
+    "jpSent": "実用的な取り組みが必要です。"
+  },
+  {
+    "en": "preemptive",
+    "jp": "先制の",
+    "enSent": "This is a preemptive issue in many countries.",
+    "jpSent": "これは多くの国で先制の問題です。"
+  },
+  {
+    "en": "expulsion",
+    "jp": "追放",
+    "enSent": "The expulsion of residents caused criticism.",
+    "jpSent": "住民の追放は批判を招きました。"
+  },
+  {
+    "en": "tenacious",
+    "jp": "粘り強い",
+    "enSent": "This is a tenacious issue in many countries.",
+    "jpSent": "これは多くの国で粘り強い問題です。"
+  },
+  {
+    "en": "inception",
+    "jp": "始まり",
+    "enSent": "The issue of inception is often discussed in modern society.",
+    "jpSent": "始まりの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "acute",
+    "jp": "深刻な、鋭い",
+    "enSent": "The issue of acute is often discussed in modern society.",
+    "jpSent": "深刻な、鋭いの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "adversary",
+    "jp": "敵対者",
+    "enSent": "The two adversaries finally agreed to negotiate.",
+    "jpSent": "二人の敵対者はついに交渉に同意しました。"
+  },
+  {
+    "en": "domestic",
+    "jp": "国内の、家庭の",
+    "enSent": "The issue of domestic is often discussed in modern society.",
+    "jpSent": "国内の、家庭のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "daunting",
+    "jp": "手ごわい",
+    "enSent": "This is a daunting issue in many countries.",
+    "jpSent": "これは多くの国で手ごわい問題です。"
+  },
+  {
+    "en": "dwindle",
+    "jp": "減少する",
+    "enSent": "The issue of dwindle is often discussed in modern society.",
+    "jpSent": "減少するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "pledge",
+    "jp": "誓約する",
+    "enSent": "The issue of pledge is often discussed in modern society.",
+    "jpSent": "誓約するの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "homogeneous",
+    "jp": "同質の",
+    "enSent": "The issue of homogeneous is often discussed in modern society.",
+    "jpSent": "同質のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "apathetic",
+    "jp": "無関心な",
+    "enSent": "This is a apathetic issue in many countries.",
+    "jpSent": "これは多くの国で無関心な問題です。"
+  },
+  {
+    "en": "culpable",
+    "jp": "責任がある",
+    "enSent": "This is a culpable issue in many countries.",
+    "jpSent": "これは多くの国で責任がある問題です。"
+  },
+  {
+    "en": "contingent",
+    "jp": "〜次第の",
+    "enSent": "The issue of contingent is often discussed in modern society.",
+    "jpSent": "〜次第のの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "complacent",
+    "jp": "自己満足した",
+    "enSent": "The issue of complacent is often discussed in modern society.",
+    "jpSent": "自己満足したの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "breach",
+    "jp": "違反、侵害",
+    "enSent": "The issue of breach is often discussed in modern society.",
+    "jpSent": "違反、侵害の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "redundant",
+    "jp": "余分な",
+    "enSent": "The issue of redundant is often discussed in modern society.",
+    "jpSent": "余分なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "conspicuous",
+    "jp": "目立つ",
+    "enSent": "This is a conspicuous issue in many countries.",
+    "jpSent": "これは多くの国で目立つ問題です。"
+  },
+  {
+    "en": "belligerent",
+    "jp": "好戦的な",
+    "enSent": "This is a belligerent issue in many countries.",
+    "jpSent": "これは多くの国で好戦的な問題です。"
+  },
+  {
+    "en": "affluent",
+    "jp": "裕福な",
+    "enSent": "The issue of affluent is often discussed in modern society.",
+    "jpSent": "裕福なの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "alleviate poverty",
+    "jp": "貧困を軽減する",
+    "enSent": "The project aims to alleviate poverty.",
+    "jpSent": "その計画は貧困を軽減することを目的としています。"
+  },
+  {
+    "en": "devoid of",
+    "jp": "〜を欠いている",
+    "enSent": "The report is devoid of reliable evidence.",
+    "jpSent": "その報告書は信頼できる証拠を欠いています。"
+  },
+  {
+    "en": "unequivocally",
+    "jp": "明確に",
+    "enSent": "The situation changed unequivocally.",
+    "jpSent": "状況は明確に変化しました。"
+  },
+  {
+    "en": "predominantly",
+    "jp": "主に",
+    "enSent": "The situation changed predominantly.",
+    "jpSent": "状況は主に変化しました。"
+  },
+  {
+    "en": "subsequently",
+    "jp": "その後",
+    "enSent": "The situation changed subsequently.",
+    "jpSent": "状況はその後変化しました。"
+  },
+  {
+    "en": "reluctantly",
+    "jp": "しぶしぶ",
+    "enSent": "The situation changed reluctantly.",
+    "jpSent": "状況はしぶしぶ変化しました。"
+  },
+  {
+    "en": "anomaly",
+    "jp": "異例、異常",
+    "enSent": "The issue of anomaly is often discussed in modern society.",
+    "jpSent": "異例、異常の問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "conversely",
+    "jp": "反対に",
+    "enSent": "The issue of conversely is often discussed in modern society.",
+    "jpSent": "反対にの問題は現代社会でよく議論されます。"
+  },
+  {
+    "en": "ostensibly",
+    "jp": "表向きは",
+    "enSent": "The situation changed ostensibly.",
+    "jpSent": "状況は表向きは変化しました。"
+  },
+  {
+    "en": "in retrospect",
+    "jp": "振り返ってみると",
+    "enSent": "In retrospect, the warning signs were clear.",
+    "jpSent": "振り返ってみると、警告の兆候は明らかでした。"
+  },
+  {
+    "en": "in the absence of",
+    "jp": "〜がない中で",
+    "enSent": "In the absence of data, decisions are risky.",
+    "jpSent": "データがない中での決定は危険です。"
+  },
+  {
+    "en": "come at the expense of",
+    "jp": "〜を犠牲にして起こる",
+    "enSent": "Growth should not come at the expense of nature.",
+    "jpSent": "成長は自然を犠牲にすべきではありません。"
+  },
+  {
+    "en": "in conjunction with",
+    "jp": "〜と連携して",
+    "enSent": "Schools work in conjunction with local groups.",
+    "jpSent": "学校は地域団体と連携して働いています。"
+  },
+  {
+    "en": "be conducive to",
+    "jp": "〜に役立つ",
+    "enSent": "Trust is conducive to effective teamwork.",
+    "jpSent": "信頼は効果的なチームワークに役立ちます。"
+  },
+  {
+    "en": "a growing body of evidence",
+    "jp": "増えつつある証拠",
+    "enSent": "A growing body of evidence supports the policy.",
+    "jpSent": "増えつつある証拠がその政策を支持しています。"
+  },
+  {
+    "en": "be compatible with",
+    "jp": "〜と両立する",
+    "enSent": "Economic growth can be compatible with conservation.",
+    "jpSent": "経済成長は保全と両立し得ます。"
+  },
+  {
+    "en": "be prone to",
+    "jp": "〜しがちである",
+    "enSent": "Coastal cities are prone to flooding.",
+    "jpSent": "沿岸都市は洪水が起こりやすいです。"
+  },
+  {
+    "en": "as a means of",
+    "jp": "〜の手段として",
+    "enSent": "Many people use technology as a means of communication.",
+    "jpSent": "多くの人が技術をコミュニケーションの手段として使います。"
+  },
+  {
+    "en": "deteriorate into",
+    "jp": "悪化して〜になる",
+    "enSent": "The debate deteriorated into personal attacks.",
+    "jpSent": "議論は悪化して個人攻撃になりました。"
+  },
+  {
+    "en": "a catalyst for",
+    "jp": "〜のきっかけ / 触媒",
+    "enSent": "Education can be a catalyst for social change.",
+    "jpSent": "教育は社会変化のきっかけになり得ます。"
+  },
+  {
+    "en": "deal a blow to",
+    "jp": "〜に打撃を与える",
+    "enSent": "The recession dealt a blow to small businesses.",
+    "jpSent": "不況は中小企業に打撃を与えました。"
+  },
+  {
+    "en": "derive from",
+    "jp": "〜に由来する",
+    "enSent": "Many benefits derive from early education.",
+    "jpSent": "多くの利益は早期教育に由来します。"
+  },
+  {
+    "en": "reap the benefits of",
+    "jp": "〜の恩恵を受ける",
+    "enSent": "Communities can reap the benefits of investment.",
+    "jpSent": "地域社会は投資の恩恵を受けられます。"
+  },
+  {
+    "en": "draw attention to",
+    "jp": "〜に注意を向ける",
+    "enSent": "The report draws attention to inequality.",
+    "jpSent": "その報告書は不平等に注意を向けています。"
+  },
+  {
+    "en": "be contingent on",
+    "jp": "〜次第である",
+    "enSent": "Success is contingent on public support.",
+    "jpSent": "成功は国民の支持次第です。"
+  },
+  {
+    "en": "as opposed to",
+    "jp": "〜ではなく",
+    "enSent": "We need cooperation as opposed to competition.",
+    "jpSent": "競争ではなく協力が必要です。"
+  },
+  {
+    "en": "keep pace with",
+    "jp": "〜に遅れずについていく",
+    "enSent": "Schools must keep pace with technology.",
+    "jpSent": "学校は技術に遅れずについていく必要があります。"
+  },
+  {
+    "en": "to a certain extent",
+    "jp": "ある程度は",
+    "enSent": "I agree to a certain extent.",
+    "jpSent": "私はある程度は賛成です。"
+  },
+  {
+    "en": "a wide range of",
+    "jp": "幅広い",
+    "enSent": "The program offers a wide range of services.",
+    "jpSent": "そのプログラムは幅広いサービスを提供しています。"
+  },
+  {
+    "en": "on a large scale",
+    "jp": "大規模に",
+    "enSent": "Recycling should be done on a large scale.",
+    "jpSent": "リサイクルは大規模に行われるべきです。"
+  },
+  {
+    "en": "call into question",
+    "jp": "〜に疑問を投げかける",
+    "enSent": "The scandal called his judgment into question.",
+    "jpSent": "その不祥事は彼の判断力に疑問を投げかけました。"
+  },
+  {
+    "en": "curb emissions",
+    "jp": "排出を抑制する",
+    "enSent": "Governments must curb emissions quickly.",
+    "jpSent": "政府は排出を早急に抑制しなければなりません。"
+  },
+  {
+    "en": "be attributed to",
+    "jp": "〜に起因する",
+    "enSent": "The increase can be attributed to better healthcare.",
+    "jpSent": "その増加は医療の改善に起因します。"
+  },
+  {
+    "en": "adhere to",
+    "jp": "〜を守る / 固執する",
+    "enSent": "Companies must adhere to safety standards.",
+    "jpSent": "企業は安全基準を守らなければなりません。"
+  },
+  {
+    "en": "exert influence on",
+    "jp": "〜に影響を及ぼす",
+    "enSent": "Media can exert influence on public opinion.",
+    "jpSent": "メディアは世論に影響を及ぼし得ます。"
+  },
+  {
+    "en": "in accordance with",
+    "jp": "〜に従って",
+    "enSent": "The plan was made in accordance with the law.",
+    "jpSent": "その計画は法律に従って作られました。"
+  },
+  {
+    "en": "under no circumstances",
+    "jp": "いかなる状況でも〜ない",
+    "enSent": "Under no circumstances should data be sold.",
+    "jpSent": "いかなる状況でもデータは売られるべきではありません。"
+  },
+  {
+    "en": "a matter of concern",
+    "jp": "懸念事項",
+    "enSent": "Food security is a matter of concern.",
+    "jpSent": "食料安全保障は懸念事項です。"
+  },
+  {
+    "en": "put forward",
+    "jp": "〜を提案する",
+    "enSent": "The committee put forward a proposal.",
+    "jpSent": "委員会は提案を出しました。"
+  },
+  {
+    "en": "in lieu of",
+    "jp": "〜の代わりに",
+    "enSent": "They used online meetings in lieu of travel.",
+    "jpSent": "彼らは移動の代わりにオンライン会議を使いました。"
+  },
+  {
+    "en": "be disproportionately affected",
+    "jp": "不均衡に影響を受ける",
+    "enSent": "Low-income families are disproportionately affected.",
+    "jpSent": "低所得世帯は不均衡に影響を受けます。"
+  },
+  {
+    "en": "be detrimental to",
+    "jp": "〜に有害である",
+    "enSent": "Excessive screen time can be detrimental to health.",
+    "jpSent": "過度な画面時間は健康に有害になり得ます。"
+  },
+  {
+    "en": "reconcile A with B",
+    "jp": "AとBを調和させる",
+    "enSent": "We must reconcile growth with conservation.",
+    "jpSent": "成長と保全を調和させなければなりません。"
+  },
+  {
+    "en": "cope with",
+    "jp": "〜に対処する",
+    "enSent": "Cities must cope with extreme weather.",
+    "jpSent": "都市は異常気象に対処しなければなりません。"
+  },
+  {
+    "en": "be susceptible to",
+    "jp": "〜の影響を受けやすい",
+    "enSent": "Children are susceptible to advertising.",
+    "jpSent": "子供は広告の影響を受けやすいです。"
+  },
+  {
+    "en": "be inextricably linked",
+    "jp": "切り離せないほど結びついている",
+    "enSent": "Climate and agriculture are inextricably linked.",
+    "jpSent": "気候と農業は切り離せないほど結びついています。"
+  },
+  {
+    "en": "serve as",
+    "jp": "〜として機能する",
+    "enSent": "Libraries serve as centers of learning.",
+    "jpSent": "図書館は学びの中心として機能します。"
+  }
 ];

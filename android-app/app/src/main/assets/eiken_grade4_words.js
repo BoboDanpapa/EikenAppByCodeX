@@ -1,507 +1,3005 @@
-// eiken_grade4_words.js - 英検 vocabulary data
-// App-curated Eiken Grade 4 list: 500 total words and phrases.
-// Selection policy: common Grade 4 phrases first, then school/home/travel words, basic verbs, and useful adjectives/adverbs.
-// Notes: entries are original practice data for the app, not copied from a commercial book list.
+// 英検4級 単語・熟語データ（学習優先順：基礎動詞・生活語・頻出表現を先に配置した500項目）
+// App schema: en / jp / enSent / jpSent / note(optional)
 
 const eikenGrade4VocabData = [
-  {"en":"a cup of","jp":"一杯の","enSent":"I want a cup of tea.","jpSent":"お茶を一杯ほしいです。"},
-  {"en":"a glass of","jp":"一杯の","enSent":"She drank a glass of water.","jpSent":"彼女は水を一杯飲みました。"},
-  {"en":"a kind of","jp":"一種の","enSent":"A dolphin is a kind of animal.","jpSent":"イルカは動物の一種です。"},
-  {"en":"a lot of","jp":"たくさんの","enSent":"There are a lot of books on the desk.","jpSent":"机の上にたくさんの本があります。"},
-  {"en":"a member of","jp":"〜の一員","enSent":"I am a member of the soccer club.","jpSent":"私はサッカー部の一員です。"},
-  {"en":"a pair of","jp":"一組の","enSent":"I bought a pair of socks.","jpSent":"私は靴下一組を買いました。"},
-  {"en":"a piece of","jp":"一枚の / 一切れの","enSent":"Please give me a piece of paper.","jpSent":"紙を一枚ください。"},
-  {"en":"after school","jp":"放課後","enSent":"I play tennis after school.","jpSent":"私は放課後テニスをします。"},
-  {"en":"all over","jp":"一面に","enSent":"There is snow all over the park.","jpSent":"公園一面に雪があります。"},
-  {"en":"all right","jp":"大丈夫な","enSent":"Are you all right?","jpSent":"大丈夫ですか。"},
-  {"en":"at first","jp":"最初は","enSent":"At first, I was nervous.","jpSent":"最初は緊張していました。"},
-  {"en":"at home","jp":"家で","enSent":"I usually study at home.","jpSent":"私はたいてい家で勉強します。"},
-  {"en":"at last","jp":"ついに","enSent":"At last, we arrived.","jpSent":"ついに到着しました。"},
-  {"en":"at night","jp":"夜に","enSent":"I read books at night.","jpSent":"私は夜に本を読みます。"},
-  {"en":"at once","jp":"すぐに","enSent":"Come here at once.","jpSent":"すぐにここへ来なさい。"},
-  {"en":"at school","jp":"学校で","enSent":"We eat lunch at school.","jpSent":"私たちは学校で昼食を食べます。"},
-  {"en":"at that time","jp":"その時","enSent":"I was in Osaka at that time.","jpSent":"その時私は大阪にいました。"},
-  {"en":"be absent from","jp":"〜を欠席する","enSent":"He was absent from school yesterday.","jpSent":"彼は昨日学校を欠席しました。"},
-  {"en":"be afraid of","jp":"〜を恐れる","enSent":"I am afraid of big dogs.","jpSent":"私は大きな犬が怖いです。"},
-  {"en":"be angry with","jp":"〜に怒っている","enSent":"My father was angry with me.","jpSent":"父は私に怒っていました。"},
-  {"en":"be busy with","jp":"〜で忙しい","enSent":"She is busy with her homework.","jpSent":"彼女は宿題で忙しいです。"},
-  {"en":"be different from","jp":"〜と違う","enSent":"My bag is different from yours.","jpSent":"私のカバンはあなたのものと違います。"},
-  {"en":"be famous for","jp":"〜で有名である","enSent":"Kyoto is famous for old temples.","jpSent":"京都は古い寺で有名です。"},
-  {"en":"be from","jp":"〜出身である","enSent":"He is from Canada.","jpSent":"彼はカナダ出身です。"},
-  {"en":"be full of","jp":"〜でいっぱいである","enSent":"The box is full of toys.","jpSent":"その箱はおもちゃでいっぱいです。"},
-  {"en":"be glad to","jp":"〜してうれしい","enSent":"I am glad to see you.","jpSent":"あなたに会えてうれしいです。"},
-  {"en":"be good at","jp":"〜が得意である","enSent":"She is good at math.","jpSent":"彼女は数学が得意です。"},
-  {"en":"be interested in","jp":"〜に興味がある","enSent":"I am interested in animals.","jpSent":"私は動物に興味があります。"},
-  {"en":"be kind to","jp":"〜に親切である","enSent":"Please be kind to everyone.","jpSent":"みんなに親切にしてください。"},
-  {"en":"be late for","jp":"〜に遅れる","enSent":"Do not be late for school.","jpSent":"学校に遅れないでください。"},
-  {"en":"be made of","jp":"〜でできている","enSent":"This desk is made of wood.","jpSent":"この机は木でできています。"},
-  {"en":"be poor at","jp":"〜が苦手である","enSent":"I am poor at singing.","jpSent":"私は歌うことが苦手です。"},
-  {"en":"be proud of","jp":"〜を誇りに思う","enSent":"I am proud of my team.","jpSent":"私は自分のチームを誇りに思います。"},
-  {"en":"be ready for","jp":"〜の準備ができている","enSent":"Are you ready for the test?","jpSent":"テストの準備はできていますか。"},
-  {"en":"be surprised at","jp":"〜に驚く","enSent":"I was surprised at the news.","jpSent":"私はその知らせに驚きました。"},
-  {"en":"because of","jp":"〜のために","enSent":"We stayed home because of the rain.","jpSent":"雨のため家にいました。"},
-  {"en":"belong to","jp":"〜に属する","enSent":"This book belongs to me.","jpSent":"この本は私のものです。"},
-  {"en":"by bus","jp":"バスで","enSent":"I go to school by bus.","jpSent":"私はバスで学校へ行きます。"},
-  {"en":"by train","jp":"電車で","enSent":"We went to Tokyo by train.","jpSent":"私たちは電車で東京へ行きました。"},
-  {"en":"by the way","jp":"ところで","enSent":"By the way, what time is it?","jpSent":"ところで、何時ですか。"},
-  {"en":"come back","jp":"戻ってくる","enSent":"Please come back soon.","jpSent":"すぐに戻ってきてください。"},
-  {"en":"come from","jp":"〜出身である","enSent":"My teacher comes from Australia.","jpSent":"私の先生はオーストラリア出身です。"},
-  {"en":"come in","jp":"入ってくる","enSent":"Come in, please.","jpSent":"どうぞ入ってください。"},
-  {"en":"come true","jp":"実現する","enSent":"My dream came true.","jpSent":"私の夢が実現しました。"},
-  {"en":"do homework","jp":"宿題をする","enSent":"I do homework after dinner.","jpSent":"私は夕食後に宿題をします。"},
-  {"en":"do one's best","jp":"最善を尽くす","enSent":"I will do my best.","jpSent":"私は最善を尽くします。"},
-  {"en":"each other","jp":"お互いに","enSent":"We help each other.","jpSent":"私たちはお互いに助け合います。"},
-  {"en":"enjoy oneself","jp":"楽しく過ごす","enSent":"We enjoyed ourselves at the party.","jpSent":"私たちはパーティーで楽しく過ごしました。"},
-  {"en":"for a long time","jp":"長い間","enSent":"I waited for a long time.","jpSent":"私は長い間待ちました。"},
-  {"en":"for example","jp":"例えば","enSent":"I like fruits, for example, apples.","jpSent":"私は果物が好きです、例えばりんごです。"},
-  {"en":"from now on","jp":"これからは","enSent":"I will study hard from now on.","jpSent":"これからは一生懸命勉強します。"},
-  {"en":"get angry","jp":"怒る","enSent":"Do not get angry.","jpSent":"怒らないでください。"},
-  {"en":"get back","jp":"戻る","enSent":"I got back home at six.","jpSent":"私は6時に家に戻りました。"},
-  {"en":"get off","jp":"降りる","enSent":"Get off the bus here.","jpSent":"ここでバスを降りなさい。"},
-  {"en":"get on","jp":"乗る","enSent":"We got on the train.","jpSent":"私たちは電車に乗りました。"},
-  {"en":"get to","jp":"〜に着く","enSent":"How can I get to the station?","jpSent":"どうすれば駅に着けますか。"},
-  {"en":"get up","jp":"起きる","enSent":"I get up at seven.","jpSent":"私は7時に起きます。"},
-  {"en":"give up","jp":"あきらめる","enSent":"Do not give up.","jpSent":"あきらめないでください。"},
-  {"en":"go back","jp":"戻る","enSent":"I will go back to my room.","jpSent":"私は部屋に戻ります。"},
-  {"en":"go for a walk","jp":"散歩に行く","enSent":"Let us go for a walk.","jpSent":"散歩に行きましょう。"},
-  {"en":"go home","jp":"家に帰る","enSent":"I go home at five.","jpSent":"私は5時に家に帰ります。"},
-  {"en":"go out","jp":"外出する","enSent":"I want to go out today.","jpSent":"今日は外出したいです。"},
-  {"en":"go shopping","jp":"買い物に行く","enSent":"We went shopping on Sunday.","jpSent":"私たちは日曜日に買い物へ行きました。"},
-  {"en":"go straight","jp":"まっすぐ行く","enSent":"Go straight and turn right.","jpSent":"まっすぐ行って右に曲がりなさい。"},
-  {"en":"go to bed","jp":"寝る","enSent":"I go to bed at ten.","jpSent":"私は10時に寝ます。"},
-  {"en":"grow up","jp":"成長する","enSent":"I grew up in this town.","jpSent":"私はこの町で育ちました。"},
-  {"en":"had better","jp":"〜したほうがよい","enSent":"You had better rest today.","jpSent":"今日は休んだほうがよいです。"},
-  {"en":"have a cold","jp":"風邪をひいている","enSent":"I have a cold today.","jpSent":"私は今日風邪をひいています。"},
-  {"en":"have a good time","jp":"楽しい時間を過ごす","enSent":"We had a good time.","jpSent":"私たちは楽しい時間を過ごしました。"},
-  {"en":"have breakfast","jp":"朝食を食べる","enSent":"I have breakfast at seven.","jpSent":"私は7時に朝食を食べます。"},
-  {"en":"have to","jp":"〜しなければならない","enSent":"I have to clean my room.","jpSent":"私は部屋を掃除しなければなりません。"},
-  {"en":"hear from","jp":"〜から連絡がある","enSent":"I heard from my friend.","jpSent":"友達から連絡がありました。"},
-  {"en":"help A with B","jp":"AのBを手伝う","enSent":"I help my sister with English.","jpSent":"私は妹の英語を手伝います。"},
-  {"en":"here and there","jp":"あちこちに","enSent":"Flowers are here and there.","jpSent":"あちこちに花があります。"},
-  {"en":"hold on","jp":"待つ","enSent":"Hold on, please.","jpSent":"少々お待ちください。"},
-  {"en":"How about","jp":"〜はどうですか","enSent":"How about playing soccer?","jpSent":"サッカーをするのはどうですか。"},
-  {"en":"in front of","jp":"〜の前に","enSent":"There is a park in front of my house.","jpSent":"私の家の前に公園があります。"},
-  {"en":"in the future","jp":"将来","enSent":"I want to be a nurse in the future.","jpSent":"将来は看護師になりたいです。"},
-  {"en":"in the morning","jp":"朝に","enSent":"I study in the morning.","jpSent":"私は朝に勉強します。"},
-  {"en":"keep a diary","jp":"日記をつける","enSent":"I keep a diary every day.","jpSent":"私は毎日日記をつけています。"},
-  {"en":"listen to","jp":"〜を聞く","enSent":"Listen to the teacher.","jpSent":"先生の話を聞きなさい。"},
-  {"en":"look after","jp":"〜の世話をする","enSent":"I look after my dog.","jpSent":"私は犬の世話をします。"},
-  {"en":"look at","jp":"〜を見る","enSent":"Look at this picture.","jpSent":"この写真を見てください。"},
-  {"en":"look for","jp":"〜を探す","enSent":"I am looking for my pencil.","jpSent":"私は鉛筆を探しています。"},
-  {"en":"look forward to","jp":"〜を楽しみにする","enSent":"I look forward to summer vacation.","jpSent":"私は夏休みを楽しみにしています。"},
-  {"en":"look like","jp":"〜のように見える","enSent":"It looks like a star.","jpSent":"それは星のように見えます。"},
-  {"en":"make friends","jp":"友達を作る","enSent":"I made friends at school.","jpSent":"私は学校で友達を作りました。"},
-  {"en":"make sure","jp":"確かめる","enSent":"Make sure you have your ticket.","jpSent":"チケットを持っているか確かめなさい。"},
-  {"en":"next to","jp":"〜の隣に","enSent":"My seat is next to the window.","jpSent":"私の席は窓の隣です。"},
-  {"en":"of course","jp":"もちろん","enSent":"Of course, you can come.","jpSent":"もちろん来てもいいですよ。"},
-  {"en":"on foot","jp":"歩いて","enSent":"I go to school on foot.","jpSent":"私は歩いて学校へ行きます。"},
-  {"en":"on time","jp":"時間通りに","enSent":"Please come on time.","jpSent":"時間通りに来てください。"},
-  {"en":"one day","jp":"ある日 / いつか","enSent":"One day, I want to visit London.","jpSent":"いつかロンドンを訪れたいです。"},
-  {"en":"pick up","jp":"拾う","enSent":"Pick up the paper.","jpSent":"紙を拾いなさい。"},
-  {"en":"put on","jp":"身につける","enSent":"Put on your coat.","jpSent":"コートを着なさい。"},
-  {"en":"right now","jp":"今すぐ","enSent":"I need help right now.","jpSent":"今すぐ助けが必要です。"},
-  {"en":"run away","jp":"逃げる","enSent":"The cat ran away.","jpSent":"猫が逃げました。"},
-  {"en":"sit down","jp":"座る","enSent":"Please sit down.","jpSent":"座ってください。"},
-  {"en":"stand up","jp":"立ち上がる","enSent":"Stand up, please.","jpSent":"立ってください。"},
-  {"en":"take a bath","jp":"風呂に入る","enSent":"I take a bath every night.","jpSent":"私は毎晩風呂に入ります。"},
-  {"en":"take a picture","jp":"写真を撮る","enSent":"Let us take a picture.","jpSent":"写真を撮りましょう。"},
-  {"en":"take care of","jp":"〜の世話をする","enSent":"Take care of your little brother.","jpSent":"弟の世話をしなさい。"},
-  {"en":"take off","jp":"脱ぐ","enSent":"Take off your shoes.","jpSent":"靴を脱ぎなさい。"},
-  {"en":"talk about","jp":"〜について話す","enSent":"We talked about music.","jpSent":"私たちは音楽について話しました。"},
-  {"en":"turn left","jp":"左に曲がる","enSent":"Turn left at the corner.","jpSent":"角で左に曲がりなさい。"},
-  {"en":"turn right","jp":"右に曲がる","enSent":"Turn right at the bank.","jpSent":"銀行で右に曲がりなさい。"},
-  {"en":"wake up","jp":"目を覚ます","enSent":"I wake up early.","jpSent":"私は早く目を覚まします。"},
-  {"en":"wait for","jp":"〜を待つ","enSent":"Wait for me here.","jpSent":"ここで私を待ってください。"},
-  {"en":"accident","jp":"事故","enSent":"I learned about an accident in class.","jpSent":"授業で事故について学びました。"},
-  {"en":"address","jp":"住所","enSent":"I learned about an address in class.","jpSent":"授業で住所について学びました。"},
-  {"en":"afternoon","jp":"午後","enSent":"I learned about an afternoon in class.","jpSent":"授業で午後について学びました。"},
-  {"en":"airport","jp":"空港","enSent":"I learned about an airport in class.","jpSent":"授業で空港について学びました。"},
-  {"en":"animal","jp":"動物","enSent":"I learned about an animal in class.","jpSent":"授業で動物について学びました。"},
-  {"en":"answer","jp":"答え","enSent":"I learned about an answer in class.","jpSent":"授業で答えについて学びました。"},
-  {"en":"apartment","jp":"アパート","enSent":"I learned about an apartment in class.","jpSent":"授業でアパートについて学びました。"},
-  {"en":"area","jp":"地域","enSent":"I learned about an area in class.","jpSent":"授業で地域について学びました。"},
-  {"en":"arm","jp":"腕","enSent":"I learned about an arm in class.","jpSent":"授業で腕について学びました。"},
-  {"en":"artist","jp":"芸術家","enSent":"I learned about an artist in class.","jpSent":"授業で芸術家について学びました。"},
-  {"en":"aunt","jp":"おば","enSent":"I learned about an aunt in class.","jpSent":"授業でおばについて学びました。"},
-  {"en":"autumn","jp":"秋","enSent":"I learned about an autumn in class.","jpSent":"授業で秋について学びました。"},
-  {"en":"baby","jp":"赤ちゃん","enSent":"I learned about a baby in class.","jpSent":"授業で赤ちゃんについて学びました。"},
-  {"en":"bank","jp":"銀行","enSent":"I learned about a bank in class.","jpSent":"授業で銀行について学びました。"},
-  {"en":"beach","jp":"浜辺","enSent":"I learned about a beach in class.","jpSent":"授業で浜辺について学びました。"},
-  {"en":"beef","jp":"牛肉","enSent":"I learned about a beef in class.","jpSent":"授業で牛肉について学びました。"},
-  {"en":"bicycle","jp":"自転車","enSent":"I learned about a bicycle in class.","jpSent":"授業で自転車について学びました。"},
-  {"en":"birthday","jp":"誕生日","enSent":"I learned about a birthday in class.","jpSent":"授業で誕生日について学びました。"},
-  {"en":"boat","jp":"ボート","enSent":"I learned about a boat in class.","jpSent":"授業でボートについて学びました。"},
-  {"en":"body","jp":"体","enSent":"I learned about a body in class.","jpSent":"授業で体について学びました。"},
-  {"en":"boss","jp":"上司","enSent":"I learned about a boss in class.","jpSent":"授業で上司について学びました。"},
-  {"en":"bottle","jp":"瓶","enSent":"I learned about a bottle in class.","jpSent":"授業で瓶について学びました。"},
-  {"en":"branch","jp":"枝","enSent":"I learned about a branch in class.","jpSent":"授業で枝について学びました。"},
-  {"en":"breakfast","jp":"朝食","enSent":"I learned about a breakfast in class.","jpSent":"授業で朝食について学びました。"},
-  {"en":"bridge","jp":"橋","enSent":"I learned about a bridge in class.","jpSent":"授業で橋について学びました。"},
-  {"en":"brother","jp":"兄弟","enSent":"I learned about a brother in class.","jpSent":"授業で兄弟について学びました。"},
-  {"en":"building","jp":"建物","enSent":"I learned about a building in class.","jpSent":"授業で建物について学びました。"},
-  {"en":"business","jp":"仕事","enSent":"I learned about a business in class.","jpSent":"授業で仕事について学びました。"},
-  {"en":"button","jp":"ボタン","enSent":"I learned about a button in class.","jpSent":"授業でボタンについて学びました。"},
-  {"en":"calendar","jp":"カレンダー","enSent":"I learned about a calendar in class.","jpSent":"授業でカレンダーについて学びました。"},
-  {"en":"camera","jp":"カメラ","enSent":"I learned about a camera in class.","jpSent":"授業でカメラについて学びました。"},
-  {"en":"capital","jp":"首都","enSent":"I learned about a capital in class.","jpSent":"授業で首都について学びました。"},
-  {"en":"captain","jp":"キャプテン","enSent":"I learned about a captain in class.","jpSent":"授業でキャプテンについて学びました。"},
-  {"en":"card","jp":"カード","enSent":"I learned about a card in class.","jpSent":"授業でカードについて学びました。"},
-  {"en":"case","jp":"場合","enSent":"I learned about a case in class.","jpSent":"授業で場合について学びました。"},
-  {"en":"center","jp":"中心","enSent":"I learned about a center in class.","jpSent":"授業で中心について学びました。"},
-  {"en":"century","jp":"世紀","enSent":"I learned about a century in class.","jpSent":"授業で世紀について学びました。"},
-  {"en":"chance","jp":"機会","enSent":"I learned about a chance in class.","jpSent":"授業で機会について学びました。"},
-  {"en":"character","jp":"登場人物","enSent":"I learned about a character in class.","jpSent":"授業で登場人物について学びました。"},
-  {"en":"child","jp":"子ども","enSent":"I learned about a child in class.","jpSent":"授業で子どもについて学びました。"},
-  {"en":"choice","jp":"選択","enSent":"I learned about a choice in class.","jpSent":"授業で選択について学びました。"},
-  {"en":"church","jp":"教会","enSent":"I learned about a church in class.","jpSent":"授業で教会について学びました。"},
-  {"en":"city","jp":"都市","enSent":"I learned about a city in class.","jpSent":"授業で都市について学びました。"},
-  {"en":"classmate","jp":"同級生","enSent":"I learned about a classmate in class.","jpSent":"授業で同級生について学びました。"},
-  {"en":"clerk","jp":"店員","enSent":"I learned about a clerk in class.","jpSent":"授業で店員について学びました。"},
-  {"en":"climate","jp":"気候","enSent":"I learned about a climate in class.","jpSent":"授業で気候について学びました。"},
-  {"en":"cloud","jp":"雲","enSent":"I learned about a cloud in class.","jpSent":"授業で雲について学びました。"},
-  {"en":"club","jp":"部活動","enSent":"I learned about a club in class.","jpSent":"授業で部活動について学びました。"},
-  {"en":"coast","jp":"海岸","enSent":"I learned about a coast in class.","jpSent":"授業で海岸について学びました。"},
-  {"en":"college","jp":"大学","enSent":"I learned about a college in class.","jpSent":"授業で大学について学びました。"},
-  {"en":"color","jp":"色","enSent":"I learned about a color in class.","jpSent":"授業で色について学びました。"},
-  {"en":"contest","jp":"コンテスト","enSent":"I learned about a contest in class.","jpSent":"授業でコンテストについて学びました。"},
-  {"en":"corner","jp":"角","enSent":"I learned about a corner in class.","jpSent":"授業で角について学びました。"},
-  {"en":"country","jp":"国","enSent":"I learned about a country in class.","jpSent":"授業で国について学びました。"},
-  {"en":"cousin","jp":"いとこ","enSent":"I learned about a cousin in class.","jpSent":"授業でいとこについて学びました。"},
-  {"en":"culture","jp":"文化","enSent":"I learned about a culture in class.","jpSent":"授業で文化について学びました。"},
-  {"en":"daughter","jp":"娘","enSent":"I learned about a daughter in class.","jpSent":"授業で娘について学びました。"},
-  {"en":"dentist","jp":"歯医者","enSent":"I learned about a dentist in class.","jpSent":"授業で歯医者について学びました。"},
-  {"en":"dictionary","jp":"辞書","enSent":"I learned about a dictionary in class.","jpSent":"授業で辞書について学びました。"},
-  {"en":"difference","jp":"違い","enSent":"I learned about a difference in class.","jpSent":"授業で違いについて学びました。"},
-  {"en":"dinner","jp":"夕食","enSent":"I learned about a dinner in class.","jpSent":"授業で夕食について学びました。"},
-  {"en":"doctor","jp":"医者","enSent":"I learned about a doctor in class.","jpSent":"授業で医者について学びました。"},
-  {"en":"dollar","jp":"ドル","enSent":"I learned about a dollar in class.","jpSent":"授業でドルについて学びました。"},
-  {"en":"dream","jp":"夢","enSent":"I learned about a dream in class.","jpSent":"授業で夢について学びました。"},
-  {"en":"driver","jp":"運転手","enSent":"I learned about a driver in class.","jpSent":"授業で運転手について学びました。"},
-  {"en":"earth","jp":"地球","enSent":"I learned about an earth in class.","jpSent":"授業で地球について学びました。"},
-  {"en":"east","jp":"東","enSent":"I learned about an east in class.","jpSent":"授業で東について学びました。"},
-  {"en":"education","jp":"教育","enSent":"I learned about an education in class.","jpSent":"授業で教育について学びました。"},
-  {"en":"egg","jp":"卵","enSent":"I learned about an egg in class.","jpSent":"授業で卵について学びました。"},
-  {"en":"elephant","jp":"象","enSent":"I learned about an elephant in class.","jpSent":"授業で象について学びました。"},
-  {"en":"email","jp":"メール","enSent":"I learned about an email in class.","jpSent":"授業でメールについて学びました。"},
-  {"en":"engineer","jp":"技師","enSent":"I learned about an engineer in class.","jpSent":"授業で技師について学びました。"},
-  {"en":"evening","jp":"夕方","enSent":"I learned about an evening in class.","jpSent":"授業で夕方について学びました。"},
-  {"en":"event","jp":"行事","enSent":"I learned about an event in class.","jpSent":"授業で行事について学びました。"},
-  {"en":"example","jp":"例","enSent":"I learned about an example in class.","jpSent":"授業で例について学びました。"},
-  {"en":"factory","jp":"工場","enSent":"I learned about a factory in class.","jpSent":"授業で工場について学びました。"},
-  {"en":"family","jp":"家族","enSent":"I learned about a family in class.","jpSent":"授業で家族について学びました。"},
-  {"en":"farmer","jp":"農家","enSent":"I learned about a farmer in class.","jpSent":"授業で農家について学びました。"},
-  {"en":"festival","jp":"祭り","enSent":"I learned about a festival in class.","jpSent":"授業で祭りについて学びました。"},
-  {"en":"field","jp":"野原","enSent":"I learned about a field in class.","jpSent":"授業で野原について学びました。"},
-  {"en":"finger","jp":"指","enSent":"I learned about a finger in class.","jpSent":"授業で指について学びました。"},
-  {"en":"flower","jp":"花","enSent":"I learned about a flower in class.","jpSent":"授業で花について学びました。"},
-  {"en":"food","jp":"食べ物","enSent":"I learned about a food in class.","jpSent":"授業で食べ物について学びました。"},
-  {"en":"forest","jp":"森","enSent":"I learned about a forest in class.","jpSent":"授業で森について学びました。"},
-  {"en":"friend","jp":"友達","enSent":"I learned about a friend in class.","jpSent":"授業で友達について学びました。"},
-  {"en":"future","jp":"将来","enSent":"I learned about a future in class.","jpSent":"授業で将来について学びました。"},
-  {"en":"game","jp":"試合","enSent":"I learned about a game in class.","jpSent":"授業で試合について学びました。"},
-  {"en":"garden","jp":"庭","enSent":"I learned about a garden in class.","jpSent":"授業で庭について学びました。"},
-  {"en":"gate","jp":"門","enSent":"I learned about a gate in class.","jpSent":"授業で門について学びました。"},
-  {"en":"gift","jp":"贈り物","enSent":"I learned about a gift in class.","jpSent":"授業で贈り物について学びました。"},
-  {"en":"grandfather","jp":"祖父","enSent":"I learned about a grandfather in class.","jpSent":"授業で祖父について学びました。"},
-  {"en":"grandmother","jp":"祖母","enSent":"I learned about a grandmother in class.","jpSent":"授業で祖母について学びました。"},
-  {"en":"ground","jp":"地面","enSent":"I learned about a ground in class.","jpSent":"授業で地面について学びました。"},
-  {"en":"group","jp":"グループ","enSent":"I learned about a group in class.","jpSent":"授業でグループについて学びました。"},
-  {"en":"guide","jp":"案内人","enSent":"I learned about a guide in class.","jpSent":"授業で案内人について学びました。"},
-  {"en":"habit","jp":"習慣","enSent":"I learned about a habit in class.","jpSent":"授業で習慣について学びました。"},
-  {"en":"hand","jp":"手","enSent":"I learned about a hand in class.","jpSent":"授業で手について学びました。"},
-  {"en":"history","jp":"歴史","enSent":"I learned about a history in class.","jpSent":"授業で歴史について学びました。"},
-  {"en":"holiday","jp":"休日","enSent":"I learned about a holiday in class.","jpSent":"授業で休日について学びました。"},
-  {"en":"homework","jp":"宿題","enSent":"I learned about a homework in class.","jpSent":"授業で宿題について学びました。"},
-  {"en":"hospital","jp":"病院","enSent":"I learned about a hospital in class.","jpSent":"授業で病院について学びました。"},
-  {"en":"hotel","jp":"ホテル","enSent":"I learned about a hotel in class.","jpSent":"授業でホテルについて学びました。"},
-  {"en":"hour","jp":"時間","enSent":"I learned about a hour in class.","jpSent":"授業で時間について学びました。"},
-  {"en":"idea","jp":"考え","enSent":"I learned about an idea in class.","jpSent":"授業で考えについて学びました。"},
-  {"en":"island","jp":"島","enSent":"I learned about an island in class.","jpSent":"授業で島について学びました。"},
-  {"en":"job","jp":"仕事","enSent":"I learned about a job in class.","jpSent":"授業で仕事について学びました。"},
-  {"en":"journey","jp":"旅","enSent":"I learned about a journey in class.","jpSent":"授業で旅について学びました。"},
-  {"en":"kitchen","jp":"台所","enSent":"I learned about a kitchen in class.","jpSent":"授業で台所について学びました。"},
-  {"en":"lake","jp":"湖","enSent":"I learned about a lake in class.","jpSent":"授業で湖について学びました。"},
-  {"en":"language","jp":"言語","enSent":"I learned about a language in class.","jpSent":"授業で言語について学びました。"},
-  {"en":"lesson","jp":"授業","enSent":"I learned about a lesson in class.","jpSent":"授業で授業について学びました。"},
-  {"en":"library","jp":"図書館","enSent":"I learned about a library in class.","jpSent":"授業で図書館について学びました。"},
-  {"en":"line","jp":"線","enSent":"I learned about a line in class.","jpSent":"授業で線について学びました。"},
-  {"en":"lunch","jp":"昼食","enSent":"I learned about a lunch in class.","jpSent":"授業で昼食について学びました。"},
-  {"en":"machine","jp":"機械","enSent":"I learned about a machine in class.","jpSent":"授業で機械について学びました。"},
-  {"en":"magazine","jp":"雑誌","enSent":"I learned about a magazine in class.","jpSent":"授業で雑誌について学びました。"},
-  {"en":"market","jp":"市場","enSent":"I learned about a market in class.","jpSent":"授業で市場について学びました。"},
-  {"en":"math","jp":"数学","enSent":"I learned about a math in class.","jpSent":"授業で数学について学びました。"},
-  {"en":"meal","jp":"食事","enSent":"I learned about a meal in class.","jpSent":"授業で食事について学びました。"},
-  {"en":"member","jp":"メンバー","enSent":"I learned about a member in class.","jpSent":"授業でメンバーについて学びました。"},
-  {"en":"message","jp":"伝言","enSent":"I learned about a message in class.","jpSent":"授業で伝言について学びました。"},
-  {"en":"minute","jp":"分","enSent":"I learned about a minute in class.","jpSent":"授業で分について学びました。"},
-  {"en":"money","jp":"お金","enSent":"I learned about a money in class.","jpSent":"授業でお金について学びました。"},
-  {"en":"month","jp":"月","enSent":"I learned about a month in class.","jpSent":"授業で月について学びました。"},
-  {"en":"morning","jp":"朝","enSent":"I learned about a morning in class.","jpSent":"授業で朝について学びました。"},
-  {"en":"mountain","jp":"山","enSent":"I learned about a mountain in class.","jpSent":"授業で山について学びました。"},
-  {"en":"museum","jp":"博物館","enSent":"I learned about a museum in class.","jpSent":"授業で博物館について学びました。"},
-  {"en":"music","jp":"音楽","enSent":"I learned about a music in class.","jpSent":"授業で音楽について学びました。"},
-  {"en":"neighbor","jp":"隣人","enSent":"I learned about a neighbor in class.","jpSent":"授業で隣人について学びました。"},
-  {"en":"newspaper","jp":"新聞","enSent":"I learned about a newspaper in class.","jpSent":"授業で新聞について学びました。"},
-  {"en":"north","jp":"北","enSent":"I learned about a north in class.","jpSent":"授業で北について学びました。"},
-  {"en":"nurse","jp":"看護師","enSent":"I learned about a nurse in class.","jpSent":"授業で看護師について学びました。"},
-  {"en":"office","jp":"事務所","enSent":"I learned about an office in class.","jpSent":"授業で事務所について学びました。"},
-  {"en":"parent","jp":"親","enSent":"I learned about a parent in class.","jpSent":"授業で親について学びました。"},
-  {"en":"party","jp":"パーティー","enSent":"I learned about a party in class.","jpSent":"授業でパーティーについて学びました。"},
-  {"en":"person","jp":"人","enSent":"I learned about a person in class.","jpSent":"授業で人について学びました。"},
-  {"en":"phone","jp":"電話","enSent":"I learned about a phone in class.","jpSent":"授業で電話について学びました。"},
-  {"en":"picture","jp":"写真","enSent":"I learned about a picture in class.","jpSent":"授業で写真について学びました。"},
-  {"en":"place","jp":"場所","enSent":"I learned about a place in class.","jpSent":"授業で場所について学びました。"},
-  {"en":"plan","jp":"計画","enSent":"I learned about a plan in class.","jpSent":"授業で計画について学びました。"},
-  {"en":"player","jp":"選手","enSent":"I learned about a player in class.","jpSent":"授業で選手について学びました。"},
-  {"en":"pocket","jp":"ポケット","enSent":"I learned about a pocket in class.","jpSent":"授業でポケットについて学びました。"},
-  {"en":"police","jp":"警察","enSent":"I learned about a police in class.","jpSent":"授業で警察について学びました。"},
-  {"en":"present","jp":"贈り物","enSent":"I learned about a present in class.","jpSent":"授業で贈り物について学びました。"},
-  {"en":"problem","jp":"問題","enSent":"I learned about a problem in class.","jpSent":"授業で問題について学びました。"},
-  {"en":"question","jp":"質問","enSent":"I learned about a question in class.","jpSent":"授業で質問について学びました。"},
-  {"en":"radio","jp":"ラジオ","enSent":"I learned about a radio in class.","jpSent":"授業でラジオについて学びました。"},
-  {"en":"rain","jp":"雨","enSent":"I learned about a rain in class.","jpSent":"授業で雨について学びました。"},
-  {"en":"reason","jp":"理由","enSent":"I learned about a reason in class.","jpSent":"授業で理由について学びました。"},
-  {"en":"restaurant","jp":"レストラン","enSent":"I learned about a restaurant in class.","jpSent":"授業でレストランについて学びました。"},
-  {"en":"river","jp":"川","enSent":"I learned about a river in class.","jpSent":"授業で川について学びました。"},
-  {"en":"road","jp":"道","enSent":"I learned about a road in class.","jpSent":"授業で道について学びました。"},
-  {"en":"room","jp":"部屋","enSent":"I learned about a room in class.","jpSent":"授業で部屋について学びました。"},
-  {"en":"rule","jp":"規則","enSent":"I learned about a rule in class.","jpSent":"授業で規則について学びました。"},
-  {"en":"season","jp":"季節","enSent":"I learned about a season in class.","jpSent":"授業で季節について学びました。"},
-  {"en":"shop","jp":"店","enSent":"I learned about a shop in class.","jpSent":"授業で店について学びました。"},
-  {"en":"sister","jp":"姉妹","enSent":"I learned about a sister in class.","jpSent":"授業で姉妹について学びました。"},
-  {"en":"sky","jp":"空","enSent":"I learned about a sky in class.","jpSent":"授業で空について学びました。"},
-  {"en":"son","jp":"息子","enSent":"I learned about a son in class.","jpSent":"授業で息子について学びました。"},
-  {"en":"south","jp":"南","enSent":"I learned about a south in class.","jpSent":"授業で南について学びました。"},
-  {"en":"station","jp":"駅","enSent":"I learned about a station in class.","jpSent":"授業で駅について学びました。"},
-  {"en":"story","jp":"物語","enSent":"I learned about a story in class.","jpSent":"授業で物語について学びました。"},
-  {"en":"street","jp":"通り","enSent":"I learned about a street in class.","jpSent":"授業で通りについて学びました。"},
-  {"en":"subject","jp":"科目","enSent":"I learned about a subject in class.","jpSent":"授業で科目について学びました。"},
-  {"en":"summer","jp":"夏","enSent":"I learned about a summer in class.","jpSent":"授業で夏について学びました。"},
-  {"en":"teacher","jp":"先生","enSent":"I learned about a teacher in class.","jpSent":"授業で先生について学びました。"},
-  {"en":"team","jp":"チーム","enSent":"I learned about a team in class.","jpSent":"授業でチームについて学びました。"},
-  {"en":"ticket","jp":"切符","enSent":"I learned about a ticket in class.","jpSent":"授業で切符について学びました。"},
-  {"en":"town","jp":"町","enSent":"I learned about a town in class.","jpSent":"授業で町について学びました。"},
-  {"en":"train","jp":"電車","enSent":"I learned about a train in class.","jpSent":"授業で電車について学びました。"},
-  {"en":"trip","jp":"旅行","enSent":"I learned about a trip in class.","jpSent":"授業で旅行について学びました。"},
-  {"en":"uncle","jp":"おじ","enSent":"I learned about an uncle in class.","jpSent":"授業でおじについて学びました。"},
-  {"en":"vacation","jp":"休暇","enSent":"I learned about a vacation in class.","jpSent":"授業で休暇について学びました。"},
-  {"en":"village","jp":"村","enSent":"I learned about a village in class.","jpSent":"授業で村について学びました。"},
-  {"en":"visitor","jp":"訪問者","enSent":"I learned about a visitor in class.","jpSent":"授業で訪問者について学びました。"},
-  {"en":"voice","jp":"声","enSent":"I learned about a voice in class.","jpSent":"授業で声について学びました。"},
-  {"en":"weather","jp":"天気","enSent":"I learned about a weather in class.","jpSent":"授業で天気について学びました。"},
-  {"en":"week","jp":"週","enSent":"I learned about a week in class.","jpSent":"授業で週について学びました。"},
-  {"en":"west","jp":"西","enSent":"I learned about a west in class.","jpSent":"授業で西について学びました。"},
-  {"en":"window","jp":"窓","enSent":"I learned about a window in class.","jpSent":"授業で窓について学びました。"},
-  {"en":"winter","jp":"冬","enSent":"I learned about a winter in class.","jpSent":"授業で冬について学びました。"},
-  {"en":"woman","jp":"女性","enSent":"I learned about a woman in class.","jpSent":"授業で女性について学びました。"},
-  {"en":"world","jp":"世界","enSent":"I learned about a world in class.","jpSent":"授業で世界について学びました。"},
-  {"en":"yard","jp":"庭","enSent":"I learned about a yard in class.","jpSent":"授業で庭について学びました。"},
-  {"en":"activity","jp":"活動","enSent":"I saw an activity yesterday.","jpSent":"昨日活動を見ました。"},
-  {"en":"adventure","jp":"冒険","enSent":"I saw an adventure yesterday.","jpSent":"昨日冒険を見ました。"},
-  {"en":"advice","jp":"助言","enSent":"I saw an advice yesterday.","jpSent":"昨日助言を見ました。"},
-  {"en":"age","jp":"年齢","enSent":"I saw an age yesterday.","jpSent":"昨日年齢を見ました。"},
-  {"en":"air","jp":"空気","enSent":"I saw an air yesterday.","jpSent":"昨日空気を見ました。"},
-  {"en":"album","jp":"アルバム","enSent":"I saw an album yesterday.","jpSent":"昨日アルバムを見ました。"},
-  {"en":"answer sheet","jp":"解答用紙","enSent":"I saw an answer sheet yesterday.","jpSent":"昨日解答用紙を見ました。"},
-  {"en":"art","jp":"美術","enSent":"I saw an art yesterday.","jpSent":"昨日美術を見ました。"},
-  {"en":"balloon","jp":"風船","enSent":"I saw a balloon yesterday.","jpSent":"昨日風船を見ました。"},
-  {"en":"baseball","jp":"野球","enSent":"I saw a baseball yesterday.","jpSent":"昨日野球を見ました。"},
-  {"en":"basket","jp":"かご","enSent":"I saw a basket yesterday.","jpSent":"昨日かごを見ました。"},
-  {"en":"bathroom","jp":"浴室","enSent":"I saw a bathroom yesterday.","jpSent":"昨日浴室を見ました。"},
-  {"en":"bedroom","jp":"寝室","enSent":"I saw a bedroom yesterday.","jpSent":"昨日寝室を見ました。"},
-  {"en":"bench","jp":"ベンチ","enSent":"I saw a bench yesterday.","jpSent":"昨日ベンチを見ました。"},
-  {"en":"bike","jp":"自転車","enSent":"I saw a bike yesterday.","jpSent":"昨日自転車を見ました。"},
-  {"en":"bird","jp":"鳥","enSent":"I saw a bird yesterday.","jpSent":"昨日鳥を見ました。"},
-  {"en":"blanket","jp":"毛布","enSent":"I saw a blanket yesterday.","jpSent":"昨日毛布を見ました。"},
-  {"en":"board","jp":"板、掲示板","enSent":"I saw a board yesterday.","jpSent":"昨日板、掲示板を見ました。"},
-  {"en":"bookstore","jp":"書店","enSent":"I saw a bookstore yesterday.","jpSent":"昨日書店を見ました。"},
-  {"en":"bottle cap","jp":"瓶のふた","enSent":"I saw a bottle cap yesterday.","jpSent":"昨日瓶のふたを見ました。"},
-  {"en":"bread","jp":"パン","enSent":"I saw a bread yesterday.","jpSent":"昨日パンを見ました。"},
-  {"en":"bus stop","jp":"バス停","enSent":"I saw a bus stop yesterday.","jpSent":"昨日バス停を見ました。"},
-  {"en":"cafeteria","jp":"食堂","enSent":"I saw a cafeteria yesterday.","jpSent":"昨日食堂を見ました。"},
-  {"en":"cake","jp":"ケーキ","enSent":"I saw a cake yesterday.","jpSent":"昨日ケーキを見ました。"},
-  {"en":"candy","jp":"キャンディー","enSent":"I saw a candy yesterday.","jpSent":"昨日キャンディーを見ました。"},
-  {"en":"carrot","jp":"にんじん","enSent":"I saw a carrot yesterday.","jpSent":"昨日にんじんを見ました。"},
-  {"en":"castle","jp":"城","enSent":"I saw a castle yesterday.","jpSent":"昨日城を見ました。"},
-  {"en":"cat","jp":"猫","enSent":"I saw a cat yesterday.","jpSent":"昨日猫を見ました。"},
-  {"en":"chair","jp":"椅子","enSent":"I saw a chair yesterday.","jpSent":"昨日椅子を見ました。"},
-  {"en":"cheese","jp":"チーズ","enSent":"I saw a cheese yesterday.","jpSent":"昨日チーズを見ました。"},
-  {"en":"chicken","jp":"鶏肉","enSent":"I saw a chicken yesterday.","jpSent":"昨日鶏肉を見ました。"},
-  {"en":"classroom","jp":"教室","enSent":"I saw a classroom yesterday.","jpSent":"昨日教室を見ました。"},
-  {"en":"coat","jp":"コート","enSent":"I saw a coat yesterday.","jpSent":"昨日コートを見ました。"},
-  {"en":"coffee","jp":"コーヒー","enSent":"I saw a coffee yesterday.","jpSent":"昨日コーヒーを見ました。"},
-  {"en":"computer","jp":"コンピューター","enSent":"I saw a computer yesterday.","jpSent":"昨日コンピューターを見ました。"},
-  {"en":"cookie","jp":"クッキー","enSent":"I saw a cookie yesterday.","jpSent":"昨日クッキーを見ました。"},
-  {"en":"cow","jp":"牛","enSent":"I saw a cow yesterday.","jpSent":"昨日牛を見ました。"},
-  {"en":"desk","jp":"机","enSent":"I saw a desk yesterday.","jpSent":"昨日机を見ました。"},
-  {"en":"dish","jp":"皿","enSent":"I saw a dish yesterday.","jpSent":"昨日皿を見ました。"},
-  {"en":"dog","jp":"犬","enSent":"I saw a dog yesterday.","jpSent":"昨日犬を見ました。"},
-  {"en":"door","jp":"ドア","enSent":"I saw a door yesterday.","jpSent":"昨日ドアを見ました。"},
-  {"en":"dress","jp":"ドレス","enSent":"I saw a dress yesterday.","jpSent":"昨日ドレスを見ました。"},
-  {"en":"drink","jp":"飲み物","enSent":"I saw a drink yesterday.","jpSent":"昨日飲み物を見ました。"},
-  {"en":"ear","jp":"耳","enSent":"I saw an ear yesterday.","jpSent":"昨日耳を見ました。"},
-  {"en":"entrance","jp":"入口","enSent":"I saw an entrance yesterday.","jpSent":"昨日入口を見ました。"},
-  {"en":"eraser","jp":"消しゴム","enSent":"I saw an eraser yesterday.","jpSent":"昨日消しゴムを見ました。"},
-  {"en":"eye","jp":"目","enSent":"I saw an eye yesterday.","jpSent":"昨日目を見ました。"},
-  {"en":"face","jp":"顔","enSent":"I saw a face yesterday.","jpSent":"昨日顔を見ました。"},
-  {"en":"father","jp":"父","enSent":"I saw a father yesterday.","jpSent":"昨日父を見ました。"},
-  {"en":"fire","jp":"火","enSent":"I saw a fire yesterday.","jpSent":"昨日火を見ました。"},
-  {"en":"fish","jp":"魚","enSent":"I saw a fish yesterday.","jpSent":"昨日魚を見ました。"},
-  {"en":"floor","jp":"床","enSent":"I saw a floor yesterday.","jpSent":"昨日床を見ました。"},
-  {"en":"fruit","jp":"果物","enSent":"I saw a fruit yesterday.","jpSent":"昨日果物を見ました。"},
-  {"en":"girl","jp":"女の子","enSent":"I saw a girl yesterday.","jpSent":"昨日女の子を見ました。"},
-  {"en":"grass","jp":"草","enSent":"I saw a grass yesterday.","jpSent":"昨日草を見ました。"},
-  {"en":"guitar","jp":"ギター","enSent":"I saw a guitar yesterday.","jpSent":"昨日ギターを見ました。"},
-  {"en":"hat","jp":"帽子","enSent":"I saw a hat yesterday.","jpSent":"昨日帽子を見ました。"},
-  {"en":"head","jp":"頭","enSent":"I saw a head yesterday.","jpSent":"昨日頭を見ました。"},
-  {"en":"hill","jp":"丘","enSent":"I saw a hill yesterday.","jpSent":"昨日丘を見ました。"},
-  {"en":"home","jp":"家","enSent":"I saw a home yesterday.","jpSent":"昨日家を見ました。"},
-  {"en":"ice","jp":"氷","enSent":"I saw an ice yesterday.","jpSent":"昨日氷を見ました。"},
-  {"en":"juice","jp":"ジュース","enSent":"I saw a juice yesterday.","jpSent":"昨日ジュースを見ました。"},
-  {"en":"key","jp":"鍵","enSent":"I saw a key yesterday.","jpSent":"昨日鍵を見ました。"},
-  {"en":"king","jp":"王","enSent":"I saw a king yesterday.","jpSent":"昨日王を見ました。"},
-  {"en":"leg","jp":"脚","enSent":"I saw a leg yesterday.","jpSent":"昨日脚を見ました。"},
-  {"en":"letter","jp":"手紙","enSent":"I saw a letter yesterday.","jpSent":"昨日手紙を見ました。"},
-  {"en":"map","jp":"地図","enSent":"I saw a map yesterday.","jpSent":"昨日地図を見ました。"},
-  {"en":"milk","jp":"牛乳","enSent":"I saw a milk yesterday.","jpSent":"昨日牛乳を見ました。"},
-  {"en":"mother","jp":"母","enSent":"I saw a mother yesterday.","jpSent":"昨日母を見ました。"},
-  {"en":"mouth","jp":"口","enSent":"I saw a mouth yesterday.","jpSent":"昨日口を見ました。"},
-  {"en":"name","jp":"名前","enSent":"I saw a name yesterday.","jpSent":"昨日名前を見ました。"},
-  {"en":"notebook","jp":"ノート","enSent":"I saw a notebook yesterday.","jpSent":"昨日ノートを見ました。"},
-  {"en":"orange","jp":"オレンジ","enSent":"I saw an orange yesterday.","jpSent":"昨日オレンジを見ました。"},
-  {"en":"page","jp":"ページ","enSent":"I saw a page yesterday.","jpSent":"昨日ページを見ました。"},
-  {"en":"park","jp":"公園","enSent":"I saw a park yesterday.","jpSent":"昨日公園を見ました。"},
-  {"en":"pen","jp":"ペン","enSent":"I saw a pen yesterday.","jpSent":"昨日ペンを見ました。"},
-  {"en":"pencil","jp":"鉛筆","enSent":"I saw a pencil yesterday.","jpSent":"昨日鉛筆を見ました。"},
-  {"en":"piano","jp":"ピアノ","enSent":"I saw a piano yesterday.","jpSent":"昨日ピアノを見ました。"},
-  {"en":"queen","jp":"女王","enSent":"I saw a queen yesterday.","jpSent":"昨日女王を見ました。"},
-  {"en":"rainbow","jp":"虹","enSent":"I saw a rainbow yesterday.","jpSent":"昨日虹を見ました。"},
-  {"en":"rice","jp":"米、ご飯","enSent":"I saw a rice yesterday.","jpSent":"昨日米、ご飯を見ました。"},
-  {"en":"salt","jp":"塩","enSent":"I saw a salt yesterday.","jpSent":"昨日塩を見ました。"},
-  {"en":"sandwich","jp":"サンドイッチ","enSent":"I saw a sandwich yesterday.","jpSent":"昨日サンドイッチを見ました。"},
-  {"en":"schoolyard","jp":"校庭","enSent":"I saw a schoolyard yesterday.","jpSent":"昨日校庭を見ました。"},
-  {"en":"sea","jp":"海","enSent":"I saw a sea yesterday.","jpSent":"昨日海を見ました。"},
-  {"en":"shirt","jp":"シャツ","enSent":"I saw a shirt yesterday.","jpSent":"昨日シャツを見ました。"},
-  {"en":"shoe","jp":"靴","enSent":"I saw a shoe yesterday.","jpSent":"昨日靴を見ました。"},
-  {"en":"snow","jp":"雪","enSent":"I saw a snow yesterday.","jpSent":"昨日雪を見ました。"},
-  {"en":"song","jp":"歌","enSent":"I saw a song yesterday.","jpSent":"昨日歌を見ました。"},
-  {"en":"sport","jp":"スポーツ","enSent":"I saw a sport yesterday.","jpSent":"昨日スポーツを見ました。"},
-  {"en":"star","jp":"星","enSent":"I saw a star yesterday.","jpSent":"昨日星を見ました。"},
-  {"en":"store","jp":"店","enSent":"I saw a store yesterday.","jpSent":"昨日店を見ました。"},
-  {"en":"table","jp":"テーブル","enSent":"I saw a table yesterday.","jpSent":"昨日テーブルを見ました。"},
-  {"en":"tea","jp":"お茶","enSent":"I saw a tea yesterday.","jpSent":"昨日お茶を見ました。"},
-  {"en":"tree","jp":"木","enSent":"I saw a tree yesterday.","jpSent":"昨日木を見ました。"},
-  {"en":"umbrella","jp":"傘","enSent":"I saw an umbrella yesterday.","jpSent":"昨日傘を見ました。"},
-  {"en":"wall","jp":"壁","enSent":"I saw a wall yesterday.","jpSent":"昨日壁を見ました。"},
-  {"en":"water","jp":"水","enSent":"I saw a water yesterday.","jpSent":"昨日水を見ました。"},
-  {"en":"zoo","jp":"動物園","enSent":"I saw a zoo yesterday.","jpSent":"昨日動物園を見ました。"},
-  {"en":"act","jp":"行動する","enSent":"I want to act today.","jpSent":"今日は行動するたいです。"},
-  {"en":"begin","jp":"始める","enSent":"I want to begin today.","jpSent":"今日は始めるたいです。"},
-  {"en":"blow","jp":"吹く","enSent":"I want to blow today.","jpSent":"今日は吹くたいです。"},
-  {"en":"brush","jp":"磨く","enSent":"I want to brush today.","jpSent":"今日は磨くたいです。"},
-  {"en":"burn","jp":"燃える","enSent":"I want to burn today.","jpSent":"今日は燃えるたいです。"},
-  {"en":"check","jp":"確かめる","enSent":"I want to check today.","jpSent":"今日は確かめるたいです。"},
-  {"en":"copy","jp":"写す","enSent":"I want to copy today.","jpSent":"今日は写すたいです。"},
-  {"en":"cry","jp":"泣く","enSent":"I want to cry today.","jpSent":"今日は泣くたいです。"},
-  {"en":"eat","jp":"食べる","enSent":"I want to eat today.","jpSent":"今日は食べるたいです。"},
-  {"en":"find","jp":"見つける","enSent":"I want to find today.","jpSent":"今日は見つけるたいです。"},
-  {"en":"fix","jp":"修理する","enSent":"I want to fix today.","jpSent":"今日は修理するたいです。"},
-  {"en":"fly","jp":"飛ぶ","enSent":"I want to fly today.","jpSent":"今日は飛ぶたいです。"},
-  {"en":"guess","jp":"推測する","enSent":"I want to guess today.","jpSent":"今日は推測するたいです。"},
-  {"en":"kick","jp":"蹴る","enSent":"I want to kick today.","jpSent":"今日は蹴るたいです。"},
-  {"en":"knock","jp":"ノックする","enSent":"I want to knock today.","jpSent":"今日はノックするたいです。"},
-  {"en":"like","jp":"好む","enSent":"I want to like today.","jpSent":"今日は好むたいです。"},
-  {"en":"love","jp":"大好きである","enSent":"I want to love today.","jpSent":"今日は大好きであるたいです。"},
-  {"en":"mail","jp":"郵送する","enSent":"I want to mail today.","jpSent":"今日は郵送するたいです。"},
-  {"en":"make","jp":"作る","enSent":"I want to make today.","jpSent":"今日は作るたいです。"},
-  {"en":"mix","jp":"混ぜる","enSent":"I want to mix today.","jpSent":"今日は混ぜるたいです。"},
-  {"en":"paint","jp":"絵の具で描く","enSent":"I want to paint today.","jpSent":"今日は絵の具で描くたいです。"},
-  {"en":"play","jp":"遊ぶ、演奏する","enSent":"I want to play today.","jpSent":"今日は遊ぶ、演奏するたいです。"},
-  {"en":"ring","jp":"鳴る","enSent":"I want to ring today.","jpSent":"今日は鳴るたいです。"},
-  {"en":"skate","jp":"スケートをする","enSent":"I want to skate today.","jpSent":"今日はスケートをするたいです。"},
-  {"en":"ski","jp":"スキーをする","enSent":"I want to ski today.","jpSent":"今日はスキーをするたいです。"},
-  {"en":"sleep","jp":"眠る","enSent":"I want to sleep today.","jpSent":"今日は眠るたいです。"},
-  {"en":"talk","jp":"話す","enSent":"I want to talk today.","jpSent":"今日は話すたいです。"},
-  {"en":"try","jp":"試す","enSent":"I want to try today.","jpSent":"今日は試すたいです。"},
-  {"en":"use","jp":"使う","enSent":"I want to use today.","jpSent":"今日は使うたいです。"},
-  {"en":"walk","jp":"歩く","enSent":"I want to walk today.","jpSent":"今日は歩くたいです。"},
-  {"en":"work","jp":"働く","enSent":"I want to work today.","jpSent":"今日は働くたいです。"},
-  {"en":"bad","jp":"悪い","enSent":"This lesson is bad.","jpSent":"この授業は悪いです。"},
-  {"en":"big","jp":"大きい","enSent":"This lesson is big.","jpSent":"この授業は大きいです。"},
-  {"en":"black","jp":"黒い","enSent":"This lesson is black.","jpSent":"この授業は黒いです。"},
-  {"en":"blue","jp":"青い","enSent":"This lesson is blue.","jpSent":"この授業は青いです。"},
-  {"en":"brown","jp":"茶色の","enSent":"This lesson is brown.","jpSent":"この授業は茶色のです。"},
-  {"en":"clean","jp":"きれいな","enSent":"This lesson is clean.","jpSent":"この授業はきれいなです。"},
-  {"en":"closed","jp":"閉まった","enSent":"This lesson is closed.","jpSent":"この授業は閉まったです。"},
-  {"en":"cute","jp":"かわいい","enSent":"This lesson is cute.","jpSent":"この授業はかわいいです。"},
-  {"en":"delicious","jp":"おいしい","enSent":"This lesson is delicious.","jpSent":"この授業はおいしいです。"},
-  {"en":"dirty","jp":"汚い","enSent":"This lesson is dirty.","jpSent":"この授業は汚いです。"},
-  {"en":"dry","jp":"乾いた","enSent":"This lesson is dry.","jpSent":"この授業は乾いたです。"},
-  {"en":"empty","jp":"空の","enSent":"This lesson is empty.","jpSent":"この授業は空のです。"},
-  {"en":"expensive","jp":"高価な","enSent":"This lesson is expensive.","jpSent":"この授業は高価なです。"},
-  {"en":"fun","jp":"楽しい","enSent":"This lesson is fun.","jpSent":"この授業は楽しいです。"},
-  {"en":"green","jp":"緑の","enSent":"This lesson is green.","jpSent":"この授業は緑のです。"},
-  {"en":"happy","jp":"うれしい","enSent":"This lesson is happy.","jpSent":"この授業はうれしいです。"},
-  {"en":"hot","jp":"熱い、暑い","enSent":"This lesson is hot.","jpSent":"この授業は熱い、暑いです。"},
-  {"en":"little","jp":"小さい","enSent":"This lesson is little.","jpSent":"この授業は小さいです。"},
-  {"en":"long","jp":"長い","enSent":"This lesson is long.","jpSent":"この授業は長いです。"},
-  {"en":"pink","jp":"ピンクの","enSent":"This lesson is pink.","jpSent":"この授業はピンクのです。"},
-  {"en":"purple","jp":"紫の","enSent":"This lesson is purple.","jpSent":"この授業は紫のです。"},
-  {"en":"red","jp":"赤い","enSent":"This lesson is red.","jpSent":"この授業は赤いです。"},
-  {"en":"sad","jp":"悲しい","enSent":"This lesson is sad.","jpSent":"この授業は悲しいです。"},
-  {"en":"small","jp":"小さい","enSent":"This lesson is small.","jpSent":"この授業は小さいです。"},
-  {"en":"sweet","jp":"甘い","enSent":"This lesson is sweet.","jpSent":"この授業は甘いです。"},
-  {"en":"white","jp":"白い","enSent":"This lesson is white.","jpSent":"この授業は白いです。"},
-  {"en":"yellow","jp":"黄色い","enSent":"This lesson is yellow.","jpSent":"この授業は黄色いです。"},
-  {"en":"again","jp":"再び","enSent":"Please do it again.","jpSent":"再びそれをしてください。"},
-  {"en":"also","jp":"〜もまた","enSent":"Please do it also.","jpSent":"〜もまたそれをしてください。"},
-  {"en":"away","jp":"離れて","enSent":"Please do it away.","jpSent":"離れてそれをしてください。"},
-  {"en":"back","jp":"戻って","enSent":"Please do it back.","jpSent":"戻ってそれをしてください。"},
-  {"en":"down","jp":"下へ","enSent":"Please do it down.","jpSent":"下へそれをしてください。"},
-  {"en":"first","jp":"最初に","enSent":"Please do it first.","jpSent":"最初にそれをしてください。"},
-  {"en":"here","jp":"ここに","enSent":"Please do it here.","jpSent":"ここにそれをしてください。"},
-  {"en":"last","jp":"最後に","enSent":"Please do it last.","jpSent":"最後にそれをしてください。"},
-  {"en":"now","jp":"今","enSent":"Please do it now.","jpSent":"今それをしてください。"},
-  {"en":"then","jp":"それから","enSent":"Please do it then.","jpSent":"それからそれをしてください。"},
-  {"en":"there","jp":"そこに","enSent":"Please do it there.","jpSent":"そこにそれをしてください。"},
-  {"en":"together","jp":"一緒に","enSent":"Please do it together.","jpSent":"一緒にそれをしてください。"},
-  {"en":"tomorrow","jp":"明日","enSent":"Please do it tomorrow.","jpSent":"明日それをしてください。"},
-  {"en":"up","jp":"上へ","enSent":"Please do it up.","jpSent":"上へそれをしてください。"},
-  {"en":"alone","jp":"一人の","enSent":"This lesson is alone.","jpSent":"この授業は一人のです。"},
-  {"en":"airport bus","jp":"空港バス","enSent":"I saw an airport bus yesterday.","jpSent":"昨日空港バスを見ました。"},
-  {"en":"art class","jp":"美術の授業","enSent":"I saw an art class yesterday.","jpSent":"昨日美術の授業を見ました。"},
-  {"en":"birthday party","jp":"誕生日会","enSent":"I saw a birthday party yesterday.","jpSent":"昨日誕生日会を見ました。"},
-  {"en":"comic book","jp":"漫画本","enSent":"I saw a comic book yesterday.","jpSent":"昨日漫画本を見ました。"},
-  {"en":"department store","jp":"デパート","enSent":"I saw a department store yesterday.","jpSent":"昨日デパートを見ました。"},
-  {"en":"English class","jp":"英語の授業","enSent":"I saw an English class yesterday.","jpSent":"昨日英語の授業を見ました。"},
-  {"en":"family name","jp":"名字","enSent":"I saw a family name yesterday.","jpSent":"昨日名字を見ました。"},
-  {"en":"home run","jp":"ホームラン","enSent":"I saw a home run yesterday.","jpSent":"昨日ホームランを見ました。"},
-  {"en":"ice cream","jp":"アイスクリーム","enSent":"I saw an ice cream yesterday.","jpSent":"昨日アイスクリームを見ました。"},
-  {"en":"junior high school","jp":"中学校","enSent":"I saw a junior high school yesterday.","jpSent":"昨日中学校を見ました。"},
-  {"en":"living room","jp":"居間","enSent":"I saw a living room yesterday.","jpSent":"昨日居間を見ました。"},
-  {"en":"movie theater","jp":"映画館","enSent":"I saw a movie theater yesterday.","jpSent":"昨日映画館を見ました。"},
-  {"en":"music room","jp":"音楽室","enSent":"I saw a music room yesterday.","jpSent":"昨日音楽室を見ました。"},
-  {"en":"post office","jp":"郵便局","enSent":"I saw a post office yesterday.","jpSent":"昨日郵便局を見ました。"},
-  {"en":"sports day","jp":"運動会","enSent":"I saw a sports day yesterday.","jpSent":"昨日運動会を見ました。"},
-  {"en":"swimming pool","jp":"プール","enSent":"I saw a swimming pool yesterday.","jpSent":"昨日プールを見ました。"},
-  {"en":"tennis court","jp":"テニスコート","enSent":"I saw a tennis court yesterday.","jpSent":"昨日テニスコートを見ました。"},
-  {"en":"train station","jp":"駅","enSent":"I saw a train station yesterday.","jpSent":"昨日駅を見ました。"},
-  {"en":"video game","jp":"テレビゲーム","enSent":"I saw a video game yesterday.","jpSent":"昨日テレビゲームを見ました。"},
-  {"en":"weather report","jp":"天気予報","enSent":"I saw a weather report yesterday.","jpSent":"昨日天気予報を見ました。"},
-  {"en":"toy","jp":"おもちゃ","enSent":"I cleaned up my toys.","jpSent":"私はおもちゃを片付けました。"},
-  {"en":"soap","jp":"石けん","enSent":"Use soap to wash your hands.","jpSent":"手を洗うために石けんを使いなさい。"},
-  {"en":"towel","jp":"タオル","enSent":"Please bring a towel.","jpSent":"タオルを持ってきてください。"},
-  {"en":"plate","jp":"皿","enSent":"Put the cake on a plate.","jpSent":"ケーキを皿に置きなさい。"},
-  {"en":"spoon","jp":"スプーン","enSent":"I eat soup with a spoon.","jpSent":"私はスプーンでスープを食べます。"},
-  {"en":"fork","jp":"フォーク","enSent":"Use a fork for the salad.","jpSent":"サラダにはフォークを使いなさい。"},
-  {"en":"knife","jp":"ナイフ","enSent":"Be careful with this knife.","jpSent":"このナイフに気をつけてください。"},
-  {"en":"lamp","jp":"ランプ","enSent":"The lamp is on the desk.","jpSent":"ランプは机の上にあります。"},
-  {"en":"roof","jp":"屋根","enSent":"The roof is red.","jpSent":"屋根は赤いです。"},
-  {"en":"stairs","jp":"階段","enSent":"Go up the stairs.","jpSent":"階段を上がりなさい。"},
-  {"en":"elevator","jp":"エレベーター","enSent":"Take the elevator to the third floor.","jpSent":"3階までエレベーターに乗りなさい。"},
-  {"en":"entrance hall","jp":"玄関ホール","enSent":"We waited in the entrance hall.","jpSent":"私たちは玄関ホールで待ちました。"},
-  {"en":"playground","jp":"遊び場","enSent":"Children are playing in the playground.","jpSent":"子供たちは遊び場で遊んでいます。"},
-  {"en":"textbook","jp":"教科書","enSent":"Open your textbook to page ten.","jpSent":"教科書の10ページを開きなさい。"},
-  {"en":"worksheet","jp":"プリント","enSent":"Please finish this worksheet.","jpSent":"このプリントを終えてください。"},
-  {"en":"backpack","jp":"リュックサック","enSent":"My backpack is heavy.","jpSent":"私のリュックサックは重いです。"}
+  {
+    "en": "go home",
+    "jp": "家に帰る",
+    "enSent": "I go home at five.",
+    "jpSent": "私は5時に家に帰ります。"
+  },
+  {
+    "en": "get up",
+    "jp": "起きる",
+    "enSent": "I get up at seven.",
+    "jpSent": "私は7時に起きます。"
+  },
+  {
+    "en": "go to bed",
+    "jp": "寝る",
+    "enSent": "I go to bed at ten.",
+    "jpSent": "私は10時に寝ます。"
+  },
+  {
+    "en": "have breakfast",
+    "jp": "朝食を食べる",
+    "enSent": "I have breakfast at seven.",
+    "jpSent": "私は7時に朝食を食べます。"
+  },
+  {
+    "en": "eat",
+    "jp": "食べる",
+    "enSent": "I want to eat today.",
+    "jpSent": "今日は食べるたいです。"
+  },
+  {
+    "en": "sleep",
+    "jp": "眠る",
+    "enSent": "I want to sleep today.",
+    "jpSent": "今日は眠るたいです。"
+  },
+  {
+    "en": "walk",
+    "jp": "歩く",
+    "enSent": "I want to walk today.",
+    "jpSent": "今日は歩くたいです。"
+  },
+  {
+    "en": "run away",
+    "jp": "逃げる",
+    "enSent": "The cat ran away.",
+    "jpSent": "猫が逃げました。"
+  },
+  {
+    "en": "play",
+    "jp": "遊ぶ、演奏する",
+    "enSent": "I want to play today.",
+    "jpSent": "今日は遊ぶ、演奏するたいです。"
+  },
+  {
+    "en": "talk",
+    "jp": "話す",
+    "enSent": "I want to talk today.",
+    "jpSent": "今日は話すたいです。"
+  },
+  {
+    "en": "listen to",
+    "jp": "〜を聞く",
+    "enSent": "Listen to the teacher.",
+    "jpSent": "先生の話を聞きなさい。"
+  },
+  {
+    "en": "look at",
+    "jp": "〜を見る",
+    "enSent": "Look at this picture.",
+    "jpSent": "この写真を見てください。"
+  },
+  {
+    "en": "look for",
+    "jp": "〜を探す",
+    "enSent": "I am looking for my pencil.",
+    "jpSent": "私は鉛筆を探しています。"
+  },
+  {
+    "en": "wait for",
+    "jp": "〜を待つ",
+    "enSent": "Wait for me here.",
+    "jpSent": "ここで私を待ってください。"
+  },
+  {
+    "en": "help A with B",
+    "jp": "AのBを手伝う",
+    "enSent": "I help my sister with English.",
+    "jpSent": "私は妹の英語を手伝います。"
+  },
+  {
+    "en": "do homework",
+    "jp": "宿題をする",
+    "enSent": "I do homework after dinner.",
+    "jpSent": "私は夕食後に宿題をします。"
+  },
+  {
+    "en": "work",
+    "jp": "働く",
+    "enSent": "I want to work today.",
+    "jpSent": "今日は働くたいです。"
+  },
+  {
+    "en": "make",
+    "jp": "作る",
+    "enSent": "I want to make today.",
+    "jpSent": "今日は作るたいです。"
+  },
+  {
+    "en": "use",
+    "jp": "使う",
+    "enSent": "I want to use today.",
+    "jpSent": "今日は使うたいです。"
+  },
+  {
+    "en": "find",
+    "jp": "見つける",
+    "enSent": "I want to find today.",
+    "jpSent": "今日は見つけるたいです。"
+  },
+  {
+    "en": "try",
+    "jp": "試す",
+    "enSent": "I want to try today.",
+    "jpSent": "今日は試すたいです。"
+  },
+  {
+    "en": "begin",
+    "jp": "始める",
+    "enSent": "I want to begin today.",
+    "jpSent": "今日は始めるたいです。"
+  },
+  {
+    "en": "answer",
+    "jp": "答え",
+    "enSent": "I learned about an answer in class.",
+    "jpSent": "授業で答えについて学びました。"
+  },
+  {
+    "en": "love",
+    "jp": "大好きである",
+    "enSent": "I want to love today.",
+    "jpSent": "今日は大好きであるたいです。"
+  },
+  {
+    "en": "like",
+    "jp": "好む",
+    "enSent": "I want to like today.",
+    "jpSent": "今日は好むたいです。"
+  },
+  {
+    "en": "come back",
+    "jp": "戻ってくる",
+    "enSent": "Please come back soon.",
+    "jpSent": "すぐに戻ってきてください。"
+  },
+  {
+    "en": "come from",
+    "jp": "〜出身である",
+    "enSent": "My teacher comes from Australia.",
+    "jpSent": "私の先生はオーストラリア出身です。"
+  },
+  {
+    "en": "get on",
+    "jp": "乗る",
+    "enSent": "We got on the train.",
+    "jpSent": "私たちは電車に乗りました。"
+  },
+  {
+    "en": "get off",
+    "jp": "降りる",
+    "enSent": "Get off the bus here.",
+    "jpSent": "ここでバスを降りなさい。"
+  },
+  {
+    "en": "take a picture",
+    "jp": "写真を撮る",
+    "enSent": "Let us take a picture.",
+    "jpSent": "写真を撮りましょう。"
+  },
+  {
+    "en": "take care of",
+    "jp": "〜の世話をする",
+    "enSent": "Take care of your little brother.",
+    "jpSent": "弟の世話をしなさい。"
+  },
+  {
+    "en": "put on",
+    "jp": "身につける",
+    "enSent": "Put on your coat.",
+    "jpSent": "コートを着なさい。"
+  },
+  {
+    "en": "take off",
+    "jp": "脱ぐ",
+    "enSent": "Take off your shoes.",
+    "jpSent": "靴を脱ぎなさい。"
+  },
+  {
+    "en": "wake up",
+    "jp": "目を覚ます",
+    "enSent": "I wake up early.",
+    "jpSent": "私は早く目を覚まします。"
+  },
+  {
+    "en": "stand up",
+    "jp": "立ち上がる",
+    "enSent": "Stand up, please.",
+    "jpSent": "立ってください。"
+  },
+  {
+    "en": "sit down",
+    "jp": "座る",
+    "enSent": "Please sit down.",
+    "jpSent": "座ってください。"
+  },
+  {
+    "en": "turn left",
+    "jp": "左に曲がる",
+    "enSent": "Turn left at the corner.",
+    "jpSent": "角で左に曲がりなさい。"
+  },
+  {
+    "en": "turn right",
+    "jp": "右に曲がる",
+    "enSent": "Turn right at the bank.",
+    "jpSent": "銀行で右に曲がりなさい。"
+  },
+  {
+    "en": "go straight",
+    "jp": "まっすぐ行く",
+    "enSent": "Go straight and turn right.",
+    "jpSent": "まっすぐ行って右に曲がりなさい。"
+  },
+  {
+    "en": "have to",
+    "jp": "〜しなければならない",
+    "enSent": "I have to clean my room.",
+    "jpSent": "私は部屋を掃除しなければなりません。"
+  },
+  {
+    "en": "do one's best",
+    "jp": "最善を尽くす",
+    "enSent": "I will do my best.",
+    "jpSent": "私は最善を尽くします。"
+  },
+  {
+    "en": "give up",
+    "jp": "あきらめる",
+    "enSent": "Do not give up.",
+    "jpSent": "あきらめないでください。"
+  },
+  {
+    "en": "hear from",
+    "jp": "〜から連絡がある",
+    "enSent": "I heard from my friend.",
+    "jpSent": "友達から連絡がありました。"
+  },
+  {
+    "en": "make friends",
+    "jp": "友達を作る",
+    "enSent": "I made friends at school.",
+    "jpSent": "私は学校で友達を作りました。"
+  },
+  {
+    "en": "have a good time",
+    "jp": "楽しい時間を過ごす",
+    "enSent": "We had a good time.",
+    "jpSent": "私たちは楽しい時間を過ごしました。"
+  },
+  {
+    "en": "How about",
+    "jp": "〜はどうですか",
+    "enSent": "How about playing soccer?",
+    "jpSent": "サッカーをするのはどうですか。"
+  },
+  {
+    "en": "of course",
+    "jp": "もちろん",
+    "enSent": "Of course, you can come.",
+    "jpSent": "もちろん来てもいいですよ。"
+  },
+  {
+    "en": "by the way",
+    "jp": "ところで",
+    "enSent": "By the way, what time is it?",
+    "jpSent": "ところで、何時ですか。"
+  },
+  {
+    "en": "on time",
+    "jp": "時間通りに",
+    "enSent": "Please come on time.",
+    "jpSent": "時間通りに来てください。"
+  },
+  {
+    "en": "at school",
+    "jp": "学校で",
+    "enSent": "We eat lunch at school.",
+    "jpSent": "私たちは学校で昼食を食べます。"
+  },
+  {
+    "en": "after school",
+    "jp": "放課後",
+    "enSent": "I play tennis after school.",
+    "jpSent": "私は放課後テニスをします。"
+  },
+  {
+    "en": "in the morning",
+    "jp": "朝に",
+    "enSent": "I study in the morning.",
+    "jpSent": "私は朝に勉強します。"
+  },
+  {
+    "en": "in front of",
+    "jp": "〜の前に",
+    "enSent": "There is a park in front of my house.",
+    "jpSent": "私の家の前に公園があります。"
+  },
+  {
+    "en": "next to",
+    "jp": "〜の隣に",
+    "enSent": "My seat is next to the window.",
+    "jpSent": "私の席は窓の隣です。"
+  },
+  {
+    "en": "because of",
+    "jp": "〜のために",
+    "enSent": "We stayed home because of the rain.",
+    "jpSent": "雨のため家にいました。"
+  },
+  {
+    "en": "for example",
+    "jp": "例えば",
+    "enSent": "I like fruits, for example, apples.",
+    "jpSent": "私は果物が好きです、例えばりんごです。"
+  },
+  {
+    "en": "in the future",
+    "jp": "将来",
+    "enSent": "I want to be a nurse in the future.",
+    "jpSent": "将来は看護師になりたいです。"
+  },
+  {
+    "en": "friend",
+    "jp": "友達",
+    "enSent": "I learned about a friend in class.",
+    "jpSent": "授業で友達について学びました。"
+  },
+  {
+    "en": "family",
+    "jp": "家族",
+    "enSent": "I learned about a family in class.",
+    "jpSent": "授業で家族について学びました。"
+  },
+  {
+    "en": "mother",
+    "jp": "母",
+    "enSent": "I saw a mother yesterday.",
+    "jpSent": "昨日母を見ました。"
+  },
+  {
+    "en": "father",
+    "jp": "父",
+    "enSent": "I saw a father yesterday.",
+    "jpSent": "昨日父を見ました。"
+  },
+  {
+    "en": "brother",
+    "jp": "兄弟",
+    "enSent": "I learned about a brother in class.",
+    "jpSent": "授業で兄弟について学びました。"
+  },
+  {
+    "en": "sister",
+    "jp": "姉妹",
+    "enSent": "I learned about a sister in class.",
+    "jpSent": "授業で姉妹について学びました。"
+  },
+  {
+    "en": "parent",
+    "jp": "親",
+    "enSent": "I learned about a parent in class.",
+    "jpSent": "授業で親について学びました。"
+  },
+  {
+    "en": "teacher",
+    "jp": "先生",
+    "enSent": "I learned about a teacher in class.",
+    "jpSent": "授業で先生について学びました。"
+  },
+  {
+    "en": "classmate",
+    "jp": "同級生",
+    "enSent": "I learned about a classmate in class.",
+    "jpSent": "授業で同級生について学びました。"
+  },
+  {
+    "en": "schoolyard",
+    "jp": "校庭",
+    "enSent": "I saw a schoolyard yesterday.",
+    "jpSent": "昨日校庭を見ました。"
+  },
+  {
+    "en": "classroom",
+    "jp": "教室",
+    "enSent": "I saw a classroom yesterday.",
+    "jpSent": "昨日教室を見ました。"
+  },
+  {
+    "en": "English class",
+    "jp": "英語の授業",
+    "enSent": "I saw an English class yesterday.",
+    "jpSent": "昨日英語の授業を見ました。"
+  },
+  {
+    "en": "art class",
+    "jp": "美術の授業",
+    "enSent": "I saw an art class yesterday.",
+    "jpSent": "昨日美術の授業を見ました。"
+  },
+  {
+    "en": "music room",
+    "jp": "音楽室",
+    "enSent": "I saw a music room yesterday.",
+    "jpSent": "昨日音楽室を見ました。"
+  },
+  {
+    "en": "homework",
+    "jp": "宿題",
+    "enSent": "I learned about a homework in class.",
+    "jpSent": "授業で宿題について学びました。"
+  },
+  {
+    "en": "textbook",
+    "jp": "教科書",
+    "enSent": "Open your textbook to page ten.",
+    "jpSent": "教科書の10ページを開きなさい。"
+  },
+  {
+    "en": "notebook",
+    "jp": "ノート",
+    "enSent": "I saw a notebook yesterday.",
+    "jpSent": "昨日ノートを見ました。"
+  },
+  {
+    "en": "pencil",
+    "jp": "鉛筆",
+    "enSent": "I saw a pencil yesterday.",
+    "jpSent": "昨日鉛筆を見ました。"
+  },
+  {
+    "en": "pen",
+    "jp": "ペン",
+    "enSent": "I saw a pen yesterday.",
+    "jpSent": "昨日ペンを見ました。"
+  },
+  {
+    "en": "desk",
+    "jp": "机",
+    "enSent": "I saw a desk yesterday.",
+    "jpSent": "昨日机を見ました。"
+  },
+  {
+    "en": "chair",
+    "jp": "椅子",
+    "enSent": "I saw a chair yesterday.",
+    "jpSent": "昨日椅子を見ました。"
+  },
+  {
+    "en": "bookstore",
+    "jp": "書店",
+    "enSent": "I saw a bookstore yesterday.",
+    "jpSent": "昨日書店を見ました。"
+  },
+  {
+    "en": "library",
+    "jp": "図書館",
+    "enSent": "I learned about a library in class.",
+    "jpSent": "授業で図書館について学びました。"
+  },
+  {
+    "en": "letter",
+    "jp": "手紙",
+    "enSent": "I saw a letter yesterday.",
+    "jpSent": "昨日手紙を見ました。"
+  },
+  {
+    "en": "message",
+    "jp": "伝言",
+    "enSent": "I learned about a message in class.",
+    "jpSent": "授業で伝言について学びました。"
+  },
+  {
+    "en": "phone",
+    "jp": "電話",
+    "enSent": "I learned about a phone in class.",
+    "jpSent": "授業で電話について学びました。"
+  },
+  {
+    "en": "email",
+    "jp": "メール",
+    "enSent": "I learned about an email in class.",
+    "jpSent": "授業でメールについて学びました。"
+  },
+  {
+    "en": "question",
+    "jp": "質問",
+    "enSent": "I learned about a question in class.",
+    "jpSent": "授業で質問について学びました。"
+  },
+  {
+    "en": "answer sheet",
+    "jp": "解答用紙",
+    "enSent": "I saw an answer sheet yesterday.",
+    "jpSent": "昨日解答用紙を見ました。"
+  },
+  {
+    "en": "lesson",
+    "jp": "授業",
+    "enSent": "I learned about a lesson in class.",
+    "jpSent": "授業で授業について学びました。"
+  },
+  {
+    "en": "subject",
+    "jp": "科目",
+    "enSent": "I learned about a subject in class.",
+    "jpSent": "授業で科目について学びました。"
+  },
+  {
+    "en": "math",
+    "jp": "数学",
+    "enSent": "I learned about a math in class.",
+    "jpSent": "授業で数学について学びました。"
+  },
+  {
+    "en": "history",
+    "jp": "歴史",
+    "enSent": "I learned about a history in class.",
+    "jpSent": "授業で歴史について学びました。"
+  },
+  {
+    "en": "music",
+    "jp": "音楽",
+    "enSent": "I learned about a music in class.",
+    "jpSent": "授業で音楽について学びました。"
+  },
+  {
+    "en": "sport",
+    "jp": "スポーツ",
+    "enSent": "I saw a sport yesterday.",
+    "jpSent": "昨日スポーツを見ました。"
+  },
+  {
+    "en": "baseball",
+    "jp": "野球",
+    "enSent": "I saw a baseball yesterday.",
+    "jpSent": "昨日野球を見ました。"
+  },
+  {
+    "en": "birthday",
+    "jp": "誕生日",
+    "enSent": "I learned about a birthday in class.",
+    "jpSent": "授業で誕生日について学びました。"
+  },
+  {
+    "en": "birthday party",
+    "jp": "誕生日会",
+    "enSent": "I saw a birthday party yesterday.",
+    "jpSent": "昨日誕生日会を見ました。"
+  },
+  {
+    "en": "holiday",
+    "jp": "休日",
+    "enSent": "I learned about a holiday in class.",
+    "jpSent": "授業で休日について学びました。"
+  },
+  {
+    "en": "vacation",
+    "jp": "休暇",
+    "enSent": "I learned about a vacation in class.",
+    "jpSent": "授業で休暇について学びました。"
+  },
+  {
+    "en": "trip",
+    "jp": "旅行",
+    "enSent": "I learned about a trip in class.",
+    "jpSent": "授業で旅行について学びました。"
+  },
+  {
+    "en": "station",
+    "jp": "駅",
+    "enSent": "I learned about a station in class.",
+    "jpSent": "授業で駅について学びました。"
+  },
+  {
+    "en": "train station",
+    "jp": "駅",
+    "enSent": "I saw a train station yesterday.",
+    "jpSent": "昨日駅を見ました。"
+  },
+  {
+    "en": "bus stop",
+    "jp": "バス停",
+    "enSent": "I saw a bus stop yesterday.",
+    "jpSent": "昨日バス停を見ました。"
+  },
+  {
+    "en": "airport",
+    "jp": "空港",
+    "enSent": "I learned about an airport in class.",
+    "jpSent": "授業で空港について学びました。"
+  },
+  {
+    "en": "airport bus",
+    "jp": "空港バス",
+    "enSent": "I saw an airport bus yesterday.",
+    "jpSent": "昨日空港バスを見ました。"
+  },
+  {
+    "en": "train",
+    "jp": "電車",
+    "enSent": "I learned about a train in class.",
+    "jpSent": "授業で電車について学びました。"
+  },
+  {
+    "en": "bicycle",
+    "jp": "自転車",
+    "enSent": "I learned about a bicycle in class.",
+    "jpSent": "授業で自転車について学びました。"
+  },
+  {
+    "en": "bike",
+    "jp": "自転車",
+    "enSent": "I saw a bike yesterday.",
+    "jpSent": "昨日自転車を見ました。"
+  },
+  {
+    "en": "road",
+    "jp": "道",
+    "enSent": "I learned about a road in class.",
+    "jpSent": "授業で道について学びました。"
+  },
+  {
+    "en": "street",
+    "jp": "通り",
+    "enSent": "I learned about a street in class.",
+    "jpSent": "授業で通りについて学びました。"
+  },
+  {
+    "en": "city",
+    "jp": "都市",
+    "enSent": "I learned about a city in class.",
+    "jpSent": "授業で都市について学びました。"
+  },
+  {
+    "en": "town",
+    "jp": "町",
+    "enSent": "I learned about a town in class.",
+    "jpSent": "授業で町について学びました。"
+  },
+  {
+    "en": "village",
+    "jp": "村",
+    "enSent": "I learned about a village in class.",
+    "jpSent": "授業で村について学びました。"
+  },
+  {
+    "en": "country",
+    "jp": "国",
+    "enSent": "I learned about a country in class.",
+    "jpSent": "授業で国について学びました。"
+  },
+  {
+    "en": "world",
+    "jp": "世界",
+    "enSent": "I learned about a world in class.",
+    "jpSent": "授業で世界について学びました。"
+  },
+  {
+    "en": "weather",
+    "jp": "天気",
+    "enSent": "I learned about a weather in class.",
+    "jpSent": "授業で天気について学びました。"
+  },
+  {
+    "en": "rain",
+    "jp": "雨",
+    "enSent": "I learned about a rain in class.",
+    "jpSent": "授業で雨について学びました。"
+  },
+  {
+    "en": "snow",
+    "jp": "雪",
+    "enSent": "I saw a snow yesterday.",
+    "jpSent": "昨日雪を見ました。"
+  },
+  {
+    "en": "morning",
+    "jp": "朝",
+    "enSent": "I learned about a morning in class.",
+    "jpSent": "授業で朝について学びました。"
+  },
+  {
+    "en": "afternoon",
+    "jp": "午後",
+    "enSent": "I learned about an afternoon in class.",
+    "jpSent": "授業で午後について学びました。"
+  },
+  {
+    "en": "evening",
+    "jp": "夕方",
+    "enSent": "I learned about an evening in class.",
+    "jpSent": "授業で夕方について学びました。"
+  },
+  {
+    "en": "summer",
+    "jp": "夏",
+    "enSent": "I learned about a summer in class.",
+    "jpSent": "授業で夏について学びました。"
+  },
+  {
+    "en": "winter",
+    "jp": "冬",
+    "enSent": "I learned about a winter in class.",
+    "jpSent": "授業で冬について学びました。"
+  },
+  {
+    "en": "autumn",
+    "jp": "秋",
+    "enSent": "I learned about an autumn in class.",
+    "jpSent": "授業で秋について学びました。"
+  },
+  {
+    "en": "season",
+    "jp": "季節",
+    "enSent": "I learned about a season in class.",
+    "jpSent": "授業で季節について学びました。"
+  },
+  {
+    "en": "water",
+    "jp": "水",
+    "enSent": "I saw a water yesterday.",
+    "jpSent": "昨日水を見ました。"
+  },
+  {
+    "en": "milk",
+    "jp": "牛乳",
+    "enSent": "I saw a milk yesterday.",
+    "jpSent": "昨日牛乳を見ました。"
+  },
+  {
+    "en": "tea",
+    "jp": "お茶",
+    "enSent": "I saw a tea yesterday.",
+    "jpSent": "昨日お茶を見ました。"
+  },
+  {
+    "en": "juice",
+    "jp": "ジュース",
+    "enSent": "I saw a juice yesterday.",
+    "jpSent": "昨日ジュースを見ました。"
+  },
+  {
+    "en": "rice",
+    "jp": "米、ご飯",
+    "enSent": "I saw a rice yesterday.",
+    "jpSent": "昨日米、ご飯を見ました。"
+  },
+  {
+    "en": "bread",
+    "jp": "パン",
+    "enSent": "I saw a bread yesterday.",
+    "jpSent": "昨日パンを見ました。"
+  },
+  {
+    "en": "cake",
+    "jp": "ケーキ",
+    "enSent": "I saw a cake yesterday.",
+    "jpSent": "昨日ケーキを見ました。"
+  },
+  {
+    "en": "chicken",
+    "jp": "鶏肉",
+    "enSent": "I saw a chicken yesterday.",
+    "jpSent": "昨日鶏肉を見ました。"
+  },
+  {
+    "en": "beef",
+    "jp": "牛肉",
+    "enSent": "I learned about a beef in class.",
+    "jpSent": "授業で牛肉について学びました。"
+  },
+  {
+    "en": "fish",
+    "jp": "魚",
+    "enSent": "I saw a fish yesterday.",
+    "jpSent": "昨日魚を見ました。"
+  },
+  {
+    "en": "fruit",
+    "jp": "果物",
+    "enSent": "I saw a fruit yesterday.",
+    "jpSent": "昨日果物を見ました。"
+  },
+  {
+    "en": "orange",
+    "jp": "オレンジ",
+    "enSent": "I saw an orange yesterday.",
+    "jpSent": "昨日オレンジを見ました。"
+  },
+  {
+    "en": "carrot",
+    "jp": "にんじん",
+    "enSent": "I saw a carrot yesterday.",
+    "jpSent": "昨日にんじんを見ました。"
+  },
+  {
+    "en": "sandwich",
+    "jp": "サンドイッチ",
+    "enSent": "I saw a sandwich yesterday.",
+    "jpSent": "昨日サンドイッチを見ました。"
+  },
+  {
+    "en": "salt",
+    "jp": "塩",
+    "enSent": "I saw a salt yesterday.",
+    "jpSent": "昨日塩を見ました。"
+  },
+  {
+    "en": "food",
+    "jp": "食べ物",
+    "enSent": "I learned about a food in class.",
+    "jpSent": "授業で食べ物について学びました。"
+  },
+  {
+    "en": "breakfast",
+    "jp": "朝食",
+    "enSent": "I learned about a breakfast in class.",
+    "jpSent": "授業で朝食について学びました。"
+  },
+  {
+    "en": "lunch",
+    "jp": "昼食",
+    "enSent": "I learned about a lunch in class.",
+    "jpSent": "授業で昼食について学びました。"
+  },
+  {
+    "en": "dinner",
+    "jp": "夕食",
+    "enSent": "I learned about a dinner in class.",
+    "jpSent": "授業で夕食について学びました。"
+  },
+  {
+    "en": "kitchen",
+    "jp": "台所",
+    "enSent": "I learned about a kitchen in class.",
+    "jpSent": "授業で台所について学びました。"
+  },
+  {
+    "en": "restaurant",
+    "jp": "レストラン",
+    "enSent": "I learned about a restaurant in class.",
+    "jpSent": "授業でレストランについて学びました。"
+  },
+  {
+    "en": "market",
+    "jp": "市場",
+    "enSent": "I learned about a market in class.",
+    "jpSent": "授業で市場について学びました。"
+  },
+  {
+    "en": "store",
+    "jp": "店",
+    "enSent": "I saw a store yesterday.",
+    "jpSent": "昨日店を見ました。"
+  },
+  {
+    "en": "shop",
+    "jp": "店",
+    "enSent": "I learned about a shop in class.",
+    "jpSent": "授業で店について学びました。"
+  },
+  {
+    "en": "money",
+    "jp": "お金",
+    "enSent": "I learned about a money in class.",
+    "jpSent": "授業でお金について学びました。"
+  },
+  {
+    "en": "present",
+    "jp": "贈り物",
+    "enSent": "I learned about a present in class.",
+    "jpSent": "授業で贈り物について学びました。"
+  },
+  {
+    "en": "gift",
+    "jp": "贈り物",
+    "enSent": "I learned about a gift in class.",
+    "jpSent": "授業で贈り物について学びました。"
+  },
+  {
+    "en": "picture",
+    "jp": "写真",
+    "enSent": "I learned about a picture in class.",
+    "jpSent": "授業で写真について学びました。"
+  },
+  {
+    "en": "camera",
+    "jp": "カメラ",
+    "enSent": "I learned about a camera in class.",
+    "jpSent": "授業でカメラについて学びました。"
+  },
+  {
+    "en": "movie theater",
+    "jp": "映画館",
+    "enSent": "I saw a movie theater yesterday.",
+    "jpSent": "昨日映画館を見ました。"
+  },
+  {
+    "en": "video game",
+    "jp": "テレビゲーム",
+    "enSent": "I saw a video game yesterday.",
+    "jpSent": "昨日テレビゲームを見ました。"
+  },
+  {
+    "en": "computer",
+    "jp": "コンピューター",
+    "enSent": "I saw a computer yesterday.",
+    "jpSent": "昨日コンピューターを見ました。"
+  },
+  {
+    "en": "newspaper",
+    "jp": "新聞",
+    "enSent": "I learned about a newspaper in class.",
+    "jpSent": "授業で新聞について学びました。"
+  },
+  {
+    "en": "magazine",
+    "jp": "雑誌",
+    "enSent": "I learned about a magazine in class.",
+    "jpSent": "授業で雑誌について学びました。"
+  },
+  {
+    "en": "weather report",
+    "jp": "天気予報",
+    "enSent": "I saw a weather report yesterday.",
+    "jpSent": "昨日天気予報を見ました。"
+  },
+  {
+    "en": "doctor",
+    "jp": "医者",
+    "enSent": "I learned about a doctor in class.",
+    "jpSent": "授業で医者について学びました。"
+  },
+  {
+    "en": "hospital",
+    "jp": "病院",
+    "enSent": "I learned about a hospital in class.",
+    "jpSent": "授業で病院について学びました。"
+  },
+  {
+    "en": "nurse",
+    "jp": "看護師",
+    "enSent": "I learned about a nurse in class.",
+    "jpSent": "授業で看護師について学びました。"
+  },
+  {
+    "en": "dentist",
+    "jp": "歯医者",
+    "enSent": "I learned about a dentist in class.",
+    "jpSent": "授業で歯医者について学びました。"
+  },
+  {
+    "en": "police",
+    "jp": "警察",
+    "enSent": "I learned about a police in class.",
+    "jpSent": "授業で警察について学びました。"
+  },
+  {
+    "en": "bank",
+    "jp": "銀行",
+    "enSent": "I learned about a bank in class.",
+    "jpSent": "授業で銀行について学びました。"
+  },
+  {
+    "en": "post office",
+    "jp": "郵便局",
+    "enSent": "I saw a post office yesterday.",
+    "jpSent": "昨日郵便局を見ました。"
+  },
+  {
+    "en": "hotel",
+    "jp": "ホテル",
+    "enSent": "I learned about a hotel in class.",
+    "jpSent": "授業でホテルについて学びました。"
+  },
+  {
+    "en": "office",
+    "jp": "事務所",
+    "enSent": "I learned about an office in class.",
+    "jpSent": "授業で事務所について学びました。"
+  },
+  {
+    "en": "problem",
+    "jp": "問題",
+    "enSent": "I learned about a problem in class.",
+    "jpSent": "授業で問題について学びました。"
+  },
+  {
+    "en": "reason",
+    "jp": "理由",
+    "enSent": "I learned about a reason in class.",
+    "jpSent": "授業で理由について学びました。"
+  },
+  {
+    "en": "idea",
+    "jp": "考え",
+    "enSent": "I learned about an idea in class.",
+    "jpSent": "授業で考えについて学びました。"
+  },
+  {
+    "en": "plan",
+    "jp": "計画",
+    "enSent": "I learned about a plan in class.",
+    "jpSent": "授業で計画について学びました。"
+  },
+  {
+    "en": "chance",
+    "jp": "機会",
+    "enSent": "I learned about a chance in class.",
+    "jpSent": "授業で機会について学びました。"
+  },
+  {
+    "en": "choice",
+    "jp": "選択",
+    "enSent": "I learned about a choice in class.",
+    "jpSent": "授業で選択について学びました。"
+  },
+  {
+    "en": "future",
+    "jp": "将来",
+    "enSent": "I learned about a future in class.",
+    "jpSent": "授業で将来について学びました。"
+  },
+  {
+    "en": "dream",
+    "jp": "夢",
+    "enSent": "I learned about a dream in class.",
+    "jpSent": "授業で夢について学びました。"
+  },
+  {
+    "en": "event",
+    "jp": "行事",
+    "enSent": "I learned about an event in class.",
+    "jpSent": "授業で行事について学びました。"
+  },
+  {
+    "en": "example",
+    "jp": "例",
+    "enSent": "I learned about an example in class.",
+    "jpSent": "授業で例について学びました。"
+  },
+  {
+    "en": "animal",
+    "jp": "動物",
+    "enSent": "I learned about an animal in class.",
+    "jpSent": "授業で動物について学びました。"
+  },
+  {
+    "en": "dog",
+    "jp": "犬",
+    "enSent": "I saw a dog yesterday.",
+    "jpSent": "昨日犬を見ました。"
+  },
+  {
+    "en": "cat",
+    "jp": "猫",
+    "enSent": "I saw a cat yesterday.",
+    "jpSent": "昨日猫を見ました。"
+  },
+  {
+    "en": "bird",
+    "jp": "鳥",
+    "enSent": "I saw a bird yesterday.",
+    "jpSent": "昨日鳥を見ました。"
+  },
+  {
+    "en": "cow",
+    "jp": "牛",
+    "enSent": "I saw a cow yesterday.",
+    "jpSent": "昨日牛を見ました。"
+  },
+  {
+    "en": "elephant",
+    "jp": "象",
+    "enSent": "I learned about an elephant in class.",
+    "jpSent": "授業で象について学びました。"
+  },
+  {
+    "en": "zoo",
+    "jp": "動物園",
+    "enSent": "I saw a zoo yesterday.",
+    "jpSent": "昨日動物園を見ました。"
+  },
+  {
+    "en": "tree",
+    "jp": "木",
+    "enSent": "I saw a tree yesterday.",
+    "jpSent": "昨日木を見ました。"
+  },
+  {
+    "en": "flower",
+    "jp": "花",
+    "enSent": "I learned about a flower in class.",
+    "jpSent": "授業で花について学びました。"
+  },
+  {
+    "en": "forest",
+    "jp": "森",
+    "enSent": "I learned about a forest in class.",
+    "jpSent": "授業で森について学びました。"
+  },
+  {
+    "en": "mountain",
+    "jp": "山",
+    "enSent": "I learned about a mountain in class.",
+    "jpSent": "授業で山について学びました。"
+  },
+  {
+    "en": "river",
+    "jp": "川",
+    "enSent": "I learned about a river in class.",
+    "jpSent": "授業で川について学びました。"
+  },
+  {
+    "en": "lake",
+    "jp": "湖",
+    "enSent": "I learned about a lake in class.",
+    "jpSent": "授業で湖について学びました。"
+  },
+  {
+    "en": "sea",
+    "jp": "海",
+    "enSent": "I saw a sea yesterday.",
+    "jpSent": "昨日海を見ました。"
+  },
+  {
+    "en": "beach",
+    "jp": "浜辺",
+    "enSent": "I learned about a beach in class.",
+    "jpSent": "授業で浜辺について学びました。"
+  },
+  {
+    "en": "island",
+    "jp": "島",
+    "enSent": "I learned about an island in class.",
+    "jpSent": "授業で島について学びました。"
+  },
+  {
+    "en": "park",
+    "jp": "公園",
+    "enSent": "I saw a park yesterday.",
+    "jpSent": "昨日公園を見ました。"
+  },
+  {
+    "en": "garden",
+    "jp": "庭",
+    "enSent": "I learned about a garden in class.",
+    "jpSent": "授業で庭について学びました。"
+  },
+  {
+    "en": "home",
+    "jp": "家",
+    "enSent": "I saw a home yesterday.",
+    "jpSent": "昨日家を見ました。"
+  },
+  {
+    "en": "living room",
+    "jp": "居間",
+    "enSent": "I saw a living room yesterday.",
+    "jpSent": "昨日居間を見ました。"
+  },
+  {
+    "en": "bedroom",
+    "jp": "寝室",
+    "enSent": "I saw a bedroom yesterday.",
+    "jpSent": "昨日寝室を見ました。"
+  },
+  {
+    "en": "bathroom",
+    "jp": "浴室",
+    "enSent": "I saw a bathroom yesterday.",
+    "jpSent": "昨日浴室を見ました。"
+  },
+  {
+    "en": "door",
+    "jp": "ドア",
+    "enSent": "I saw a door yesterday.",
+    "jpSent": "昨日ドアを見ました。"
+  },
+  {
+    "en": "window",
+    "jp": "窓",
+    "enSent": "I learned about a window in class.",
+    "jpSent": "授業で窓について学びました。"
+  },
+  {
+    "en": "room",
+    "jp": "部屋",
+    "enSent": "I learned about a room in class.",
+    "jpSent": "授業で部屋について学びました。"
+  },
+  {
+    "en": "table",
+    "jp": "テーブル",
+    "enSent": "I saw a table yesterday.",
+    "jpSent": "昨日テーブルを見ました。"
+  },
+  {
+    "en": "wall",
+    "jp": "壁",
+    "enSent": "I saw a wall yesterday.",
+    "jpSent": "昨日壁を見ました。"
+  },
+  {
+    "en": "floor",
+    "jp": "床",
+    "enSent": "I saw a floor yesterday.",
+    "jpSent": "昨日床を見ました。"
+  },
+  {
+    "en": "stairs",
+    "jp": "階段",
+    "enSent": "Go up the stairs.",
+    "jpSent": "階段を上がりなさい。"
+  },
+  {
+    "en": "elevator",
+    "jp": "エレベーター",
+    "enSent": "Take the elevator to the third floor.",
+    "jpSent": "3階までエレベーターに乗りなさい。"
+  },
+  {
+    "en": "entrance",
+    "jp": "入口",
+    "enSent": "I saw an entrance yesterday.",
+    "jpSent": "昨日入口を見ました。"
+  },
+  {
+    "en": "entrance hall",
+    "jp": "玄関ホール",
+    "enSent": "We waited in the entrance hall.",
+    "jpSent": "私たちは玄関ホールで待ちました。"
+  },
+  {
+    "en": "big",
+    "jp": "大きい",
+    "enSent": "This lesson is big.",
+    "jpSent": "この授業は大きいです。"
+  },
+  {
+    "en": "small",
+    "jp": "小さい",
+    "enSent": "This lesson is small.",
+    "jpSent": "この授業は小さいです。"
+  },
+  {
+    "en": "long",
+    "jp": "長い",
+    "enSent": "This lesson is long.",
+    "jpSent": "この授業は長いです。"
+  },
+  {
+    "en": "little",
+    "jp": "小さい",
+    "enSent": "This lesson is little.",
+    "jpSent": "この授業は小さいです。"
+  },
+  {
+    "en": "bad",
+    "jp": "悪い",
+    "enSent": "This lesson is bad.",
+    "jpSent": "この授業は悪いです。"
+  },
+  {
+    "en": "happy",
+    "jp": "うれしい",
+    "enSent": "This lesson is happy.",
+    "jpSent": "この授業はうれしいです。"
+  },
+  {
+    "en": "sad",
+    "jp": "悲しい",
+    "enSent": "This lesson is sad.",
+    "jpSent": "この授業は悲しいです。"
+  },
+  {
+    "en": "fun",
+    "jp": "楽しい",
+    "enSent": "This lesson is fun.",
+    "jpSent": "この授業は楽しいです。"
+  },
+  {
+    "en": "delicious",
+    "jp": "おいしい",
+    "enSent": "This lesson is delicious.",
+    "jpSent": "この授業はおいしいです。"
+  },
+  {
+    "en": "hot",
+    "jp": "熱い、暑い",
+    "enSent": "This lesson is hot.",
+    "jpSent": "この授業は熱い、暑いです。"
+  },
+  {
+    "en": "clean",
+    "jp": "きれいな",
+    "enSent": "This lesson is clean.",
+    "jpSent": "この授業はきれいなです。"
+  },
+  {
+    "en": "dirty",
+    "jp": "汚い",
+    "enSent": "This lesson is dirty.",
+    "jpSent": "この授業は汚いです。"
+  },
+  {
+    "en": "dry",
+    "jp": "乾いた",
+    "enSent": "This lesson is dry.",
+    "jpSent": "この授業は乾いたです。"
+  },
+  {
+    "en": "empty",
+    "jp": "空の",
+    "enSent": "This lesson is empty.",
+    "jpSent": "この授業は空のです。"
+  },
+  {
+    "en": "expensive",
+    "jp": "高価な",
+    "enSent": "This lesson is expensive.",
+    "jpSent": "この授業は高価なです。"
+  },
+  {
+    "en": "cute",
+    "jp": "かわいい",
+    "enSent": "This lesson is cute.",
+    "jpSent": "この授業はかわいいです。"
+  },
+  {
+    "en": "black",
+    "jp": "黒い",
+    "enSent": "This lesson is black.",
+    "jpSent": "この授業は黒いです。"
+  },
+  {
+    "en": "white",
+    "jp": "白い",
+    "enSent": "This lesson is white.",
+    "jpSent": "この授業は白いです。"
+  },
+  {
+    "en": "red",
+    "jp": "赤い",
+    "enSent": "This lesson is red.",
+    "jpSent": "この授業は赤いです。"
+  },
+  {
+    "en": "blue",
+    "jp": "青い",
+    "enSent": "This lesson is blue.",
+    "jpSent": "この授業は青いです。"
+  },
+  {
+    "en": "green",
+    "jp": "緑の",
+    "enSent": "This lesson is green.",
+    "jpSent": "この授業は緑のです。"
+  },
+  {
+    "en": "yellow",
+    "jp": "黄色い",
+    "enSent": "This lesson is yellow.",
+    "jpSent": "この授業は黄色いです。"
+  },
+  {
+    "en": "brown",
+    "jp": "茶色の",
+    "enSent": "This lesson is brown.",
+    "jpSent": "この授業は茶色のです。"
+  },
+  {
+    "en": "pink",
+    "jp": "ピンクの",
+    "enSent": "This lesson is pink.",
+    "jpSent": "この授業はピンクのです。"
+  },
+  {
+    "en": "purple",
+    "jp": "紫の",
+    "enSent": "This lesson is purple.",
+    "jpSent": "この授業は紫のです。"
+  },
+  {
+    "en": "now",
+    "jp": "今",
+    "enSent": "Please do it now.",
+    "jpSent": "今それをしてください。"
+  },
+  {
+    "en": "then",
+    "jp": "それから",
+    "enSent": "Please do it then.",
+    "jpSent": "それからそれをしてください。"
+  },
+  {
+    "en": "tomorrow",
+    "jp": "明日",
+    "enSent": "Please do it tomorrow.",
+    "jpSent": "明日それをしてください。"
+  },
+  {
+    "en": "again",
+    "jp": "再び",
+    "enSent": "Please do it again.",
+    "jpSent": "再びそれをしてください。"
+  },
+  {
+    "en": "also",
+    "jp": "〜もまた",
+    "enSent": "Please do it also.",
+    "jpSent": "〜もまたそれをしてください。"
+  },
+  {
+    "en": "together",
+    "jp": "一緒に",
+    "enSent": "Please do it together.",
+    "jpSent": "一緒にそれをしてください。"
+  },
+  {
+    "en": "here",
+    "jp": "ここに",
+    "enSent": "Please do it here.",
+    "jpSent": "ここにそれをしてください。"
+  },
+  {
+    "en": "there",
+    "jp": "そこに",
+    "enSent": "Please do it there.",
+    "jpSent": "そこにそれをしてください。"
+  },
+  {
+    "en": "back",
+    "jp": "戻って",
+    "enSent": "Please do it back.",
+    "jpSent": "戻ってそれをしてください。"
+  },
+  {
+    "en": "away",
+    "jp": "離れて",
+    "enSent": "Please do it away.",
+    "jpSent": "離れてそれをしてください。"
+  },
+  {
+    "en": "first",
+    "jp": "最初に",
+    "enSent": "Please do it first.",
+    "jpSent": "最初にそれをしてください。"
+  },
+  {
+    "en": "last",
+    "jp": "最後に",
+    "enSent": "Please do it last.",
+    "jpSent": "最後にそれをしてください。"
+  },
+  {
+    "en": "up",
+    "jp": "上へ",
+    "enSent": "Please do it up.",
+    "jpSent": "上へそれをしてください。"
+  },
+  {
+    "en": "down",
+    "jp": "下へ",
+    "enSent": "Please do it down.",
+    "jpSent": "下へそれをしてください。"
+  },
+  {
+    "en": "ski",
+    "jp": "スキーをする",
+    "enSent": "I want to ski today.",
+    "jpSent": "今日はスキーをするたいです。"
+  },
+  {
+    "en": "check",
+    "jp": "確かめる",
+    "enSent": "I want to check today.",
+    "jpSent": "今日は確かめるたいです。"
+  },
+  {
+    "en": "ring",
+    "jp": "鳴る",
+    "enSent": "I want to ring today.",
+    "jpSent": "今日は鳴るたいです。"
+  },
+  {
+    "en": "guess",
+    "jp": "推測する",
+    "enSent": "I want to guess today.",
+    "jpSent": "今日は推測するたいです。"
+  },
+  {
+    "en": "paint",
+    "jp": "絵の具で描く",
+    "enSent": "I want to paint today.",
+    "jpSent": "今日は絵の具で描くたいです。"
+  },
+  {
+    "en": "blow",
+    "jp": "吹く",
+    "enSent": "I want to blow today.",
+    "jpSent": "今日は吹くたいです。"
+  },
+  {
+    "en": "kick",
+    "jp": "蹴る",
+    "enSent": "I want to kick today.",
+    "jpSent": "今日は蹴るたいです。"
+  },
+  {
+    "en": "fix",
+    "jp": "修理する",
+    "enSent": "I want to fix today.",
+    "jpSent": "今日は修理するたいです。"
+  },
+  {
+    "en": "brush",
+    "jp": "磨く",
+    "enSent": "I want to brush today.",
+    "jpSent": "今日は磨くたいです。"
+  },
+  {
+    "en": "skate",
+    "jp": "スケートをする",
+    "enSent": "I want to skate today.",
+    "jpSent": "今日はスケートをするたいです。"
+  },
+  {
+    "en": "copy",
+    "jp": "写す",
+    "enSent": "I want to copy today.",
+    "jpSent": "今日は写すたいです。"
+  },
+  {
+    "en": "knock",
+    "jp": "ノックする",
+    "enSent": "I want to knock today.",
+    "jpSent": "今日はノックするたいです。"
+  },
+  {
+    "en": "fly",
+    "jp": "飛ぶ",
+    "enSent": "I want to fly today.",
+    "jpSent": "今日は飛ぶたいです。"
+  },
+  {
+    "en": "burn",
+    "jp": "燃える",
+    "enSent": "I want to burn today.",
+    "jpSent": "今日は燃えるたいです。"
+  },
+  {
+    "en": "act",
+    "jp": "行動する",
+    "enSent": "I want to act today.",
+    "jpSent": "今日は行動するたいです。"
+  },
+  {
+    "en": "cry",
+    "jp": "泣く",
+    "enSent": "I want to cry today.",
+    "jpSent": "今日は泣くたいです。"
+  },
+  {
+    "en": "mix",
+    "jp": "混ぜる",
+    "enSent": "I want to mix today.",
+    "jpSent": "今日は混ぜるたいです。"
+  },
+  {
+    "en": "mail",
+    "jp": "郵送する",
+    "enSent": "I want to mail today.",
+    "jpSent": "今日は郵送するたいです。"
+  },
+  {
+    "en": "business",
+    "jp": "仕事",
+    "enSent": "I learned about a business in class.",
+    "jpSent": "授業で仕事について学びました。"
+  },
+  {
+    "en": "group",
+    "jp": "グループ",
+    "enSent": "I learned about a group in class.",
+    "jpSent": "授業でグループについて学びました。"
+  },
+  {
+    "en": "player",
+    "jp": "選手",
+    "enSent": "I learned about a player in class.",
+    "jpSent": "授業で選手について学びました。"
+  },
+  {
+    "en": "gate",
+    "jp": "門",
+    "enSent": "I learned about a gate in class.",
+    "jpSent": "授業で門について学びました。"
+  },
+  {
+    "en": "coast",
+    "jp": "海岸",
+    "enSent": "I learned about a coast in class.",
+    "jpSent": "授業で海岸について学びました。"
+  },
+  {
+    "en": "baby",
+    "jp": "赤ちゃん",
+    "enSent": "I learned about a baby in class.",
+    "jpSent": "授業で赤ちゃんについて学びました。"
+  },
+  {
+    "en": "plate",
+    "jp": "皿",
+    "enSent": "Put the cake on a plate.",
+    "jpSent": "ケーキを皿に置きなさい。"
+  },
+  {
+    "en": "king",
+    "jp": "王",
+    "enSent": "I saw a king yesterday.",
+    "jpSent": "昨日王を見ました。"
+  },
+  {
+    "en": "piano",
+    "jp": "ピアノ",
+    "enSent": "I saw a piano yesterday.",
+    "jpSent": "昨日ピアノを見ました。"
+  },
+  {
+    "en": "meal",
+    "jp": "食事",
+    "enSent": "I learned about a meal in class.",
+    "jpSent": "授業で食事について学びました。"
+  },
+  {
+    "en": "arm",
+    "jp": "腕",
+    "enSent": "I learned about an arm in class.",
+    "jpSent": "授業で腕について学びました。"
+  },
+  {
+    "en": "building",
+    "jp": "建物",
+    "enSent": "I learned about a building in class.",
+    "jpSent": "授業で建物について学びました。"
+  },
+  {
+    "en": "blanket",
+    "jp": "毛布",
+    "enSent": "I saw a blanket yesterday.",
+    "jpSent": "昨日毛布を見ました。"
+  },
+  {
+    "en": "ticket",
+    "jp": "切符",
+    "enSent": "I learned about a ticket in class.",
+    "jpSent": "授業で切符について学びました。"
+  },
+  {
+    "en": "board",
+    "jp": "板、掲示板",
+    "enSent": "I saw a board yesterday.",
+    "jpSent": "昨日板、掲示板を見ました。"
+  },
+  {
+    "en": "balloon",
+    "jp": "風船",
+    "enSent": "I saw a balloon yesterday.",
+    "jpSent": "昨日風船を見ました。"
+  },
+  {
+    "en": "bench",
+    "jp": "ベンチ",
+    "enSent": "I saw a bench yesterday.",
+    "jpSent": "昨日ベンチを見ました。"
+  },
+  {
+    "en": "aunt",
+    "jp": "おば",
+    "enSent": "I learned about an aunt in class.",
+    "jpSent": "授業でおばについて学びました。"
+  },
+  {
+    "en": "mouth",
+    "jp": "口",
+    "enSent": "I saw a mouth yesterday.",
+    "jpSent": "昨日口を見ました。"
+  },
+  {
+    "en": "knife",
+    "jp": "ナイフ",
+    "enSent": "Be careful with this knife.",
+    "jpSent": "このナイフに気をつけてください。"
+  },
+  {
+    "en": "body",
+    "jp": "体",
+    "enSent": "I learned about a body in class.",
+    "jpSent": "授業で体について学びました。"
+  },
+  {
+    "en": "area",
+    "jp": "地域",
+    "enSent": "I learned about an area in class.",
+    "jpSent": "授業で地域について学びました。"
+  },
+  {
+    "en": "radio",
+    "jp": "ラジオ",
+    "enSent": "I learned about a radio in class.",
+    "jpSent": "授業でラジオについて学びました。"
+  },
+  {
+    "en": "dollar",
+    "jp": "ドル",
+    "enSent": "I learned about a dollar in class.",
+    "jpSent": "授業でドルについて学びました。"
+  },
+  {
+    "en": "story",
+    "jp": "物語",
+    "enSent": "I learned about a story in class.",
+    "jpSent": "授業で物語について学びました。"
+  },
+  {
+    "en": "girl",
+    "jp": "女の子",
+    "enSent": "I saw a girl yesterday.",
+    "jpSent": "昨日女の子を見ました。"
+  },
+  {
+    "en": "branch",
+    "jp": "枝",
+    "enSent": "I learned about a branch in class.",
+    "jpSent": "授業で枝について学びました。"
+  },
+  {
+    "en": "star",
+    "jp": "星",
+    "enSent": "I saw a star yesterday.",
+    "jpSent": "昨日星を見ました。"
+  },
+  {
+    "en": "party",
+    "jp": "パーティー",
+    "enSent": "I learned about a party in class.",
+    "jpSent": "授業でパーティーについて学びました。"
+  },
+  {
+    "en": "bridge",
+    "jp": "橋",
+    "enSent": "I learned about a bridge in class.",
+    "jpSent": "授業で橋について学びました。"
+  },
+  {
+    "en": "earth",
+    "jp": "地球",
+    "enSent": "I learned about an earth in class.",
+    "jpSent": "授業で地球について学びました。"
+  },
+  {
+    "en": "college",
+    "jp": "大学",
+    "enSent": "I learned about a college in class.",
+    "jpSent": "授業で大学について学びました。"
+  },
+  {
+    "en": "cloud",
+    "jp": "雲",
+    "enSent": "I learned about a cloud in class.",
+    "jpSent": "授業で雲について学びました。"
+  },
+  {
+    "en": "pocket",
+    "jp": "ポケット",
+    "enSent": "I learned about a pocket in class.",
+    "jpSent": "授業でポケットについて学びました。"
+  },
+  {
+    "en": "address",
+    "jp": "住所",
+    "enSent": "I learned about an address in class.",
+    "jpSent": "授業で住所について学びました。"
+  },
+  {
+    "en": "song",
+    "jp": "歌",
+    "enSent": "I saw a song yesterday.",
+    "jpSent": "昨日歌を見ました。"
+  },
+  {
+    "en": "map",
+    "jp": "地図",
+    "enSent": "I saw a map yesterday.",
+    "jpSent": "昨日地図を見ました。"
+  },
+  {
+    "en": "apartment",
+    "jp": "アパート",
+    "enSent": "I learned about an apartment in class.",
+    "jpSent": "授業でアパートについて学びました。"
+  },
+  {
+    "en": "calendar",
+    "jp": "カレンダー",
+    "enSent": "I learned about a calendar in class.",
+    "jpSent": "授業でカレンダーについて学びました。"
+  },
+  {
+    "en": "playground",
+    "jp": "遊び場",
+    "enSent": "Children are playing in the playground.",
+    "jpSent": "子供たちは遊び場で遊んでいます。"
+  },
+  {
+    "en": "dress",
+    "jp": "ドレス",
+    "enSent": "I saw a dress yesterday.",
+    "jpSent": "昨日ドレスを見ました。"
+  },
+  {
+    "en": "education",
+    "jp": "教育",
+    "enSent": "I learned about an education in class.",
+    "jpSent": "授業で教育について学びました。"
+  },
+  {
+    "en": "person",
+    "jp": "人",
+    "enSent": "I learned about a person in class.",
+    "jpSent": "授業で人について学びました。"
+  },
+  {
+    "en": "name",
+    "jp": "名前",
+    "enSent": "I saw a name yesterday.",
+    "jpSent": "昨日名前を見ました。"
+  },
+  {
+    "en": "ice",
+    "jp": "氷",
+    "enSent": "I saw an ice yesterday.",
+    "jpSent": "昨日氷を見ました。"
+  },
+  {
+    "en": "grandmother",
+    "jp": "祖母",
+    "enSent": "I learned about a grandmother in class.",
+    "jpSent": "授業で祖母について学びました。"
+  },
+  {
+    "en": "factory",
+    "jp": "工場",
+    "enSent": "I learned about a factory in class.",
+    "jpSent": "授業で工場について学びました。"
+  },
+  {
+    "en": "visitor",
+    "jp": "訪問者",
+    "enSent": "I learned about a visitor in class.",
+    "jpSent": "授業で訪問者について学びました。"
+  },
+  {
+    "en": "contest",
+    "jp": "コンテスト",
+    "enSent": "I learned about a contest in class.",
+    "jpSent": "授業でコンテストについて学びました。"
+  },
+  {
+    "en": "album",
+    "jp": "アルバム",
+    "enSent": "I saw an album yesterday.",
+    "jpSent": "昨日アルバムを見ました。"
+  },
+  {
+    "en": "toy",
+    "jp": "おもちゃ",
+    "enSent": "I cleaned up my toys.",
+    "jpSent": "私はおもちゃを片付けました。"
+  },
+  {
+    "en": "umbrella",
+    "jp": "傘",
+    "enSent": "I saw an umbrella yesterday.",
+    "jpSent": "昨日傘を見ました。"
+  },
+  {
+    "en": "sky",
+    "jp": "空",
+    "enSent": "I learned about a sky in class.",
+    "jpSent": "授業で空について学びました。"
+  },
+  {
+    "en": "festival",
+    "jp": "祭り",
+    "enSent": "I learned about a festival in class.",
+    "jpSent": "授業で祭りについて学びました。"
+  },
+  {
+    "en": "coat",
+    "jp": "コート",
+    "enSent": "I saw a coat yesterday.",
+    "jpSent": "昨日コートを見ました。"
+  },
+  {
+    "en": "shoe",
+    "jp": "靴",
+    "enSent": "I saw a shoe yesterday.",
+    "jpSent": "昨日靴を見ました。"
+  },
+  {
+    "en": "roof",
+    "jp": "屋根",
+    "enSent": "The roof is red.",
+    "jpSent": "屋根は赤いです。"
+  },
+  {
+    "en": "machine",
+    "jp": "機械",
+    "enSent": "I learned about a machine in class.",
+    "jpSent": "授業で機械について学びました。"
+  },
+  {
+    "en": "hour",
+    "jp": "時間",
+    "enSent": "I learned about a hour in class.",
+    "jpSent": "授業で時間について学びました。"
+  },
+  {
+    "en": "difference",
+    "jp": "違い",
+    "enSent": "I learned about a difference in class.",
+    "jpSent": "授業で違いについて学びました。"
+  },
+  {
+    "en": "rainbow",
+    "jp": "虹",
+    "enSent": "I saw a rainbow yesterday.",
+    "jpSent": "昨日虹を見ました。"
+  },
+  {
+    "en": "hill",
+    "jp": "丘",
+    "enSent": "I saw a hill yesterday.",
+    "jpSent": "昨日丘を見ました。"
+  },
+  {
+    "en": "artist",
+    "jp": "芸術家",
+    "enSent": "I learned about an artist in class.",
+    "jpSent": "授業で芸術家について学びました。"
+  },
+  {
+    "en": "team",
+    "jp": "チーム",
+    "enSent": "I learned about a team in class.",
+    "jpSent": "授業でチームについて学びました。"
+  },
+  {
+    "en": "month",
+    "jp": "月",
+    "enSent": "I learned about a month in class.",
+    "jpSent": "授業で月について学びました。"
+  },
+  {
+    "en": "center",
+    "jp": "中心",
+    "enSent": "I learned about a center in class.",
+    "jpSent": "授業で中心について学びました。"
+  },
+  {
+    "en": "boss",
+    "jp": "上司",
+    "enSent": "I learned about a boss in class.",
+    "jpSent": "授業で上司について学びました。"
+  },
+  {
+    "en": "week",
+    "jp": "週",
+    "enSent": "I learned about a week in class.",
+    "jpSent": "授業で週について学びました。"
+  },
+  {
+    "en": "soap",
+    "jp": "石けん",
+    "enSent": "Use soap to wash your hands.",
+    "jpSent": "手を洗うために石けんを使いなさい。"
+  },
+  {
+    "en": "castle",
+    "jp": "城",
+    "enSent": "I saw a castle yesterday.",
+    "jpSent": "昨日城を見ました。"
+  },
+  {
+    "en": "page",
+    "jp": "ページ",
+    "enSent": "I saw a page yesterday.",
+    "jpSent": "昨日ページを見ました。"
+  },
+  {
+    "en": "cheese",
+    "jp": "チーズ",
+    "enSent": "I saw a cheese yesterday.",
+    "jpSent": "昨日チーズを見ました。"
+  },
+  {
+    "en": "century",
+    "jp": "世紀",
+    "enSent": "I learned about a century in class.",
+    "jpSent": "授業で世紀について学びました。"
+  },
+  {
+    "en": "leg",
+    "jp": "脚",
+    "enSent": "I saw a leg yesterday.",
+    "jpSent": "昨日脚を見ました。"
+  },
+  {
+    "en": "cookie",
+    "jp": "クッキー",
+    "enSent": "I saw a cookie yesterday.",
+    "jpSent": "昨日クッキーを見ました。"
+  },
+  {
+    "en": "adventure",
+    "jp": "冒険",
+    "enSent": "I saw an adventure yesterday.",
+    "jpSent": "昨日冒険を見ました。"
+  },
+  {
+    "en": "language",
+    "jp": "言語",
+    "enSent": "I learned about a language in class.",
+    "jpSent": "授業で言語について学びました。"
+  },
+  {
+    "en": "hand",
+    "jp": "手",
+    "enSent": "I learned about a hand in class.",
+    "jpSent": "授業で手について学びました。"
+  },
+  {
+    "en": "button",
+    "jp": "ボタン",
+    "enSent": "I learned about a button in class.",
+    "jpSent": "授業でボタンについて学びました。"
+  },
+  {
+    "en": "captain",
+    "jp": "キャプテン",
+    "enSent": "I learned about a captain in class.",
+    "jpSent": "授業でキャプテンについて学びました。"
+  },
+  {
+    "en": "grass",
+    "jp": "草",
+    "enSent": "I saw a grass yesterday.",
+    "jpSent": "昨日草を見ました。"
+  },
+  {
+    "en": "woman",
+    "jp": "女性",
+    "enSent": "I learned about a woman in class.",
+    "jpSent": "授業で女性について学びました。"
+  },
+  {
+    "en": "neighbor",
+    "jp": "隣人",
+    "enSent": "I learned about a neighbor in class.",
+    "jpSent": "授業で隣人について学びました。"
+  },
+  {
+    "en": "coffee",
+    "jp": "コーヒー",
+    "enSent": "I saw a coffee yesterday.",
+    "jpSent": "昨日コーヒーを見ました。"
+  },
+  {
+    "en": "cousin",
+    "jp": "いとこ",
+    "enSent": "I learned about a cousin in class.",
+    "jpSent": "授業でいとこについて学びました。"
+  },
+  {
+    "en": "journey",
+    "jp": "旅",
+    "enSent": "I learned about a journey in class.",
+    "jpSent": "授業で旅について学びました。"
+  },
+  {
+    "en": "ground",
+    "jp": "地面",
+    "enSent": "I learned about a ground in class.",
+    "jpSent": "授業で地面について学びました。"
+  },
+  {
+    "en": "drink",
+    "jp": "飲み物",
+    "enSent": "I saw a drink yesterday.",
+    "jpSent": "昨日飲み物を見ました。"
+  },
+  {
+    "en": "uncle",
+    "jp": "おじ",
+    "enSent": "I learned about an uncle in class.",
+    "jpSent": "授業でおじについて学びました。"
+  },
+  {
+    "en": "son",
+    "jp": "息子",
+    "enSent": "I learned about a son in class.",
+    "jpSent": "授業で息子について学びました。"
+  },
+  {
+    "en": "job",
+    "jp": "仕事",
+    "enSent": "I learned about a job in class.",
+    "jpSent": "授業で仕事について学びました。"
+  },
+  {
+    "en": "capital",
+    "jp": "首都",
+    "enSent": "I learned about a capital in class.",
+    "jpSent": "授業で首都について学びました。"
+  },
+  {
+    "en": "rule",
+    "jp": "規則",
+    "enSent": "I learned about a rule in class.",
+    "jpSent": "授業で規則について学びました。"
+  },
+  {
+    "en": "egg",
+    "jp": "卵",
+    "enSent": "I learned about an egg in class.",
+    "jpSent": "授業で卵について学びました。"
+  },
+  {
+    "en": "worksheet",
+    "jp": "プリント",
+    "enSent": "Please finish this worksheet.",
+    "jpSent": "このプリントを終えてください。"
+  },
+  {
+    "en": "case",
+    "jp": "場合",
+    "enSent": "I learned about a case in class.",
+    "jpSent": "授業で場合について学びました。"
+  },
+  {
+    "en": "age",
+    "jp": "年齢",
+    "enSent": "I saw an age yesterday.",
+    "jpSent": "昨日年齢を見ました。"
+  },
+  {
+    "en": "guide",
+    "jp": "案内人",
+    "enSent": "I learned about a guide in class.",
+    "jpSent": "授業で案内人について学びました。"
+  },
+  {
+    "en": "fire",
+    "jp": "火",
+    "enSent": "I saw a fire yesterday.",
+    "jpSent": "昨日火を見ました。"
+  },
+  {
+    "en": "eye",
+    "jp": "目",
+    "enSent": "I saw an eye yesterday.",
+    "jpSent": "昨日目を見ました。"
+  },
+  {
+    "en": "accident",
+    "jp": "事故",
+    "enSent": "I learned about an accident in class.",
+    "jpSent": "授業で事故について学びました。"
+  },
+  {
+    "en": "museum",
+    "jp": "博物館",
+    "enSent": "I learned about a museum in class.",
+    "jpSent": "授業で博物館について学びました。"
+  },
+  {
+    "en": "game",
+    "jp": "試合",
+    "enSent": "I learned about a game in class.",
+    "jpSent": "授業で試合について学びました。"
+  },
+  {
+    "en": "member",
+    "jp": "メンバー",
+    "enSent": "I learned about a member in class.",
+    "jpSent": "授業でメンバーについて学びました。"
+  },
+  {
+    "en": "east",
+    "jp": "東",
+    "enSent": "I learned about an east in class.",
+    "jpSent": "授業で東について学びました。"
+  },
+  {
+    "en": "candy",
+    "jp": "キャンディー",
+    "enSent": "I saw a candy yesterday.",
+    "jpSent": "昨日キャンディーを見ました。"
+  },
+  {
+    "en": "child",
+    "jp": "子ども",
+    "enSent": "I learned about a child in class.",
+    "jpSent": "授業で子どもについて学びました。"
+  },
+  {
+    "en": "bottle",
+    "jp": "瓶",
+    "enSent": "I learned about a bottle in class.",
+    "jpSent": "授業で瓶について学びました。"
+  },
+  {
+    "en": "dish",
+    "jp": "皿",
+    "enSent": "I saw a dish yesterday.",
+    "jpSent": "昨日皿を見ました。"
+  },
+  {
+    "en": "color",
+    "jp": "色",
+    "enSent": "I learned about a color in class.",
+    "jpSent": "授業で色について学びました。"
+  },
+  {
+    "en": "voice",
+    "jp": "声",
+    "enSent": "I learned about a voice in class.",
+    "jpSent": "授業で声について学びました。"
+  },
+  {
+    "en": "ear",
+    "jp": "耳",
+    "enSent": "I saw an ear yesterday.",
+    "jpSent": "昨日耳を見ました。"
+  },
+  {
+    "en": "eraser",
+    "jp": "消しゴム",
+    "enSent": "I saw an eraser yesterday.",
+    "jpSent": "昨日消しゴムを見ました。"
+  },
+  {
+    "en": "lamp",
+    "jp": "ランプ",
+    "enSent": "The lamp is on the desk.",
+    "jpSent": "ランプは机の上にあります。"
+  },
+  {
+    "en": "shirt",
+    "jp": "シャツ",
+    "enSent": "I saw a shirt yesterday.",
+    "jpSent": "昨日シャツを見ました。"
+  },
+  {
+    "en": "art",
+    "jp": "美術",
+    "enSent": "I saw an art yesterday.",
+    "jpSent": "昨日美術を見ました。"
+  },
+  {
+    "en": "advice",
+    "jp": "助言",
+    "enSent": "I saw an advice yesterday.",
+    "jpSent": "昨日助言を見ました。"
+  },
+  {
+    "en": "yard",
+    "jp": "庭",
+    "enSent": "I learned about a yard in class.",
+    "jpSent": "授業で庭について学びました。"
+  },
+  {
+    "en": "guitar",
+    "jp": "ギター",
+    "enSent": "I saw a guitar yesterday.",
+    "jpSent": "昨日ギターを見ました。"
+  },
+  {
+    "en": "character",
+    "jp": "登場人物",
+    "enSent": "I learned about a character in class.",
+    "jpSent": "授業で登場人物について学びました。"
+  },
+  {
+    "en": "climate",
+    "jp": "気候",
+    "enSent": "I learned about a climate in class.",
+    "jpSent": "授業で気候について学びました。"
+  },
+  {
+    "en": "boat",
+    "jp": "ボート",
+    "enSent": "I learned about a boat in class.",
+    "jpSent": "授業でボートについて学びました。"
+  },
+  {
+    "en": "farmer",
+    "jp": "農家",
+    "enSent": "I learned about a farmer in class.",
+    "jpSent": "授業で農家について学びました。"
+  },
+  {
+    "en": "activity",
+    "jp": "活動",
+    "enSent": "I saw an activity yesterday.",
+    "jpSent": "昨日活動を見ました。"
+  },
+  {
+    "en": "finger",
+    "jp": "指",
+    "enSent": "I learned about a finger in class.",
+    "jpSent": "授業で指について学びました。"
+  },
+  {
+    "en": "fork",
+    "jp": "フォーク",
+    "enSent": "Use a fork for the salad.",
+    "jpSent": "サラダにはフォークを使いなさい。"
+  },
+  {
+    "en": "queen",
+    "jp": "女王",
+    "enSent": "I saw a queen yesterday.",
+    "jpSent": "昨日女王を見ました。"
+  },
+  {
+    "en": "air",
+    "jp": "空気",
+    "enSent": "I saw an air yesterday.",
+    "jpSent": "昨日空気を見ました。"
+  },
+  {
+    "en": "minute",
+    "jp": "分",
+    "enSent": "I learned about a minute in class.",
+    "jpSent": "授業で分について学びました。"
+  },
+  {
+    "en": "field",
+    "jp": "野原",
+    "enSent": "I learned about a field in class.",
+    "jpSent": "授業で野原について学びました。"
+  },
+  {
+    "en": "backpack",
+    "jp": "リュックサック",
+    "enSent": "My backpack is heavy.",
+    "jpSent": "私のリュックサックは重いです。"
+  },
+  {
+    "en": "clerk",
+    "jp": "店員",
+    "enSent": "I learned about a clerk in class.",
+    "jpSent": "授業で店員について学びました。"
+  },
+  {
+    "en": "engineer",
+    "jp": "技師",
+    "enSent": "I learned about an engineer in class.",
+    "jpSent": "授業で技師について学びました。"
+  },
+  {
+    "en": "dictionary",
+    "jp": "辞書",
+    "enSent": "I learned about a dictionary in class.",
+    "jpSent": "授業で辞書について学びました。"
+  },
+  {
+    "en": "cafeteria",
+    "jp": "食堂",
+    "enSent": "I saw a cafeteria yesterday.",
+    "jpSent": "昨日食堂を見ました。"
+  },
+  {
+    "en": "daughter",
+    "jp": "娘",
+    "enSent": "I learned about a daughter in class.",
+    "jpSent": "授業で娘について学びました。"
+  },
+  {
+    "en": "place",
+    "jp": "場所",
+    "enSent": "I learned about a place in class.",
+    "jpSent": "授業で場所について学びました。"
+  },
+  {
+    "en": "driver",
+    "jp": "運転手",
+    "enSent": "I learned about a driver in class.",
+    "jpSent": "授業で運転手について学びました。"
+  },
+  {
+    "en": "head",
+    "jp": "頭",
+    "enSent": "I saw a head yesterday.",
+    "jpSent": "昨日頭を見ました。"
+  },
+  {
+    "en": "habit",
+    "jp": "習慣",
+    "enSent": "I learned about a habit in class.",
+    "jpSent": "授業で習慣について学びました。"
+  },
+  {
+    "en": "corner",
+    "jp": "角",
+    "enSent": "I learned about a corner in class.",
+    "jpSent": "授業で角について学びました。"
+  },
+  {
+    "en": "culture",
+    "jp": "文化",
+    "enSent": "I learned about a culture in class.",
+    "jpSent": "授業で文化について学びました。"
+  },
+  {
+    "en": "face",
+    "jp": "顔",
+    "enSent": "I saw a face yesterday.",
+    "jpSent": "昨日顔を見ました。"
+  },
+  {
+    "en": "card",
+    "jp": "カード",
+    "enSent": "I learned about a card in class.",
+    "jpSent": "授業でカードについて学びました。"
+  },
+  {
+    "en": "hat",
+    "jp": "帽子",
+    "enSent": "I saw a hat yesterday.",
+    "jpSent": "昨日帽子を見ました。"
+  },
+  {
+    "en": "grandfather",
+    "jp": "祖父",
+    "enSent": "I learned about a grandfather in class.",
+    "jpSent": "授業で祖父について学びました。"
+  },
+  {
+    "en": "west",
+    "jp": "西",
+    "enSent": "I learned about a west in class.",
+    "jpSent": "授業で西について学びました。"
+  },
+  {
+    "en": "basket",
+    "jp": "かご",
+    "enSent": "I saw a basket yesterday.",
+    "jpSent": "昨日かごを見ました。"
+  },
+  {
+    "en": "church",
+    "jp": "教会",
+    "enSent": "I learned about a church in class.",
+    "jpSent": "授業で教会について学びました。"
+  },
+  {
+    "en": "club",
+    "jp": "部活動",
+    "enSent": "I learned about a club in class.",
+    "jpSent": "授業で部活動について学びました。"
+  },
+  {
+    "en": "north",
+    "jp": "北",
+    "enSent": "I learned about a north in class.",
+    "jpSent": "授業で北について学びました。"
+  },
+  {
+    "en": "key",
+    "jp": "鍵",
+    "enSent": "I saw a key yesterday.",
+    "jpSent": "昨日鍵を見ました。"
+  },
+  {
+    "en": "towel",
+    "jp": "タオル",
+    "enSent": "Please bring a towel.",
+    "jpSent": "タオルを持ってきてください。"
+  },
+  {
+    "en": "line",
+    "jp": "線",
+    "enSent": "I learned about a line in class.",
+    "jpSent": "授業で線について学びました。"
+  },
+  {
+    "en": "south",
+    "jp": "南",
+    "enSent": "I learned about a south in class.",
+    "jpSent": "授業で南について学びました。"
+  },
+  {
+    "en": "spoon",
+    "jp": "スプーン",
+    "enSent": "I eat soup with a spoon.",
+    "jpSent": "私はスプーンでスープを食べます。"
+  },
+  {
+    "en": "talk about",
+    "jp": "〜について話す",
+    "enSent": "We talked about music.",
+    "jpSent": "私たちは音楽について話しました。"
+  },
+  {
+    "en": "sports day",
+    "jp": "運動会",
+    "enSent": "I saw a sports day yesterday.",
+    "jpSent": "昨日運動会を見ました。"
+  },
+  {
+    "en": "department store",
+    "jp": "デパート",
+    "enSent": "I saw a department store yesterday.",
+    "jpSent": "昨日デパートを見ました。"
+  },
+  {
+    "en": "junior high school",
+    "jp": "中学校",
+    "enSent": "I saw a junior high school yesterday.",
+    "jpSent": "昨日中学校を見ました。"
+  },
+  {
+    "en": "ice cream",
+    "jp": "アイスクリーム",
+    "enSent": "I saw an ice cream yesterday.",
+    "jpSent": "昨日アイスクリームを見ました。"
+  },
+  {
+    "en": "home run",
+    "jp": "ホームラン",
+    "enSent": "I saw a home run yesterday.",
+    "jpSent": "昨日ホームランを見ました。"
+  },
+  {
+    "en": "tennis court",
+    "jp": "テニスコート",
+    "enSent": "I saw a tennis court yesterday.",
+    "jpSent": "昨日テニスコートを見ました。"
+  },
+  {
+    "en": "here and there",
+    "jp": "あちこちに",
+    "enSent": "Flowers are here and there.",
+    "jpSent": "あちこちに花があります。"
+  },
+  {
+    "en": "comic book",
+    "jp": "漫画本",
+    "enSent": "I saw a comic book yesterday.",
+    "jpSent": "昨日漫画本を見ました。"
+  },
+  {
+    "en": "enjoy oneself",
+    "jp": "楽しく過ごす",
+    "enSent": "We enjoyed ourselves at the party.",
+    "jpSent": "私たちはパーティーで楽しく過ごしました。"
+  },
+  {
+    "en": "keep a diary",
+    "jp": "日記をつける",
+    "enSent": "I keep a diary every day.",
+    "jpSent": "私は毎日日記をつけています。"
+  },
+  {
+    "en": "hold on",
+    "jp": "待つ",
+    "enSent": "Hold on, please.",
+    "jpSent": "少々お待ちください。"
+  },
+  {
+    "en": "had better",
+    "jp": "〜したほうがよい",
+    "enSent": "You had better rest today.",
+    "jpSent": "今日は休んだほうがよいです。"
+  },
+  {
+    "en": "bottle cap",
+    "jp": "瓶のふた",
+    "enSent": "I saw a bottle cap yesterday.",
+    "jpSent": "昨日瓶のふたを見ました。"
+  },
+  {
+    "en": "family name",
+    "jp": "名字",
+    "enSent": "I saw a family name yesterday.",
+    "jpSent": "昨日名字を見ました。"
+  },
+  {
+    "en": "grow up",
+    "jp": "成長する",
+    "enSent": "I grew up in this town.",
+    "jpSent": "私はこの町で育ちました。"
+  },
+  {
+    "en": "swimming pool",
+    "jp": "プール",
+    "enSent": "I saw a swimming pool yesterday.",
+    "jpSent": "昨日プールを見ました。"
+  },
+  {
+    "en": "sweet",
+    "jp": "甘い",
+    "enSent": "This lesson is sweet.",
+    "jpSent": "この授業は甘いです。"
+  },
+  {
+    "en": "closed",
+    "jp": "閉まった",
+    "enSent": "This lesson is closed.",
+    "jpSent": "この授業は閉まったです。"
+  },
+  {
+    "en": "alone",
+    "jp": "一人の",
+    "enSent": "This lesson is alone.",
+    "jpSent": "この授業は一人のです。"
+  },
+  {
+    "en": "one day",
+    "jp": "ある日 / いつか",
+    "enSent": "One day, I want to visit London.",
+    "jpSent": "いつかロンドンを訪れたいです。"
+  },
+  {
+    "en": "belong to",
+    "jp": "〜に属する",
+    "enSent": "This book belongs to me.",
+    "jpSent": "この本は私のものです。"
+  },
+  {
+    "en": "from now on",
+    "jp": "これからは",
+    "enSent": "I will study hard from now on.",
+    "jpSent": "これからは一生懸命勉強します。"
+  },
+  {
+    "en": "be made of",
+    "jp": "〜でできている",
+    "enSent": "This desk is made of wood.",
+    "jpSent": "この机は木でできています。"
+  },
+  {
+    "en": "be famous for",
+    "jp": "〜で有名である",
+    "enSent": "Kyoto is famous for old temples.",
+    "jpSent": "京都は古い寺で有名です。"
+  },
+  {
+    "en": "be surprised at",
+    "jp": "〜に驚く",
+    "enSent": "I was surprised at the news.",
+    "jpSent": "私はその知らせに驚きました。"
+  },
+  {
+    "en": "a kind of",
+    "jp": "一種の",
+    "enSent": "A dolphin is a kind of animal.",
+    "jpSent": "イルカは動物の一種です。"
+  },
+  {
+    "en": "be full of",
+    "jp": "〜でいっぱいである",
+    "enSent": "The box is full of toys.",
+    "jpSent": "その箱はおもちゃでいっぱいです。"
+  },
+  {
+    "en": "be busy with",
+    "jp": "〜で忙しい",
+    "enSent": "She is busy with her homework.",
+    "jpSent": "彼女は宿題で忙しいです。"
+  },
+  {
+    "en": "be kind to",
+    "jp": "〜に親切である",
+    "enSent": "Please be kind to everyone.",
+    "jpSent": "みんなに親切にしてください。"
+  },
+  {
+    "en": "a cup of",
+    "jp": "一杯の",
+    "enSent": "I want a cup of tea.",
+    "jpSent": "お茶を一杯ほしいです。"
+  },
+  {
+    "en": "get to",
+    "jp": "〜に着く",
+    "enSent": "How can I get to the station?",
+    "jpSent": "どうすれば駅に着けますか。"
+  },
+  {
+    "en": "be different from",
+    "jp": "〜と違う",
+    "enSent": "My bag is different from yours.",
+    "jpSent": "私のカバンはあなたのものと違います。"
+  },
+  {
+    "en": "be proud of",
+    "jp": "〜を誇りに思う",
+    "enSent": "I am proud of my team.",
+    "jpSent": "私は自分のチームを誇りに思います。"
+  },
+  {
+    "en": "a piece of",
+    "jp": "一枚の / 一切れの",
+    "enSent": "Please give me a piece of paper.",
+    "jpSent": "紙を一枚ください。"
+  },
+  {
+    "en": "make sure",
+    "jp": "確かめる",
+    "enSent": "Make sure you have your ticket.",
+    "jpSent": "チケットを持っているか確かめなさい。"
+  },
+  {
+    "en": "be angry with",
+    "jp": "〜に怒っている",
+    "enSent": "My father was angry with me.",
+    "jpSent": "父は私に怒っていました。"
+  },
+  {
+    "en": "look forward to",
+    "jp": "〜を楽しみにする",
+    "enSent": "I look forward to summer vacation.",
+    "jpSent": "私は夏休みを楽しみにしています。"
+  },
+  {
+    "en": "a glass of",
+    "jp": "一杯の",
+    "enSent": "She drank a glass of water.",
+    "jpSent": "彼女は水を一杯飲みました。"
+  },
+  {
+    "en": "look after",
+    "jp": "〜の世話をする",
+    "enSent": "I look after my dog.",
+    "jpSent": "私は犬の世話をします。"
+  },
+  {
+    "en": "come in",
+    "jp": "入ってくる",
+    "enSent": "Come in, please.",
+    "jpSent": "どうぞ入ってください。"
+  },
+  {
+    "en": "by train",
+    "jp": "電車で",
+    "enSent": "We went to Tokyo by train.",
+    "jpSent": "私たちは電車で東京へ行きました。"
+  },
+  {
+    "en": "be from",
+    "jp": "〜出身である",
+    "enSent": "He is from Canada.",
+    "jpSent": "彼はカナダ出身です。"
+  },
+  {
+    "en": "at first",
+    "jp": "最初は",
+    "enSent": "At first, I was nervous.",
+    "jpSent": "最初は緊張していました。"
+  },
+  {
+    "en": "at home",
+    "jp": "家で",
+    "enSent": "I usually study at home.",
+    "jpSent": "私はたいてい家で勉強します。"
+  },
+  {
+    "en": "a pair of",
+    "jp": "一組の",
+    "enSent": "I bought a pair of socks.",
+    "jpSent": "私は靴下一組を買いました。"
+  },
+  {
+    "en": "pick up",
+    "jp": "拾う",
+    "enSent": "Pick up the paper.",
+    "jpSent": "紙を拾いなさい。"
+  },
+  {
+    "en": "be late for",
+    "jp": "〜に遅れる",
+    "enSent": "Do not be late for school.",
+    "jpSent": "学校に遅れないでください。"
+  },
+  {
+    "en": "at night",
+    "jp": "夜に",
+    "enSent": "I read books at night.",
+    "jpSent": "私は夜に本を読みます。"
+  },
+  {
+    "en": "be glad to",
+    "jp": "〜してうれしい",
+    "enSent": "I am glad to see you.",
+    "jpSent": "あなたに会えてうれしいです。"
+  },
+  {
+    "en": "be good at",
+    "jp": "〜が得意である",
+    "enSent": "She is good at math.",
+    "jpSent": "彼女は数学が得意です。"
+  },
+  {
+    "en": "be ready for",
+    "jp": "〜の準備ができている",
+    "enSent": "Are you ready for the test?",
+    "jpSent": "テストの準備はできていますか。"
+  },
+  {
+    "en": "be absent from",
+    "jp": "〜を欠席する",
+    "enSent": "He was absent from school yesterday.",
+    "jpSent": "彼は昨日学校を欠席しました。"
+  },
+  {
+    "en": "have a cold",
+    "jp": "風邪をひいている",
+    "enSent": "I have a cold today.",
+    "jpSent": "私は今日風邪をひいています。"
+  },
+  {
+    "en": "go back",
+    "jp": "戻る",
+    "enSent": "I will go back to my room.",
+    "jpSent": "私は部屋に戻ります。"
+  },
+  {
+    "en": "each other",
+    "jp": "お互いに",
+    "enSent": "We help each other.",
+    "jpSent": "私たちはお互いに助け合います。"
+  },
+  {
+    "en": "on foot",
+    "jp": "歩いて",
+    "enSent": "I go to school on foot.",
+    "jpSent": "私は歩いて学校へ行きます。"
+  },
+  {
+    "en": "by bus",
+    "jp": "バスで",
+    "enSent": "I go to school by bus.",
+    "jpSent": "私はバスで学校へ行きます。"
+  },
+  {
+    "en": "go for a walk",
+    "jp": "散歩に行く",
+    "enSent": "Let us go for a walk.",
+    "jpSent": "散歩に行きましょう。"
+  },
+  {
+    "en": "look like",
+    "jp": "〜のように見える",
+    "enSent": "It looks like a star.",
+    "jpSent": "それは星のように見えます。"
+  },
+  {
+    "en": "be poor at",
+    "jp": "〜が苦手である",
+    "enSent": "I am poor at singing.",
+    "jpSent": "私は歌うことが苦手です。"
+  },
+  {
+    "en": "at that time",
+    "jp": "その時",
+    "enSent": "I was in Osaka at that time.",
+    "jpSent": "その時私は大阪にいました。"
+  },
+  {
+    "en": "get angry",
+    "jp": "怒る",
+    "enSent": "Do not get angry.",
+    "jpSent": "怒らないでください。"
+  },
+  {
+    "en": "right now",
+    "jp": "今すぐ",
+    "enSent": "I need help right now.",
+    "jpSent": "今すぐ助けが必要です。"
+  },
+  {
+    "en": "for a long time",
+    "jp": "長い間",
+    "enSent": "I waited for a long time.",
+    "jpSent": "私は長い間待ちました。"
+  },
+  {
+    "en": "take a bath",
+    "jp": "風呂に入る",
+    "enSent": "I take a bath every night.",
+    "jpSent": "私は毎晩風呂に入ります。"
+  },
+  {
+    "en": "get back",
+    "jp": "戻る",
+    "enSent": "I got back home at six.",
+    "jpSent": "私は6時に家に戻りました。"
+  },
+  {
+    "en": "a lot of",
+    "jp": "たくさんの",
+    "enSent": "There are a lot of books on the desk.",
+    "jpSent": "机の上にたくさんの本があります。"
+  },
+  {
+    "en": "all over",
+    "jp": "一面に",
+    "enSent": "There is snow all over the park.",
+    "jpSent": "公園一面に雪があります。"
+  },
+  {
+    "en": "all right",
+    "jp": "大丈夫な",
+    "enSent": "Are you all right?",
+    "jpSent": "大丈夫ですか。"
+  },
+  {
+    "en": "at last",
+    "jp": "ついに",
+    "enSent": "At last, we arrived.",
+    "jpSent": "ついに到着しました。"
+  },
+  {
+    "en": "at once",
+    "jp": "すぐに",
+    "enSent": "Come here at once.",
+    "jpSent": "すぐにここへ来なさい。"
+  },
+  {
+    "en": "go out",
+    "jp": "外出する",
+    "enSent": "I want to go out today.",
+    "jpSent": "今日は外出したいです。"
+  },
+  {
+    "en": "be interested in",
+    "jp": "〜に興味がある",
+    "enSent": "I am interested in animals.",
+    "jpSent": "私は動物に興味があります。"
+  },
+  {
+    "en": "be afraid of",
+    "jp": "〜を恐れる",
+    "enSent": "I am afraid of big dogs.",
+    "jpSent": "私は大きな犬が怖いです。"
+  },
+  {
+    "en": "a member of",
+    "jp": "〜の一員",
+    "enSent": "I am a member of the soccer club.",
+    "jpSent": "私はサッカー部の一員です。"
+  },
+  {
+    "en": "go shopping",
+    "jp": "買い物に行く",
+    "enSent": "We went shopping on Sunday.",
+    "jpSent": "私たちは日曜日に買い物へ行きました。"
+  },
+  {
+    "en": "come true",
+    "jp": "実現する",
+    "enSent": "My dream came true.",
+    "jpSent": "私の夢が実現しました。"
+  }
 ];

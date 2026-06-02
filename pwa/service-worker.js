@@ -1,4 +1,4 @@
-const CACHE_VERSION = "eiken-magicwords-pwa-v1.1.31";
+const CACHE_VERSION = "eiken-magicwords-pwa-v1.1.35";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -62,7 +62,7 @@ self.addEventListener("fetch", event => {
     return;
   }
   if (isStaticDataRequest(event.request)) {
-    event.respondWith(staleWhileRevalidate(event.request));
+    event.respondWith(networkFirst(event.request));
     return;
   }
   event.respondWith(cacheFirst(event.request));
