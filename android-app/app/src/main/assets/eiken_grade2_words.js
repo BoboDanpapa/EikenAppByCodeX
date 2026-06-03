@@ -1,30 +1,843 @@
-// eiken_grade2_words.js - 英検2級 単語・熟語データ (deduplicated for Android app)
-// Original entries: 608; unique entries: 561
-
 const eikenGrade2VocabData = [
   {
-    "en": "Provide",
-    "jp": "提供する",
-    "enSent": "They provide food for us.",
-    "jpSent": "彼らは私たちに食べ物を提供します。"
+    "en": "additional",
+    "jp": "追加の、付加された",
+    "enSent": "We need additional information before deciding.",
+    "jpSent": "決める前に追加の情報が必要です。"
+  },
+  {
+    "en": "ancient",
+    "jp": "古代の、大昔の",
+    "enSent": "They studied ancient tools in history class.",
+    "jpSent": "彼らは歴史の授業で古代の道具を学びました。"
+  },
+  {
+    "en": "available",
+    "jp": "利用できる、入手できる",
+    "enSent": "Tickets are available online.",
+    "jpSent": "チケットはオンラインで入手できます。"
+  },
+  {
+    "en": "beneficial",
+    "jp": "有益な、有利な",
+    "enSent": "Regular exercise is beneficial to your health.",
+    "jpSent": "定期的な運動は健康に有益です。"
+  },
+  {
+    "en": "capable",
+    "jp": "能力がある",
+    "enSent": "She is capable of solving difficult problems.",
+    "jpSent": "彼女は難しい問題を解く能力があります。"
+  },
+  {
+    "en": "characteristic",
+    "jp": "特有の、特徴的な",
+    "enSent": "A long neck is characteristic of giraffes.",
+    "jpSent": "長い首はキリンに特有です。"
+  },
+  {
+    "en": "chemical",
+    "jp": "化学の",
+    "enSent": "The factory stores chemical materials carefully.",
+    "jpSent": "その工場は化学物質を慎重に保管しています。"
+  },
+  {
+    "en": "delicate",
+    "jp": "微妙な、繊細な",
+    "enSent": "This delicate glass must be handled carefully.",
+    "jpSent": "この繊細なガラスは注意して扱わなければなりません。"
+  },
+  {
+    "en": "distinct",
+    "jp": "別個の、はっきりした",
+    "enSent": "There are two distinct problems here.",
+    "jpSent": "ここには二つのはっきり別の問題があります。"
+  },
+  {
+    "en": "due",
+    "jp": "〜する予定である、当然の",
+    "enSent": "The report is due tomorrow.",
+    "jpSent": "レポートは明日提出予定です。"
+  },
+  {
+    "en": "effective",
+    "jp": "効果的な",
+    "enSent": "This is an effective way to save energy.",
+    "jpSent": "これはエネルギーを節約する効果的な方法です。"
+  },
+  {
+    "en": "harmful",
+    "jp": "有害な",
+    "enSent": "Too much sunlight can be harmful to your skin.",
+    "jpSent": "日光を浴びすぎると肌に有害なことがあります。"
+  },
+  {
+    "en": "industrial",
+    "jp": "産業の、工業の",
+    "enSent": "The city grew as an industrial center.",
+    "jpSent": "その都市は工業の中心地として発展しました。"
+  },
+  {
+    "en": "intellectual",
+    "jp": "知的な",
+    "enSent": "The debate was an intellectual challenge.",
+    "jpSent": "その討論は知的な挑戦でした。"
+  },
+  {
+    "en": "likely",
+    "jp": "ありそうな、〜しそうな",
+    "enSent": "It is likely to rain this afternoon.",
+    "jpSent": "今日の午後は雨が降りそうです。"
+  },
+  {
+    "en": "mental",
+    "jp": "心の、精神の",
+    "enSent": "Sleep is important for mental health.",
+    "jpSent": "睡眠は精神の健康に重要です。"
+  },
+  {
+    "en": "psychological",
+    "jp": "心理学の、心理的な",
+    "enSent": "The story shows psychological pressure.",
+    "jpSent": "その物語は心理的な圧力を示しています。"
+  },
+  {
+    "en": "significant",
+    "jp": "重要な",
+    "enSent": "The discovery was a significant event.",
+    "jpSent": "その発見は重要な出来事でした。"
+  },
+  {
+    "en": "successful",
+    "jp": "成功した",
+    "enSent": "Their first project was successful.",
+    "jpSent": "彼らの最初の計画は成功しました。"
+  },
+  {
+    "en": "unfortunate",
+    "jp": "不運な、残念な",
+    "enSent": "It was unfortunate that the game was canceled.",
+    "jpSent": "試合が中止になったのは残念でした。"
+  },
+  {
+    "en": "valuable",
+    "jp": "貴重な、価値のある",
+    "enSent": "Your advice was very valuable.",
+    "jpSent": "あなたの助言はとても貴重でした。"
+  },
+  {
+    "en": "wealthy",
+    "jp": "裕福な",
+    "enSent": "The wealthy family donated money to the school.",
+    "jpSent": "その裕福な家族は学校にお金を寄付しました。"
+  },
+  {
+    "en": "badly",
+    "jp": "まずく、とても、ひどく",
+    "enSent": "The roof was badly damaged by the storm.",
+    "jpSent": "屋根は嵐でひどく壊れました。"
+  },
+  {
+    "en": "politely",
+    "jp": "丁寧に、礼儀正しく",
+    "enSent": "He politely asked for help.",
+    "jpSent": "彼は礼儀正しく助けを求めました。"
+  },
+  {
+    "en": "seriously",
+    "jp": "まじめに、本気で",
+    "enSent": "We must take this problem seriously.",
+    "jpSent": "私たちはこの問題を真剣に受け止めなければなりません。"
+  },
+  {
+    "en": "well",
+    "jp": "十分に、上手に",
+    "enSent": "She speaks English well.",
+    "jpSent": "彼女は英語を上手に話します。"
+  },
+  {
+    "en": "immediately",
+    "jp": "すぐに",
+    "enSent": "Please call me immediately.",
+    "jpSent": "すぐに私に電話してください。"
+  },
+  {
+    "en": "upstairs",
+    "jp": "上階へ",
+    "enSent": "He went upstairs to get his bag.",
+    "jpSent": "彼はかばんを取りに上階へ行きました。"
+  },
+  {
+    "en": "annually",
+    "jp": "毎年",
+    "enSent": "The festival is held annually.",
+    "jpSent": "その祭りは毎年開かれます。"
+  },
+  {
+    "en": "completely",
+    "jp": "完全に、すっかり",
+    "enSent": "The room was completely dark.",
+    "jpSent": "部屋は完全に暗かったです。"
+  },
+  {
+    "en": "exactly",
+    "jp": "正確に、まさしく",
+    "enSent": "That is exactly what I meant.",
+    "jpSent": "それはまさしく私が言いたかったことです。"
+  },
+  {
+    "en": "frequently",
+    "jp": "しばしば、頻繁に",
+    "enSent": "He frequently visits the library.",
+    "jpSent": "彼は頻繁に図書館を訪れます。"
+  },
+  {
+    "en": "hardly",
+    "jp": "ほとんど〜ない",
+    "enSent": "I could hardly hear her voice.",
+    "jpSent": "私は彼女の声がほとんど聞こえませんでした。"
+  },
+  {
+    "en": "increasingly",
+    "jp": "ますます、だんだんと",
+    "enSent": "Online learning is becoming increasingly common.",
+    "jpSent": "オンライン学習はますます一般的になっています。"
+  },
+  {
+    "en": "occasionally",
+    "jp": "ときどき",
+    "enSent": "We occasionally eat dinner outside.",
+    "jpSent": "私たちはときどき外で夕食を食べます。"
+  },
+  {
+    "en": "rarely",
+    "jp": "めったに〜しない、まれに",
+    "enSent": "She rarely misses school.",
+    "jpSent": "彼女はめったに学校を休みません。"
+  },
+  {
+    "en": "actually",
+    "jp": "実際は",
+    "enSent": "Actually, I have already read this book.",
+    "jpSent": "実際は、私はすでにこの本を読んだことがあります。"
+  },
+  {
+    "en": "besides",
+    "jp": "その上",
+    "enSent": "I am tired; besides, it is getting late.",
+    "jpSent": "私は疲れています。その上、遅くなってきました。"
+  },
+  {
+    "en": "furthermore",
+    "jp": "さらに",
+    "enSent": "The plan is simple; furthermore, it is cheap.",
+    "jpSent": "その計画は簡単です。さらに、費用も安いです。"
+  },
+  {
+    "en": "generally",
+    "jp": "一般に",
+    "enSent": "Generally, children learn languages quickly.",
+    "jpSent": "一般に、子どもは言語を早く学びます。"
+  },
+  {
+    "en": "hence",
+    "jp": "それゆえ",
+    "enSent": "The road was closed; hence, we took another way.",
+    "jpSent": "道路が閉鎖されていた。それゆえ、私たちは別の道を通りました。"
+  },
+  {
+    "en": "however",
+    "jp": "しかしながら",
+    "enSent": "The test was hard; however, she passed it.",
+    "jpSent": "試験は難しかった。しかしながら、彼女は合格しました。"
+  },
+  {
+    "en": "moreover",
+    "jp": "さらに",
+    "enSent": "The hotel is clean; moreover, it is near the station.",
+    "jpSent": "そのホテルは清潔です。さらに、駅に近いです。"
+  },
+  {
+    "en": "naturally",
+    "jp": "当然",
+    "enSent": "Naturally, parents worry about their children.",
+    "jpSent": "当然、親は子どものことを心配します。"
+  },
+  {
+    "en": "nevertheless",
+    "jp": "それにもかかわらず",
+    "enSent": "It was raining; nevertheless, they continued playing.",
+    "jpSent": "雨が降っていました。それにもかかわらず、彼らは遊び続けました。"
+  },
+  {
+    "en": "otherwise",
+    "jp": "さもなければ",
+    "enSent": "Hurry up; otherwise, we will be late.",
+    "jpSent": "急ぎなさい。さもなければ、遅れます。"
+  },
+  {
+    "en": "therefore",
+    "jp": "従って",
+    "enSent": "He was sick; therefore, he stayed home.",
+    "jpSent": "彼は病気でした。従って、家にいました。"
+  },
+  {
+    "en": "thus",
+    "jp": "ゆえに",
+    "enSent": "The machine was broken; thus, work stopped.",
+    "jpSent": "機械が壊れました。ゆえに、作業は止まりました。"
+  },
+  {
+    "en": "apply for",
+    "jp": "〈〜に〉申し込む",
+    "enSent": "She decided to apply for the scholarship.",
+    "jpSent": "彼女は奨学金に申し込むことにしました。"
+  },
+  {
+    "en": "complain about/of",
+    "jp": "〈〜について〉不満をもらす",
+    "enSent": "Some residents complain about the noise.",
+    "jpSent": "住民の中には騒音について不満をもらす人もいます。"
+  },
+  {
+    "en": "contribute to",
+    "jp": "〈〜に〉寄付する、〈〜の〉一因となる",
+    "enSent": "Many people contributed to the project.",
+    "jpSent": "多くの人がその計画に寄付しました。"
+  },
+  {
+    "en": "decrease",
+    "jp": "減少する",
+    "enSent": "The number of accidents decreased last year.",
+    "jpSent": "事故の数は昨年減少しました。"
+  },
+  {
+    "en": "long for",
+    "jp": "〈〜を〉切望する、〈〜に〉あこがれる",
+    "enSent": "The children long for a peaceful future.",
+    "jpSent": "子どもたちは平和な未来を切望しています。"
+  },
+  {
+    "en": "operate",
+    "jp": "作動する、手術する；〜を操作する、運営する",
+    "enSent": "This machine can operate without electricity.",
+    "jpSent": "この機械は電気なしで作動できます。"
+  },
+  {
+    "en": "respond to",
+    "jp": "〈〜に〉答える、〈〜に〉反応する",
+    "enSent": "Please respond to my question.",
+    "jpSent": "私の質問に答えてください。"
+  },
+  {
+    "en": "separate",
+    "jp": "別れる、別居する；〜を分ける",
+    "enSent": "Please separate the paper from the plastic.",
+    "jpSent": "紙をプラスチックから分けてください。"
+  },
+  {
+    "en": "survive",
+    "jp": "生き残る",
+    "enSent": "Some plants can survive in the desert.",
+    "jpSent": "砂漠で生き残れる植物もあります。"
+  },
+  {
+    "en": "advantage",
+    "jp": "有利な点、好都合",
+    "enSent": "Living near school has one big advantage.",
+    "jpSent": "学校の近くに住むことには大きな利点が一つあります。"
+  },
+  {
+    "en": "aid",
+    "jp": "援助",
+    "enSent": "The country sent aid after the disaster.",
+    "jpSent": "その国は災害の後に援助を送りました。"
+  },
+  {
+    "en": "allergy",
+    "jp": "アレルギー",
+    "enSent": "He has an allergy to peanuts.",
+    "jpSent": "彼はピーナッツにアレルギーがあります。"
+  },
+  {
+    "en": "applicant",
+    "jp": "応募者",
+    "enSent": "Each applicant must write an essay.",
+    "jpSent": "各応募者は作文を書かなければなりません。"
+  },
+  {
+    "en": "article",
+    "jp": "記事",
+    "enSent": "I read an article about climate change.",
+    "jpSent": "私は気候変動についての記事を読みました。"
+  },
+  {
+    "en": "aspect",
+    "jp": "様子、局面",
+    "enSent": "We discussed every aspect of the problem.",
+    "jpSent": "私たちはその問題のあらゆる局面を話し合いました。"
+  },
+  {
+    "en": "attitude",
+    "jp": "態度",
+    "enSent": "A positive attitude helps you learn.",
+    "jpSent": "前向きな態度は学習の助けになります。"
+  },
+  {
+    "en": "audience",
+    "jp": "聴衆、観客",
+    "enSent": "The audience listened quietly.",
+    "jpSent": "聴衆は静かに聞いていました。"
+  },
+  {
+    "en": "behavior",
+    "jp": "ふるまい、行動",
+    "enSent": "His behavior surprised the teacher.",
+    "jpSent": "彼の行動は先生を驚かせました。"
+  },
+  {
+    "en": "construction",
+    "jp": "建設",
+    "enSent": "Construction of the bridge began in April.",
+    "jpSent": "橋の建設は4月に始まりました。"
+  },
+  {
+    "en": "consumer",
+    "jp": "消費者",
+    "enSent": "Consumers want safe products.",
+    "jpSent": "消費者は安全な製品を求めています。"
+  },
+  {
+    "en": "deal",
+    "jp": "取引、商売",
+    "enSent": "They made a deal with the company.",
+    "jpSent": "彼らはその会社と取引をしました。"
+  },
+  {
+    "en": "decision",
+    "jp": "解決、決定",
+    "enSent": "It was a difficult decision for everyone.",
+    "jpSent": "それは全員にとって難しい決定でした。"
+  },
+  {
+    "en": "development",
+    "jp": "発達、開発",
+    "enSent": "Technology development changes our lives.",
+    "jpSent": "技術の発達は私たちの生活を変えます。"
+  },
+  {
+    "en": "employee",
+    "jp": "従業員",
+    "enSent": "Each employee received safety training.",
+    "jpSent": "各従業員は安全研修を受けました。"
+  },
+  {
+    "en": "experiment",
+    "jp": "実験",
+    "enSent": "The students did an experiment in science class.",
+    "jpSent": "生徒たちは理科の授業で実験をしました。"
+  },
+  {
+    "en": "expert",
+    "jp": "専門家",
+    "enSent": "An expert explained the cause of the problem.",
+    "jpSent": "専門家がその問題の原因を説明しました。"
+  },
+  {
+    "en": "factor",
+    "jp": "要因、要素",
+    "enSent": "Weather is an important factor in farming.",
+    "jpSent": "天候は農業における重要な要因です。"
+  },
+  {
+    "en": "fatigue",
+    "jp": "疲労",
+    "enSent": "Fatigue can make driving dangerous.",
+    "jpSent": "疲労は運転を危険にすることがあります。"
+  },
+  {
+    "en": "favor",
+    "jp": "親切な行為、好意",
+    "enSent": "Could you do me a favor?",
+    "jpSent": "お願いを聞いてくれませんか。"
+  },
+  {
+    "en": "figure",
+    "jp": "人の姿、数字、形状",
+    "enSent": "The figure on the page shows the result.",
+    "jpSent": "ページの図は結果を示しています。"
+  },
+  {
+    "en": "improvement",
+    "jp": "改良",
+    "enSent": "There was a clear improvement in her writing.",
+    "jpSent": "彼女の作文には明らかな改善がありました。"
+  },
+  {
+    "en": "individual",
+    "jp": "個人",
+    "enSent": "Each individual has a different opinion.",
+    "jpSent": "各個人は異なる意見を持っています。"
+  },
+  {
+    "en": "injury",
+    "jp": "けが",
+    "enSent": "He recovered from a serious injury.",
+    "jpSent": "彼は重いけがから回復しました。"
+  },
+  {
+    "en": "majority",
+    "jp": "大多数",
+    "enSent": "The majority of students chose this answer.",
+    "jpSent": "生徒の大多数がこの答えを選びました。"
+  },
+  {
+    "en": "manufacture",
+    "jp": "製造",
+    "enSent": "The manufacture of cars requires many parts.",
+    "jpSent": "車の製造には多くの部品が必要です。"
+  },
+  {
+    "en": "movement",
+    "jp": "運動、動き",
+    "enSent": "The movement of the stars is slow.",
+    "jpSent": "星の動きはゆっくりです。"
+  },
+  {
+    "en": "nerve",
+    "jp": "神経",
+    "enSent": "The injury damaged a nerve in his arm.",
+    "jpSent": "そのけがで彼の腕の神経が傷つきました。"
+  },
+  {
+    "en": "opportunity",
+    "jp": "機会",
+    "enSent": "This is a good opportunity to learn.",
+    "jpSent": "これは学ぶよい機会です。"
+  },
+  {
+    "en": "pollution",
+    "jp": "汚染",
+    "enSent": "Air pollution is a serious problem.",
+    "jpSent": "大気汚染は深刻な問題です。"
+  },
+  {
+    "en": "project",
+    "jp": "計画、事業",
+    "enSent": "Our project will start next week.",
+    "jpSent": "私たちの計画は来週始まります。"
+  },
+  {
+    "en": "proposal",
+    "jp": "申し込み、計画、提案",
+    "enSent": "The committee accepted her proposal.",
+    "jpSent": "委員会は彼女の提案を受け入れました。"
+  },
+  {
+    "en": "rainforest",
+    "jp": "熱帯雨林",
+    "enSent": "Many animals live in the rainforest.",
+    "jpSent": "多くの動物が熱帯雨林に住んでいます。"
+  },
+  {
+    "en": "release",
+    "jp": "解放",
+    "enSent": "The release of the birds was successful.",
+    "jpSent": "鳥の解放は成功しました。"
+  },
+  {
+    "en": "respect",
+    "jp": "尊敬",
+    "enSent": "Respect for others is important.",
+    "jpSent": "他人への尊敬は重要です。"
+  },
+  {
+    "en": "security",
+    "jp": "安全、防衛",
+    "enSent": "Security at the airport is strict.",
+    "jpSent": "空港の安全管理は厳しいです。"
+  },
+  {
+    "en": "source",
+    "jp": "源、原因",
+    "enSent": "The river is a source of fresh water.",
+    "jpSent": "その川は新鮮な水の源です。"
+  },
+  {
+    "en": "substance",
+    "jp": "物質、材料",
+    "enSent": "The scientist tested the unknown substance.",
+    "jpSent": "科学者は未知の物質を調べました。"
+  },
+  {
+    "en": "surface",
+    "jp": "表面",
+    "enSent": "The surface of the lake was calm.",
+    "jpSent": "湖の表面は穏やかでした。"
+  },
+  {
+    "en": "survey",
+    "jp": "調査",
+    "enSent": "The survey showed many useful facts.",
+    "jpSent": "その調査は多くの有用な事実を示しました。"
+  },
+  {
+    "en": "absorb",
+    "jp": "〜を吸収する",
+    "enSent": "Plants absorb water from the soil.",
+    "jpSent": "植物は土から水を吸収します。"
+  },
+  {
+    "en": "accept",
+    "jp": "〜を受け入れる",
+    "enSent": "She accepted the offer.",
+    "jpSent": "彼女はその申し出を受け入れました。"
+  },
+  {
+    "en": "admit",
+    "jp": "〜を認める、〜に入ることを許す",
+    "enSent": "He admitted his mistake.",
+    "jpSent": "彼は自分の間違いを認めました。"
+  },
+  {
+    "en": "adopt",
+    "jp": "〜を採用する",
+    "enSent": "The school adopted a new rule.",
+    "jpSent": "学校は新しい規則を採用しました。"
+  },
+  {
+    "en": "allow",
+    "jp": "〜を許す",
+    "enSent": "The teacher allowed us to leave early.",
+    "jpSent": "先生は私たちが早く帰ることを許しました。"
+  },
+  {
+    "en": "attract",
+    "jp": "〜を引きつける",
+    "enSent": "The festival attracts many visitors.",
+    "jpSent": "その祭りは多くの訪問者を引きつけます。"
+  },
+  {
+    "en": "avoid",
+    "jp": "〜を避ける",
+    "enSent": "We should avoid wasting water.",
+    "jpSent": "私たちは水を無駄にすることを避けるべきです。"
+  },
+  {
+    "en": "concern",
+    "jp": "〜に関係する、関心を持つ",
+    "enSent": "This problem concerns everyone in town.",
+    "jpSent": "この問題は町の全員に関係しています。"
+  },
+  {
+    "en": "consider",
+    "jp": "〜を熟考する",
+    "enSent": "Please consider my idea.",
+    "jpSent": "私の考えをよく考えてください。"
+  },
+  {
+    "en": "contribute",
+    "jp": "〜を寄付する",
+    "enSent": "She contributed money to the project.",
+    "jpSent": "彼女はその計画にお金を寄付しました。"
+  },
+  {
+    "en": "declare",
+    "jp": "〜を宣言する",
+    "enSent": "The leader declared the meeting open.",
+    "jpSent": "リーダーは会議の開始を宣言しました。"
+  },
+  {
+    "en": "decline",
+    "jp": "〜を断る",
+    "enSent": "He declined the invitation politely.",
+    "jpSent": "彼はその招待を丁寧に断りました。"
+  },
+  {
+    "en": "demand",
+    "jp": "〜を要求する",
+    "enSent": "The workers demanded better conditions.",
+    "jpSent": "労働者たちはよりよい条件を要求しました。"
+  },
+  {
+    "en": "deprive",
+    "jp": "〜を奪う",
+    "enSent": "The accident deprived him of sleep.",
+    "jpSent": "その事故は彼から睡眠を奪いました。"
+  },
+  {
+    "en": "describe",
+    "jp": "〜を表現する、描写する",
+    "enSent": "Can you describe the man you saw?",
+    "jpSent": "あなたが見た男性を描写できますか。"
+  },
+  {
+    "en": "earn",
+    "jp": "〜を得る、稼ぐ",
+    "enSent": "She earns money by teaching English.",
+    "jpSent": "彼女は英語を教えてお金を稼いでいます。"
+  },
+  {
+    "en": "encourage",
+    "jp": "〜を勇気づける",
+    "enSent": "His words encouraged the team.",
+    "jpSent": "彼の言葉はチームを勇気づけました。"
+  },
+  {
+    "en": "establish",
+    "jp": "〜を設立する",
+    "enSent": "They established a new company.",
+    "jpSent": "彼らは新しい会社を設立しました。"
+  },
+  {
+    "en": "estimate",
+    "jp": "〜を見積もる、推定する",
+    "enSent": "Experts estimated the cost of the project.",
+    "jpSent": "専門家はその計画の費用を見積もりました。"
+  },
+  {
+    "en": "inform",
+    "jp": "〜に知らせる",
+    "enSent": "Please inform us of any changes.",
+    "jpSent": "変更があれば私たちに知らせてください。"
+  },
+  {
+    "en": "insist",
+    "jp": "〜を強く要求する",
+    "enSent": "She insisted that the answer was correct.",
+    "jpSent": "彼女はその答えが正しいと強く主張しました。"
+  },
+  {
+    "en": "maintain",
+    "jp": "〜を維持する",
+    "enSent": "We must maintain clean water for everyone.",
+    "jpSent": "私たちはすべての人のためにきれいな水を維持しなければなりません。"
+  },
+  {
+    "en": "obtain",
+    "jp": "〜を手に入れる",
+    "enSent": "You must obtain permission before entering.",
+    "jpSent": "入る前に許可を得なければなりません。"
+  },
+  {
+    "en": "offer",
+    "jp": "〜を提供する",
+    "enSent": "The company offered him a new job.",
+    "jpSent": "その会社は彼に新しい仕事を提供しました。"
+  },
+  {
+    "en": "oppose",
+    "jp": "〜に反対する",
+    "enSent": "Many people opposed the plan.",
+    "jpSent": "多くの人がその計画に反対しました。"
+  },
+  {
+    "en": "perform",
+    "jp": "〜を演じる、行う",
+    "enSent": "The students performed a play in English.",
+    "jpSent": "生徒たちは英語で劇を演じました。"
+  },
+  {
+    "en": "permit",
+    "jp": "〜を許可する",
+    "enSent": "The rules do not permit smoking here.",
+    "jpSent": "規則はここでの喫煙を許可していません。"
+  },
+  {
+    "en": "persuade",
+    "jp": "〜を説得する",
+    "enSent": "She persuaded him to join the club.",
+    "jpSent": "彼女は彼を説得してクラブに入らせました。"
+  },
+  {
+    "en": "predict",
+    "jp": "〜を予測する",
+    "enSent": "Scientists predict heavy rain tomorrow.",
+    "jpSent": "科学者たちは明日大雨を予測しています。"
+  },
+  {
+    "en": "preserve",
+    "jp": "〜を保つ",
+    "enSent": "We should preserve old buildings.",
+    "jpSent": "私たちは古い建物を保存すべきです。"
+  },
+  {
+    "en": "prevent",
+    "jp": "〜を妨げる、防ぐ",
+    "enSent": "Washing hands helps prevent disease.",
+    "jpSent": "手を洗うことは病気を防ぐ助けになります。"
+  },
+  {
+    "en": "promote",
+    "jp": "〜を促進する",
+    "enSent": "The program promotes healthy eating.",
+    "jpSent": "そのプログラムは健康的な食生活を促進します。"
+  },
+  {
+    "en": "protect",
+    "jp": "〜を保護する、守る",
+    "enSent": "Helmets protect your head.",
+    "jpSent": "ヘルメットは頭を守ります。"
+  },
+  {
+    "en": "prove",
+    "jp": "〜を証明する、〜であるとわかる",
+    "enSent": "The evidence proved his story was true.",
+    "jpSent": "その証拠は彼の話が本当だと証明しました。"
+  },
+  {
+    "en": "provide",
+    "jp": "〜を与える、提供する",
+    "enSent": "The school provides lunch for students.",
+    "jpSent": "学校は生徒に昼食を提供します。"
+  },
+  {
+    "en": "raise",
+    "jp": "〜を上げる、育てる",
+    "enSent": "They raised enough money for the event.",
+    "jpSent": "彼らはその行事のために十分なお金を集めました。"
+  },
+  {
+    "en": "recommend",
+    "jp": "〜を推薦する、奨励する",
+    "enSent": "I recommend this book to beginners.",
+    "jpSent": "私は初心者にこの本をすすめます。"
+  },
+  {
+    "en": "regard",
+    "jp": "〜をみなす",
+    "enSent": "Many people regard him as a great artist.",
+    "jpSent": "多くの人は彼を偉大な芸術家とみなしています。"
+  },
+  {
+    "en": "remind",
+    "jp": "〜に思い出させる",
+    "enSent": "This song reminds me of summer.",
+    "jpSent": "この歌は私に夏を思い出させます。"
+  },
+  {
+    "en": "remove",
+    "jp": "〜を取り除く",
+    "enSent": "Please remove your shoes at the door.",
+    "jpSent": "玄関で靴を脱いでください。"
+  },
+  {
+    "en": "request",
+    "jp": "〜を頼む",
+    "enSent": "She requested more information.",
+    "jpSent": "彼女はより多くの情報を求めました。"
+  },
+  {
+    "en": "suggest",
+    "jp": "〜を提案する",
+    "enSent": "He suggested a different solution.",
+    "jpSent": "彼は別の解決策を提案しました。"
   },
   {
     "en": "Require",
     "jp": "必要とする",
     "enSent": "This job requires English.",
     "jpSent": "この仕事は英語を必要とします。"
-  },
-  {
-    "en": "Encourage",
-    "jp": "励ます / 促す",
-    "enSent": "My mother encourages me.",
-    "jpSent": "母は私を励ましてくれます。"
-  },
-  {
-    "en": "Preserve",
-    "jp": "保護する / 保存する",
-    "enSent": "We must preserve nature.",
-    "jpSent": "私たちは自然を保護しなければなりません。"
   },
   {
     "en": "Determine",
@@ -51,12 +864,6 @@ const eikenGrade2VocabData = [
     "jpSent": "彼は私に謝りました。"
   },
   {
-    "en": "Prevent",
-    "jp": "防ぐ / 妨げる",
-    "enSent": "This medicine prevents colds.",
-    "jpSent": "この薬は風邪を防ぎます。"
-  },
-  {
     "en": "Reduce",
     "jp": "減らす",
     "enSent": "We must reduce garbage.",
@@ -67,12 +874,6 @@ const eikenGrade2VocabData = [
     "jp": "生産する",
     "enSent": "This factory produces cars.",
     "jpSent": "この工場は車を生産しています。"
-  },
-  {
-    "en": "Accept",
-    "jp": "受け入れる",
-    "enSent": "I accept your gift.",
-    "jpSent": "あなたの贈り物を受け入れます。"
   },
   {
     "en": "Replace",
@@ -99,22 +900,10 @@ const eikenGrade2VocabData = [
     "jpSent": "彼は目標を達成しました。"
   },
   {
-    "en": "Establish",
-    "jp": "設立する",
-    "enSent": "They established a new school.",
-    "jpSent": "彼らは新しい学校を設立しました。"
-  },
-  {
     "en": "Represent",
     "jp": "代表する",
     "enSent": "He represents our team.",
     "jpSent": "彼は私たちのチームを代表しています。"
-  },
-  {
-    "en": "Suggest",
-    "jp": "提案する",
-    "enSent": "I suggest a new plan.",
-    "jpSent": "新しい計画を提案します。"
   },
   {
     "en": "Compare",
@@ -133,12 +922,6 @@ const eikenGrade2VocabData = [
     "jp": "候補者",
     "enSent": "She is a good candidate.",
     "jpSent": "彼女は良い候補者です。"
-  },
-  {
-    "en": "Pollution",
-    "jp": "汚染",
-    "enSent": "Air pollution is bad.",
-    "jpSent": "大気汚染は悪いです。"
   },
   {
     "en": "Decade",
@@ -181,12 +964,6 @@ const eikenGrade2VocabData = [
     "jp": "影響",
     "enSent": "TV has a big influence.",
     "jpSent": "テレビは大きな影響を与えます。"
-  },
-  {
-    "en": "Opportunity",
-    "jp": "機会 / チャンス",
-    "enSent": "This is a great opportunity.",
-    "jpSent": "これは素晴らしいチャンスです。"
   },
   {
     "en": "Resident",
@@ -255,18 +1032,6 @@ const eikenGrade2VocabData = [
     "jpSent": "子供には忍耐強く接しなさい。"
   },
   {
-    "en": "Significant",
-    "jp": "重要な / かなりの",
-    "enSent": "It is a significant change.",
-    "jpSent": "それは重要な変化です。"
-  },
-  {
-    "en": "Available",
-    "jp": "利用できる / 手に入る",
-    "enSent": "Is this seat available?",
-    "jpSent": "この席は利用できますか？"
-  },
-  {
     "en": "Familiar",
     "jp": "なじみのある",
     "enSent": "I am familiar with this song.",
@@ -303,12 +1068,6 @@ const eikenGrade2VocabData = [
     "jpSent": "天気が厳しいです。"
   },
   {
-    "en": "Valuable",
-    "jp": "価値のある",
-    "enSent": "Time is valuable.",
-    "jpSent": "時間は価値があります。"
-  },
-  {
     "en": "Traditional",
     "jp": "伝統的な",
     "enSent": "This is a traditional dance.",
@@ -325,12 +1084,6 @@ const eikenGrade2VocabData = [
     "jp": "不可欠な",
     "enSent": "Water is essential for life.",
     "jpSent": "水は生命に不可欠です。"
-  },
-  {
-    "en": "Exactly",
-    "jp": "正確に / ぴったり",
-    "enSent": "That is exactly right.",
-    "jpSent": "それはまったくその通りです。"
   },
   {
     "en": "Gradually",
@@ -489,12 +1242,6 @@ const eikenGrade2VocabData = [
     "jpSent": "お茶に砂糖を加えてください。"
   },
   {
-    "en": "admit",
-    "jp": "認める",
-    "enSent": "He admitted his mistake.",
-    "jpSent": "彼は自分の間違いを認めました。"
-  },
-  {
     "en": "affect",
     "jp": "影響を与える",
     "enSent": "The weather affects my mood.",
@@ -505,12 +1252,6 @@ const eikenGrade2VocabData = [
     "jp": "同意する",
     "enSent": "I agree with you.",
     "jpSent": "私はあなたに同意します。"
-  },
-  {
-    "en": "allow",
-    "jp": "許可する",
-    "enSent": "My parents allow me to play games.",
-    "jpSent": "両親は私がゲームをするのを許してくれます。"
   },
   {
     "en": "announce",
@@ -565,12 +1306,6 @@ const eikenGrade2VocabData = [
     "jp": "出席する",
     "enSent": "I will attend the meeting.",
     "jpSent": "私は会議に出席します。"
-  },
-  {
-    "en": "avoid",
-    "jp": "避ける",
-    "enSent": "You should avoid eating too much.",
-    "jpSent": "食べ過ぎを避けるべきです。"
   },
   {
     "en": "base",
@@ -663,12 +1398,6 @@ const eikenGrade2VocabData = [
     "jpSent": "勉強に集中する必要があります。"
   },
   {
-    "en": "concern",
-    "jp": "心配させる",
-    "enSent": "This problem concerns me.",
-    "jpSent": "この問題は私を心配させます。"
-  },
-  {
     "en": "conclude",
     "jp": "結論づける",
     "enSent": "The meeting concluded at 5.",
@@ -685,12 +1414,6 @@ const eikenGrade2VocabData = [
     "jp": "つなぐ",
     "enSent": "Connect the cable to the PC.",
     "jpSent": "ケーブルをパソコンにつないでください。"
-  },
-  {
-    "en": "consider",
-    "jp": "よく考える",
-    "enSent": "I will consider your offer.",
-    "jpSent": "あなたの提案をよく考えます。"
   },
   {
     "en": "consist",
@@ -715,12 +1438,6 @@ const eikenGrade2VocabData = [
     "jp": "続ける",
     "enSent": "The rain continued all day.",
     "jpSent": "雨は一日中続きました。"
-  },
-  {
-    "en": "contribute",
-    "jp": "貢献する",
-    "enSent": "He contributed to the project.",
-    "jpSent": "彼はプロジェクトに貢献しました。"
   },
   {
     "en": "control",
@@ -765,22 +1482,10 @@ const eikenGrade2VocabData = [
     "jpSent": "嵐が家に被害を与えました。"
   },
   {
-    "en": "deal",
-    "jp": "扱う",
-    "enSent": "I have to deal with this problem.",
-    "jpSent": "この問題に対処しなければなりません。"
-  },
-  {
     "en": "decide",
     "jp": "決める",
     "enSent": "I decided to study abroad.",
     "jpSent": "留学することに決めました。"
-  },
-  {
-    "en": "decrease",
-    "jp": "減らす",
-    "enSent": "We need to decrease waste.",
-    "jpSent": "ゴミを減らす必要があります。"
   },
   {
     "en": "defeat",
@@ -807,12 +1512,6 @@ const eikenGrade2VocabData = [
     "jpSent": "郵便は毎日配達されます。"
   },
   {
-    "en": "demand",
-    "jp": "要求する",
-    "enSent": "They demanded more money.",
-    "jpSent": "彼らはもっとお金を要求しました。"
-  },
-  {
     "en": "deny",
     "jp": "否定する",
     "enSent": "He denied the rumor.",
@@ -823,12 +1522,6 @@ const eikenGrade2VocabData = [
     "jp": "依存する",
     "enSent": "It depends on the weather.",
     "jpSent": "それは天気次第です。"
-  },
-  {
-    "en": "describe",
-    "jp": "描写する",
-    "enSent": "Can you describe the man?",
-    "jpSent": "その男の人について説明できますか？"
   },
   {
     "en": "destroy",
@@ -891,12 +1584,6 @@ const eikenGrade2VocabData = [
     "jpSent": "ケーキを4つに分けてください。"
   },
   {
-    "en": "earn",
-    "jp": "稼ぐ",
-    "enSent": "He earns a lot of money.",
-    "jpSent": "彼はたくさんのお金を稼いでいます。"
-  },
-  {
     "en": "educate",
     "jp": "教育する",
     "enSent": "Schools educate children.",
@@ -919,12 +1606,6 @@ const eikenGrade2VocabData = [
     "jp": "入る",
     "enSent": "Please enter the room.",
     "jpSent": "部屋に入ってください。"
-  },
-  {
-    "en": "estimate",
-    "jp": "見積もる",
-    "enSent": "We estimated the cost.",
-    "jpSent": "私たちは費用を見積もりました。"
   },
   {
     "en": "examine",
@@ -2355,12 +3036,6 @@ const eikenGrade2VocabData = [
     "jpSent": "クラブ活動は楽しいです。"
   },
   {
-    "en": "advantage",
-    "jp": "利点 / 有利",
-    "enSent": "He has a big advantage.",
-    "jpSent": "彼には大きな利点があります。"
-  },
-  {
     "en": "advice",
     "jp": "助言",
     "enSent": "Can you give me some advice?",
@@ -2421,18 +3096,6 @@ const eikenGrade2VocabData = [
     "jpSent": "私は現代建築を勉強しています。"
   },
   {
-    "en": "article",
-    "jp": "記事 / 品物",
-    "enSent": "I read an article about space.",
-    "jpSent": "宇宙に関する記事を読みました。"
-  },
-  {
-    "en": "aspect",
-    "jp": "側面",
-    "enSent": "This is one aspect of the problem.",
-    "jpSent": "これは問題の一つの側面です。"
-  },
-  {
     "en": "attempt",
     "jp": "試み",
     "enSent": "He made a brave attempt.",
@@ -2443,18 +3106,6 @@ const eikenGrade2VocabData = [
     "jp": "注意",
     "enSent": "Pay attention to the teacher.",
     "jpSent": "先生に注意を払いなさい。"
-  },
-  {
-    "en": "attitude",
-    "jp": "態度",
-    "enSent": "He has a positive attitude.",
-    "jpSent": "彼は前向きな態度を持っています。"
-  },
-  {
-    "en": "audience",
-    "jp": "聴衆 / 観客",
-    "enSent": "The audience clapped loudly.",
-    "jpSent": "観客は大きな拍手をしました。"
   },
   {
     "en": "author",
@@ -2485,12 +3136,6 @@ const eikenGrade2VocabData = [
     "jp": "基礎 / 基準",
     "enSent": "We work on a daily basis.",
     "jpSent": "私たちは日々の基準で働いています。"
-  },
-  {
-    "en": "behavior",
-    "jp": "振る舞い / 行動",
-    "enSent": "His behavior is strange.",
-    "jpSent": "彼の行動は変です。"
   },
   {
     "en": "belief",
@@ -2793,12 +3438,6 @@ const eikenGrade2VocabData = [
     "jpSent": "実際のサイズはどれくらいですか？"
   },
   {
-    "en": "additional",
-    "jp": "追加の",
-    "enSent": "I need additional information.",
-    "jpSent": "追加の情報が必要です。"
-  },
-  {
     "en": "adequate",
     "jp": "十分な",
     "enSent": "We have adequate food.",
@@ -2809,12 +3448,6 @@ const eikenGrade2VocabData = [
     "jp": "代わりの",
     "enSent": "Do you have an alternative plan?",
     "jpSent": "代わりの計画はありますか？"
-  },
-  {
-    "en": "ancient",
-    "jp": "古代の",
-    "enSent": "I like ancient history.",
-    "jpSent": "私は古代の歴史が好きです。"
   },
   {
     "en": "apparent",
@@ -2857,12 +3490,6 @@ const eikenGrade2VocabData = [
     "jp": "広い",
     "enSent": "He has broad shoulders.",
     "jpSent": "彼は肩幅が広いです。"
-  },
-  {
-    "en": "chemical",
-    "jp": "化学の",
-    "enSent": "This is a chemical change.",
-    "jpSent": "これは化学変化です。"
   },
   {
     "en": "chief",
@@ -3003,12 +3630,6 @@ const eikenGrade2VocabData = [
     "jpSent": "このテレビ番組は教育的です。"
   },
   {
-    "en": "effective",
-    "jp": "効果的な",
-    "enSent": "This medicine is very effective.",
-    "jpSent": "この薬はとても効果的です。"
-  },
-  {
     "en": "elderly",
     "jp": "年配の",
     "enSent": "We must help elderly people.",
@@ -3133,12 +3754,6 @@ const eikenGrade2VocabData = [
     "jp": "即座の",
     "enSent": "We need an immediate answer.",
     "jpSent": "即座の返事が必要です。"
-  },
-  {
-    "en": "individual",
-    "jp": "個人の",
-    "enSent": "We respect individual differences.",
-    "jpSent": "私たちは個人の違いを尊重します。"
   },
   {
     "en": "be absorbed in",

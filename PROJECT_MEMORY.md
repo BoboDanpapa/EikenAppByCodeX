@@ -15,10 +15,10 @@ This file records durable project context for future Codex sessions. Read this b
 
 ## Current Stable Version
 
-- Current version after the study-order, action-alignment, and part-of-speech badge release: `1.1.35`
-- Current `versionCode`: `21`
+- Current version after the Grade 2 screenshot-priority vocabulary update: `1.1.36`
+- Current `versionCode`: `22`
 - Latest local release APK:
-  `releases/eiken-magicwords-v1.1.35-study-order-pos-badge.apk`
+  `releases/eiken-magicwords-v1.1.36-grade2-screenshot-priority.apk`
 
 ## Major Version History
 
@@ -56,6 +56,8 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.35`: Reordered 英検4級・3級・1級 study-card vocabulary so learner-facing cards start with high-frequency and exam-important items instead of A-starting phrase clusters. Android assets and PWA assets were synced, while the independent quiz deck order remains separate from study order. PWA JavaScript assets now use network-first service-worker fetches so vocabulary updates are not hidden by stale cache on first open.
 - `v1.1.35`: Development PWA keeps the `先生に聞く` teacher button enabled for testing in `BoboDanpapa/EikenAppByCodeX`, while the friend-facing `BoboDanpapa/EikenMagicwordsPWA` release disables only that teacher button. The three study action buttons (`発音を聞く`, `復習に追加`, `先生に聞く`) are laid out as equal-width aligned controls.
 - `v1.1.35`: Restored the study-card part-of-speech corner badge across Android, preview, and PWA. The badge shows `動`, `名`, `形`, `副`, or `熟` in the card's top-right corner, with optional related-word details for selected words.
+- `v1.1.36`: Added the user's Grade 2 textbook screenshot vocabulary as the highest-priority Grade 2 study block. The 141 photographed rows were normalized into 139 unique words/phrases by merging duplicate `operate` and `separate` senses; 36 already existed exactly, and 103 were newly added. Grade 2 now starts with these screenshot terms in image order, while keeping the rest of the existing Grade 2 list afterward.
+- `v1.1.36`: Hardened the PWA Gemini teacher backend against intermittent high-demand/model-overload failures. The Worker now uses `gemini-2.5-flash-lite` as the default text Q&A model, keeps `gemini-2.5-flash` as `GEMINI_FALLBACK_MODEL`, retries the primary model with exponential backoff, honors `Retry-After`, and then tries the fallback model before showing the friendly congestion message.
 - PWA teacher panel should not display the `のこり` remaining-time row; keep the daily limit internally, but only show current-card time and today's used teacher time.
 
 ## Important Behavior

@@ -202,6 +202,7 @@ if (checkBackend) {
     "Do not reuse the provided example sentence",
     "Only discuss English learning for the current vocabulary card",
     "GEMINI_RETRY_DELAY_MS",
+    "GEMINI_FALLBACK_MODEL",
     "DEFAULT_MAX_OUTPUT_TOKENS"
   ]) {
     assert(backendSource.includes(required), `Missing backend teacher requirement: ${required}`);

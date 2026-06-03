@@ -1,4 +1,5 @@
-const DEFAULT_MODEL = "gemini-2.5-flash";
+const DEFAULT_MODEL = "gemini-2.5-flash-lite";
+const DEFAULT_FALLBACK_MODEL = "gemini-2.5-flash";
 const DEFAULT_RETRY_DELAY_MS = 700;
 const DEFAULT_MAX_OUTPUT_TOKENS = 700;
 const TRUNCATED_RETRY_MAX_OUTPUT_TOKENS = 900;
@@ -132,10 +133,31 @@ function shouldRetryGeminiError(result) {
   return /high demand|overloaded|temporar|try again later|rate.?limit|quota|unavailable/i.test(String(result.error));
 }
 
-function getRetryDelayMs(env) {
+function getRetryDelayMs(env, attempt = 0, retryAfterMs = 0) {
+  if (Number.isFinite(retryAfterMs) && retryAfterMs > 0) {
+    return Math.max(100, Math.min(4000, retryAfterMs));
+  }
   const configured = Number(env.GEMINI_RETRY_DELAY_MS);
-  if (!Number.isFinite(configured)) return DEFAULT_RETRY_DELAY_MS;
-  return Math.max(100, Math.min(3000, configured));
+  const base = Number.isFinite(configured) ? configured : DEFAULT_RETRY_DELAY_MS;
+  return Math.max(100, Math.min(4000, base * Math.pow(2, attempt)));
+}
+
+function getRetryAfterMs(response) {
+  const retryAfter = response.headers.get("Retry-After");
+  if (!retryAfter) return 0;
+  const seconds = Number(retryAfter);
+  if (Number.isFinite(seconds)) return seconds * 1000;
+  const dateMs = Date.parse(retryAfter);
+  if (Number.isFinite(dateMs)) return dateMs - Date.now();
+  return 0;
+}
+
+function getGeminiModels(env) {
+  const models = [
+    env.GEMINI_MODEL || DEFAULT_MODEL,
+    env.GEMINI_FALLBACK_MODEL || DEFAULT_FALLBACK_MODEL
+  ].map(model => cleanText(model, 120)).filter(Boolean);
+  return [...new Set(models)];
 }
 
 function wait(ms) {
@@ -169,7 +191,8 @@ async function callGeminiOnce(question, context, model, apiKey, options = {}) {
   if (!response.ok) {
     return {
       error: data?.error?.message || `Gemini request failed with ${response.status}`,
-      status: response.status
+      status: response.status,
+      retryAfterMs: getRetryAfterMs(response)
     };
   }
   if (data?.candidates?.[0]?.finishReason === "MAX_TOKENS") {
@@ -184,32 +207,41 @@ async function askGemini(question, context, env) {
   if (!env.GEMINI_API_KEY) {
     return { error: "GEMINI_API_KEY is not configured", status: 500 };
   }
-  const model = env.GEMINI_MODEL || DEFAULT_MODEL;
-  const firstResult = await callGeminiOnce(question, context, model, env.GEMINI_API_KEY);
-  if (firstResult.reason === "truncated") {
-    await wait(getRetryDelayMs(env));
-    const compactResult = await callGeminiOnce(question, context, model, env.GEMINI_API_KEY, {
-      compactRetry: true,
-      maxOutputTokens: TRUNCATED_RETRY_MAX_OUTPUT_TOKENS
-    });
-    if (compactResult.error) {
-      return {
-        ...compactResult,
-        retried: true
-      };
+  const models = getGeminiModels(env);
+  let lastRetryableResult = null;
+
+  for (const [modelIndex, model] of models.entries()) {
+    const attemptsForModel = modelIndex === 0 ? 2 : 1;
+    for (let attempt = 0; attempt < attemptsForModel; attempt += 1) {
+      if (attempt > 0) await wait(getRetryDelayMs(env, attempt - 1, lastRetryableResult?.retryAfterMs));
+      const result = await callGeminiOnce(question, context, model, env.GEMINI_API_KEY);
+      if (result.reason === "truncated") {
+        await wait(getRetryDelayMs(env, attempt, result.retryAfterMs));
+        const compactResult = await callGeminiOnce(question, context, model, env.GEMINI_API_KEY, {
+          compactRetry: true,
+          maxOutputTokens: TRUNCATED_RETRY_MAX_OUTPUT_TOKENS
+        });
+        if (!compactResult.error) return compactResult;
+        if (!shouldRetryGeminiError(compactResult)) {
+          return {
+            ...compactResult,
+            retried: true,
+            model
+          };
+        }
+        lastRetryableResult = compactResult;
+        continue;
+      }
+      if (!result.error) return result;
+      if (!shouldRetryGeminiError(result)) return result;
+      lastRetryableResult = result;
     }
-    return compactResult;
   }
-  if (!shouldRetryGeminiError(firstResult)) return firstResult;
-  await wait(getRetryDelayMs(env));
-  const secondResult = await callGeminiOnce(question, context, model, env.GEMINI_API_KEY);
-  if (secondResult.error) {
-    return {
-      ...secondResult,
-      retried: true
-    };
-  }
-  return secondResult;
+
+  return {
+    ...(lastRetryableResult || { error: "Gemini is temporarily unavailable", status: 503 }),
+    retried: true
+  };
 }
 
 async function handleTeacherAsk(request, env) {
@@ -234,7 +266,8 @@ export default {
       if (request.method === "GET" && url.pathname === "/health") {
         return jsonResponse(request, env, 200, {
           ok: true,
-          model: env.GEMINI_MODEL || DEFAULT_MODEL,
+          model: getGeminiModels(env)[0],
+          fallbackModel: getGeminiModels(env)[1] || "",
           configured: Boolean(env.GEMINI_API_KEY)
         });
       }
