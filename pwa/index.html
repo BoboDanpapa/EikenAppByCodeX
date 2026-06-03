@@ -138,6 +138,12 @@
         .options { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
         .option-btn { background-color: white; border: 3px solid var(--container-border); color: var(--accent-text); padding: 15px; font-size: clamp(16px, 4.5vw, 18px); line-height: 1.25; font-weight: bold; border-radius: 20px; cursor: pointer; transition: 0.2s; font-family: inherit; min-height: 52px; overflow-wrap: anywhere; }
         .option-btn:hover { background-color: var(--soft-bg); transform: scale(1.02); }
+        .option-btn.correct-answer { background-color: #a5d6a7 !important; border-color: #4caf50 !important; color: #1b5e20 !important; }
+        .option-btn.wrong-answer { background-color: #ef9a9a !important; border-color: #f44336 !important; color: #b71c1c !important; }
+        .quiz-answer-card { background: #fff8e1; border: 3px dashed #ffb74d; border-radius: 18px; padding: 14px; text-align: left; color: #4a235a; font-weight: bold; line-height: 1.55; }
+        .quiz-answer-card .answer-row { margin-top: 8px; overflow-wrap: anywhere; }
+        .quiz-answer-card .answer-label { color: #d81b60; }
+        .reward-preview-img { width: min(230px, 74vw); aspect-ratio: 506 / 800; object-fit: contain; background: #20182a; border-radius: 16px; border: 4px solid #ce93d8; box-shadow: 0 8px 22px rgba(0,0,0,0.24); margin-bottom: 12px; }
         .status-box { background-color: var(--soft-bg); border: 2px dashed var(--dash-color); border-radius: 20px; padding: 15px; margin-bottom: 20px; text-align: center; }
         .level-title { font-size: 16px; color: #666; font-weight: bold; margin-bottom: 8px; }
         .level-title span { color: #d81b60; font-size: 20px; }
@@ -352,7 +358,7 @@
     </div>
 
     <div id="quiz" class="container hidden">
-        <h2 class="screen-title">鬼殺隊入隊試験</h2>
+        <h2 class="screen-title">鬼殺隊入隊試練</h2>
         <div class="status-box">
             <div class="level-title" id="current-title">現在の階級：<span id="display-title">訓練生</span></div>
             <div class="streak-bar">連撃: <span id="streak" style="font-size: 32px;">0</span> / <span id="target">3</span></div>
@@ -424,7 +430,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.36</div>
+<div class="version-badge">v1.1.37</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -1992,11 +1998,13 @@ function speakQuizWord() {
 
 function checkAnswer(sel, btn) {
     const progress = getProgress();
-    document.querySelectorAll(".option-btn").forEach(b => b.disabled = true);
-    if (sel === currentQuizWord.jp) {
-        btn.style.backgroundColor = "#a5d6a7";
-        btn.style.borderColor = "#4caf50";
-        btn.style.color = "#1b5e20";
+    const correctAnswer = currentQuizWord.jp;
+    document.querySelectorAll(".option-btn").forEach(b => {
+        b.disabled = true;
+        if (b.innerText === correctAnswer) b.classList.add("correct-answer");
+    });
+    if (sel === correctAnswer) {
+        btn.classList.add("correct-answer");
         progress.streak++;
         document.getElementById("streak").innerText = progress.streak;
         saveAppState();
@@ -2009,17 +2017,20 @@ function checkAnswer(sel, btn) {
             }
         }, 500);
     } else {
-        btn.style.backgroundColor = "#ef9a9a";
-        btn.style.borderColor = "#f44336";
-        btn.style.color = "#b71c1c";
+        btn.classList.add("wrong-answer");
         progress.streak = 0;
         document.getElementById("streak").innerText = progress.streak;
         saveAppState();
-        setTimeout(() => {
-            progress.quizWordEn = null;
-            progress.quizOptions = [];
-            loadQuizWord(true);
-        }, 700);
+        openModal(
+            "不正解！",
+            "正しい答えを確認してから、次の問題へ進もう。",
+            `<div class="quiz-answer-card">
+                <div class="answer-row"><span class="answer-label">問題：</span>${escapeHtml(currentQuizWord.en)}</div>
+                <div class="answer-row"><span class="answer-label">正解：</span>${escapeHtml(correctAnswer)}</div>
+                <div class="answer-row"><span class="answer-label">あなたの答え：</span>${escapeHtml(sel)}</div>
+            </div>`,
+            [{ label: "次の問題へ", action: () => { closeModal(); progress.quizWordEn = null; progress.quizOptions = []; loadQuizWord(true); } }]
+        );
     }
 }
 
@@ -2034,7 +2045,7 @@ function levelUp() {
     openModal(
         `階級昇格：【${lvl.title}】！`,
         "新しい仲間が駆けつけた！",
-        `<img src="images/char_${progress.currentLevelIndex - 1}.jpg" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:4px solid #ce93d8; box-shadow:0 5px 15px rgba(0,0,0,0.3); margin-bottom:10px;" alt="character"><br><span style="font-size:28px; color:#4a235a;">${escapeHtml(lvl.reward)}</span>`,
+        `<img src="images/char_${progress.currentLevelIndex - 1}.jpg" class="reward-preview-img" alt="character" onerror="this.style.display='none';"><br><span style="font-size:28px; color:#4a235a;">${escapeHtml(lvl.reward)}</span>`,
         [{ label: "次の試練へ", action: () => { closeModal(); progress.quizWordEn = null; progress.quizOptions = []; loadQuizWord(true); } }]
     );
 }
@@ -2051,7 +2062,7 @@ function renderGallery() {
             d.style.backgroundSize = "cover";
             d.style.backgroundPosition = "center";
             d.innerHTML = `
-                <div style="background:rgba(0,0,0,0.5); width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:12px; color:white; text-shadow:1px 1px 3px black; padding:5px;">
+                <div style="background:linear-gradient(to top, rgba(0,0,0,0.34), rgba(0,0,0,0.04)); width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:12px; color:white; text-shadow:1px 1px 3px black; padding:5px;">
                     <span style="font-size:12px;">${escapeHtml(c.title)}</span>
                     <strong style="font-size:14px; margin-top:5px; white-space:pre-line">${escapeHtml(c.reward)}</strong>
                 </div>

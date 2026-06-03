@@ -15,10 +15,10 @@ This file records durable project context for future Codex sessions. Read this b
 
 ## Current Stable Version
 
-- Current version after the Grade 2 screenshot-priority vocabulary update: `1.1.36`
-- Current `versionCode`: `22`
+- Current version after the final challenge feedback and photo display fix: `1.1.37`
+- Current `versionCode`: `23`
 - Latest local release APK:
-  `releases/eiken-magicwords-v1.1.36-grade2-screenshot-priority.apk`
+  `releases/eiken-magicwords-v1.1.37-quiz-feedback-final-photo.apk`
 
 ## Major Version History
 
@@ -58,6 +58,7 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.35`: Restored the study-card part-of-speech corner badge across Android, preview, and PWA. The badge shows `動`, `名`, `形`, `副`, or `熟` in the card's top-right corner, with optional related-word details for selected words.
 - `v1.1.36`: Added the user's Grade 2 textbook screenshot vocabulary as the highest-priority Grade 2 study block. The 141 photographed rows were normalized into 139 unique words/phrases by merging duplicate `operate` and `separate` senses; 36 already existed exactly, and 103 were newly added. Grade 2 now starts with these screenshot terms in image order, while keeping the rest of the existing Grade 2 list afterward.
 - `v1.1.36`: Hardened the PWA Gemini teacher backend against intermittent high-demand/model-overload failures. The Worker now uses `gemini-2.5-flash-lite` as the default text Q&A model, keeps `gemini-2.5-flash` as `GEMINI_FALLBACK_MODEL`, retries the primary model with exponential backoff, honors `Retry-After`, and then tries the fallback model before showing the friendly congestion message.
+- `v1.1.37`: Fixed the challenge screen title from `鬼殺隊入隊試験` to `鬼殺隊入隊試練`, changed wrong quiz answers to show the correct answer before the next question, and adjusted the final level reward/gallery image display so `char_19.jpg` is shown as a visible rectangular preview instead of a dark circular crop. `FinalLevelPreview.html` is a local-only visual preview for the level 20 completion state.
 - PWA teacher panel should not display the `のこり` remaining-time row; keep the daily limit internally, but only show current-card time and today's used teacher time.
 
 ## Important Behavior

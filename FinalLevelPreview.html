@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20級通關プレビュー</title>
+    <style>
+        :root {
+            --page-bg: #f8f0ff;
+            --panel-bg: #fff;
+            --ink: #4a235a;
+            --muted: #6f6075;
+            --accent: #9c27b0;
+            --hot: #d81b60;
+            --border: #ce93d8;
+            --gold: #ffb74d;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Hiragino Maru Gothic ProN", "Yu Gothic", system-ui, sans-serif;
+            background: radial-gradient(circle at top, #fff 0, var(--page-bg) 52%, #ead9f5 100%);
+            color: var(--ink);
+            display: flex;
+            justify-content: center;
+            padding: 28px 14px;
+        }
+
+        main {
+            width: min(960px, 100%);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--accent);
+            font-size: clamp(24px, 5vw, 34px);
+            line-height: 1.15;
+        }
+
+        .badge {
+            flex: 0 0 auto;
+            border: 2px solid var(--border);
+            border-radius: 999px;
+            background: rgba(255,255,255,0.8);
+            color: var(--hot);
+            font-weight: bold;
+            padding: 8px 12px;
+            box-shadow: 0 4px 12px rgba(156,39,176,0.16);
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .panel {
+            background: rgba(255,255,255,0.9);
+            border: 4px solid var(--border);
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(156,39,176,0.18);
+            padding: 22px;
+        }
+
+        .panel h2 {
+            margin: 0 0 10px;
+            color: var(--hot);
+            font-size: 24px;
+        }
+
+        .muted {
+            margin: 0 0 18px;
+            color: var(--muted);
+            font-weight: bold;
+            line-height: 1.55;
+        }
+
+        .gallery-card {
+            width: min(220px, 100%);
+            height: 300px;
+            margin: 0 auto;
+            border: 4px solid #ff758c;
+            border-radius: 18px;
+            overflow: hidden;
+            cursor: pointer;
+            background-image: url("images/char_19.jpg");
+            background-size: cover;
+            background-position: center 42%;
+            box-shadow: 0 10px 24px rgba(255,117,140,0.32);
+            position: relative;
+        }
+
+        .gallery-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.34), rgba(0,0,0,0.02) 62%);
+        }
+
+        .gallery-label {
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            z-index: 1;
+            color: white;
+            text-align: center;
+            text-shadow: 1px 1px 4px black;
+            font-weight: bold;
+        }
+
+        .gallery-label span {
+            display: block;
+            font-size: 13px;
+            color: #ffe0b2;
+        }
+
+        .gallery-label strong {
+            display: block;
+            margin-top: 3px;
+            font-size: 19px;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 999px;
+            padding: 12px 18px;
+            min-height: 44px;
+            background: #ffd54f;
+            color: #8a3c00;
+            font: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #ffb300;
+        }
+
+        button.secondary {
+            background: #b3e5fc;
+            color: #0277bd;
+            box-shadow: 0 5px 0 #4fc3f7;
+        }
+
+        button:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.24);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 20;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: rgba(0,0,0,0.58);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            width: min(430px, 100%);
+            max-height: calc(100vh - 32px);
+            overflow: auto;
+            background: var(--panel-bg);
+            border: 5px solid var(--border);
+            border-radius: 26px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 18px 48px rgba(156,39,176,0.46);
+        }
+
+        .modal h2 {
+            margin: 0;
+            color: var(--hot);
+            font-size: clamp(24px, 7vw, 32px);
+            line-height: 1.2;
+        }
+
+        .modal p {
+            margin: 10px 0 16px;
+            color: var(--muted);
+            font-weight: bold;
+        }
+
+        .reward-image {
+            display: block;
+            width: min(260px, 76vw);
+            aspect-ratio: 506 / 800;
+            margin: 0 auto 12px;
+            border-radius: 16px;
+            border: 4px solid var(--border);
+            object-fit: contain;
+            background: #20182a;
+            box-shadow: 0 9px 24px rgba(0,0,0,0.24);
+        }
+
+        .reward-name {
+            color: var(--ink);
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .fullscreen-view {
+            position: fixed;
+            inset: 0;
+            z-index: 30;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            padding: 18px;
+            background: rgba(0,0,0,0.92);
+        }
+
+        .fullscreen-view.active { display: flex; }
+
+        .fullscreen-img {
+            max-width: min(92vw, 560px);
+            max-height: 74vh;
+            object-fit: contain;
+            border-radius: 18px;
+            border: 5px solid white;
+            box-shadow: 0 0 32px rgba(255,255,255,0.42);
+            background: #111;
+        }
+
+        .fullscreen-text {
+            color: white;
+            text-align: center;
+            text-shadow: 2px 2px 4px black;
+        }
+
+        .fullscreen-text .title {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .fullscreen-text .name {
+            font-weight: bold;
+            font-size: clamp(28px, 8vw, 42px);
+        }
+
+        .image-error {
+            display: none;
+            margin: 10px auto;
+            color: #c62828;
+            font-weight: bold;
+            background: #ffebee;
+            border-radius: 14px;
+            padding: 10px;
+        }
+
+        @media (max-width: 760px) {
+            body { padding: 18px 10px; }
+            .topbar { align-items: flex-start; flex-direction: column; }
+            .preview-grid { grid-template-columns: 1fr; }
+            .panel { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="topbar">
+        <h1>20級通關プレビュー</h1>
+        <div class="badge">鬼殺隊入隊試練</div>
+    </div>
+
+    <section class="preview-grid">
+        <div class="panel">
+            <h2>通關瞬間</h2>
+            <p class="muted">ページを開くと、実際の20級通關後に近い報酬ポップアップを表示します。</p>
+            <div class="button-row">
+                <button type="button" onclick="openRewardModal()">通關ポップアップをもう一度見る</button>
+            </div>
+        </div>
+
+        <div class="panel" id="gallery-panel">
+            <h2>絆の図鑑：最後の1枚</h2>
+            <p class="muted">小さいカードでも黒くつぶれすぎないように、暗い遮罩を薄くした状態です。</p>
+            <div class="gallery-card" role="button" tabindex="0" onclick="openFullscreen()" onkeydown="handleCardKey(event)">
+                <div class="gallery-label">
+                    <span>鬼殺隊当主</span>
+                    <strong>産屋敷 耀哉</strong>
+                </div>
+            </div>
+            <div class="button-row">
+                <button class="secondary" type="button" onclick="openFullscreen()">全画面で見る</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="modal-overlay" id="reward-modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <h2 id="modal-title">階級昇格：【鬼殺隊当主】！</h2>
+        <p>最後の仲間が駆けつけた！</p>
+        <img class="reward-image" src="images/char_19.jpg" alt="産屋敷 耀哉" onerror="showImageError('modal-error')">
+        <div class="image-error" id="modal-error">画像を読み込めませんでした。</div>
+        <div class="reward-name">産屋敷 耀哉</div>
+        <div class="button-row">
+            <button type="button" onclick="showGalleryFromModal()">図鑑で見る</button>
+            <button class="secondary" type="button" onclick="closeRewardModal()">閉じる</button>
+        </div>
+    </div>
+</div>
+
+<div class="fullscreen-view" id="fullscreen-view" onclick="closeFullscreen()">
+    <img class="fullscreen-img" src="images/char_19.jpg" alt="産屋敷 耀哉" onerror="showImageError('fullscreen-error')">
+    <div class="image-error" id="fullscreen-error">画像を読み込めませんでした。</div>
+    <div class="fullscreen-text">
+        <div class="title">鬼殺隊当主</div>
+        <div class="name">産屋敷 耀哉</div>
+        <div style="font-size:14px;color:#bbb;margin-top:10px;">画面をタップして閉じる</div>
+    </div>
+</div>
+
+<script>
+function openRewardModal() {
+    document.getElementById("reward-modal").classList.add("active");
+}
+
+function closeRewardModal() {
+    document.getElementById("reward-modal").classList.remove("active");
+}
+
+function showGalleryFromModal() {
+    closeRewardModal();
+    document.getElementById("gallery-panel").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function openFullscreen() {
+    document.getElementById("fullscreen-view").classList.add("active");
+}
+
+function closeFullscreen() {
+    document.getElementById("fullscreen-view").classList.remove("active");
+}
+
+function handleCardKey(event) {
+    if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openFullscreen();
+    }
+}
+
+function showImageError(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "block";
+}
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        closeRewardModal();
+        closeFullscreen();
+    }
+});
+
+window.addEventListener("load", openRewardModal);
+</script>
+</body>
+</html>
