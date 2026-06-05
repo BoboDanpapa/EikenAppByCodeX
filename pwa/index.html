@@ -348,6 +348,10 @@
                     <option value="en-US">English</option>
                 </select>
                 <button id="btn-teacher-mic" class="jelly-btn btn-teacher-mic" onclick="askTeacherDemo(event)">マイク</button>
+                <div class="teacher-text-row">
+                    <input id="teacher-text-question" type="text" maxlength="120" placeholder="文字で質問">
+                    <button class="jelly-btn btn-teacher-mic" onclick="askTeacherByText(event)">質問</button>
+                </div>
             </div>
         </div>
         <div class="pager">
@@ -435,7 +439,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.38</div>
+<div class="version-badge">v1.1.39</div>
 
 <script src="backend-config.js"></script>
 <script>
@@ -1177,7 +1181,7 @@ function shouldRetryTeacherRecognition(finalText, confidence, lang) {
 function startBrowserTeacherSpeech(status) {
     if (!window.isSecureContext) {
         if (status) {
-            status.innerText = "マイクはHTTPSのページで使えます。GitHub Pages版、またはHTTPSのページで試してください。";
+            status.innerText = "マイクはHTTPSのページで使えます。下の文字入力でも先生に質問できます。";
         }
         renderTeacherDemo();
         return;
@@ -1185,7 +1189,7 @@ function startBrowserTeacherSpeech(status) {
     const Recognition = getSpeechRecognitionConstructor();
     if (!Recognition) {
         if (status) {
-            status.innerText = "このPWAでは、このブラウザのマイク聞き取りに対応していません。Android版の先生会話、またはChromeなど対応ブラウザで試してください。";
+            status.innerText = "このPWAでは、このブラウザのマイク聞き取りに対応していません。下の文字入力でも先生に質問できます。";
         }
         renderTeacherDemo();
         return;
@@ -1305,8 +1309,8 @@ function startTeacherRecognitionCycle(status) {
         stopTeacherTimer(true);
         if (status) {
             status.innerText = event.error === "not-allowed" || event.error === "service-not-allowed"
-                ? "マイクの許可がありません。ブラウザのマイク許可を確認してください。"
-                : "聞こえませんでした。もう一度マイクを押して、質問を話してください。";
+                ? "マイクの許可がありません。ブラウザのマイク許可を確認してください。下の文字入力でも質問できます。"
+                : "聞こえませんでした。もう一度マイクを押すか、下の文字入力で質問してください。";
         }
         renderTeacherDemo();
     };
@@ -1340,7 +1344,7 @@ function startTeacherRecognitionCycle(status) {
         teacherShouldKeepListening = false;
         teacherListening = false;
         stopTeacherTimer(true);
-        if (status) status.innerText = "質問が聞こえませんでした。もう一度マイクを押して話してください。";
+        if (status) status.innerText = "質問が聞こえませんでした。もう一度マイクを押すか、下の文字入力で質問してください。";
         renderTeacherDemo();
     };
 

@@ -80,6 +80,8 @@ for (const required of [
   "teacher-language-select",
   "日本語",
   "English",
+  "teacher-text-question",
+  "askTeacherByText",
   "teacherConversationHistory",
   "history: teacherConversationHistory",
   "TEACHER_RECOGNITION_INTERIM_SUBMIT_MS",
@@ -92,7 +94,7 @@ for (const required of [
   assert(html.includes(required), `Missing PWA teacher requirement: ${required}`);
 }
 
-for (const forbidden of ["文字で質問", "teacher-day-remaining", "<span>のこり</span>"]) {
+for (const forbidden of ["teacher-day-remaining", "<span>のこり</span>"]) {
   assert(!html.includes(forbidden), `Forbidden UI returned: ${forbidden}`);
 }
 
@@ -167,7 +169,7 @@ assert(scriptSource.includes("Gemini先生の利用回数制限"), "Missing visi
 assert(scriptSource.includes("recognition.continuous = false"), "Teacher microphone must capture one question per press, not stay in continuous mode");
 assert(!scriptSource.includes("scheduleTeacherRecognitionRestart(status);"), "Teacher microphone must not auto-restart after a no-speech end event");
 assert(scriptSource.includes("const finalQuestion = (cycleFinalText || teacherRecognitionHeardText || latestInterimText).trim();"), "Teacher microphone must submit stable interim text when the browser never emits a final result");
-assert(scriptSource.includes("teacherListening = false;\n        stopTeacherTimer(true);\n        if (status) status.innerText = \"質問が聞こえませんでした。もう一度マイクを押して話してください。\";"), "Teacher microphone no-speech end path must release listening state");
+assert(scriptSource.includes("teacherListening = false;\n        stopTeacherTimer(true);\n        if (status) status.innerText = \"質問が聞こえませんでした。もう一度マイクを押すか、下の文字入力で質問してください。\";"), "Teacher microphone no-speech end path must release listening state and offer text fallback");
 assert(sandbox.formatTeacherBackendError({ status: 429, error: "quota exceeded" }).includes("利用回数制限"), "429 is not shown as a Gemini quota problem");
 assert(
   sandbox.formatTeacherBackendError({ status: 503, error: "This model is currently experiencing high demand. Please try again later." }).includes("混み合っています"),
