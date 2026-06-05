@@ -1,4 +1,4 @@
-const CACHE_VERSION = "eiken-magicwords-pwa-v1.1.37";
+const CACHE_VERSION = "eiken-magicwords-pwa-v1.1.38";
 const CORE_ASSETS = [
   "./",
   "./index.html",

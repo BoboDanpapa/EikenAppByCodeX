@@ -15,8 +15,8 @@ This file records durable project context for future Codex sessions. Read this b
 
 ## Current Stable Version
 
-- Current version after the final challenge feedback and photo display fix: `1.1.37`
-- Current `versionCode`: `23`
+- Current version after answer-feedback simplification and shared hover animation polish: `1.1.38`
+- Current `versionCode`: `24`
 - Latest local release APK:
   `releases/eiken-magicwords-v1.1.37-quiz-feedback-final-photo.apk`
 
@@ -59,6 +59,7 @@ This file records durable project context for future Codex sessions. Read this b
 - `v1.1.36`: Added the user's Grade 2 textbook screenshot vocabulary as the highest-priority Grade 2 study block. The 141 photographed rows were normalized into 139 unique words/phrases by merging duplicate `operate` and `separate` senses; 36 already existed exactly, and 103 were newly added. Grade 2 now starts with these screenshot terms in image order, while keeping the rest of the existing Grade 2 list afterward.
 - `v1.1.36`: Hardened the PWA Gemini teacher backend against intermittent high-demand/model-overload failures. The Worker now uses `gemini-2.5-flash-lite` as the default text Q&A model, keeps `gemini-2.5-flash` as `GEMINI_FALLBACK_MODEL`, retries the primary model with exponential backoff, honors `Retry-After`, and then tries the fallback model before showing the friendly congestion message.
 - `v1.1.37`: Fixed the challenge screen title from `鬼殺隊入隊試験` to `鬼殺隊入隊試練`, changed wrong quiz answers to show the correct answer before the next question, and adjusted the final level reward/gallery image display so `char_19.jpg` is shown as a visible rectangular preview instead of a dark circular crop. `FinalLevelPreview.html` is a local-only visual preview for the level 20 completion state.
+- `v1.1.38`: Simplified wrong-answer feedback by removing the redundant `あなたの答え` row from the modal while keeping red/green option highlights. Added subtle mouse-hover animation to buttons and icon-like controls across Android, PWA, and preview without affecting touch devices.
 - PWA teacher panel should not display the `のこり` remaining-time row; keep the daily limit internally, but only show current-card time and today's used teacher time.
 
 ## Important Behavior
@@ -148,6 +149,7 @@ Every time a new APK is generated:
 - The separate GitHub publishing repository is `BoboDanpapa/EikenMagicwordsPWA`.
 - Publish the contents of `pwa/` at the root of `BoboDanpapa/EikenMagicwordsPWA`; do not publish the full Android project there.
 - New release rule from 2026-06-01: unless the user explicitly says to publish to the friend-facing PWA repo, do not sync or push the latest `pwa/` changes to `BoboDanpapa/EikenMagicwordsPWA`. Push normal development changes only to `BoboDanpapa/EikenAppByCodeX` so the user can test there first.
+- User clarification from 2026-06-03: when the user says `推上去` / `push` without naming a repo, treat it as pushing to the GitHub testing repo `BoboDanpapa/EikenAppByCodeX` only. Do not push to the friend-facing repo `BoboDanpapa/EikenMagicwordsPWA` unless the user explicitly says it is ready for friends or specifically names that repo.
 - The friend-facing repo may intentionally diverge from `pwa/` for stability. As of friend-facing `v1.1.29`, `BoboDanpapa/EikenMagicwordsPWA` has the `先生に聞く` button disabled/grayed out, while `EikenAppByCodeX/pwa/` keeps the teacher feature enabled for testing.
 - GitHub Pages should deploy from the `main` branch and `/ (root)`.
 - Expected GitHub Pages URL:

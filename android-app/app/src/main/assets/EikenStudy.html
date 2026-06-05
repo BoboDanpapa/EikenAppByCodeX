@@ -65,6 +65,11 @@
         .header-user.hidden { display: none; }
         .nav { display: flex; justify-content: center; gap: 10px; padding: 10px 12px; flex-wrap: wrap; }
         .jelly-btn { background-color: var(--button-main); color: white; border: none; font-size: 15px; line-height: 1.2; font-weight: bold; cursor: pointer; padding: 12px 18px; border-radius: 25px; box-shadow: 0 6px 0 var(--button-shadow); transition: all 0.1s; font-family: inherit; min-height: 44px; touch-action: manipulation; white-space: normal; overflow-wrap: anywhere; }
+        @media (hover: hover) and (pointer: fine) {
+            .jelly-btn:hover:not(:disabled) { transform: translateY(-2px) scale(1.03); filter: brightness(1.04); }
+            .small-btn-speak:hover, .pos-toggle:hover { transform: translateY(-2px) scale(1.08); filter: brightness(1.05); }
+            .btn-remove:hover, .user-name-btn:hover, .theme-choice:hover { transform: translateY(-2px) scale(1.01); filter: brightness(1.03); }
+        }
         .jelly-btn:active { transform: translateY(6px); box-shadow: 0 0 0 var(--button-shadow); }
         .jelly-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
         .nav .jelly-btn { background-color: var(--nav-button); box-shadow: 0 6px 0 var(--nav-shadow); }
@@ -416,7 +421,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.1.37</div>
+<div class="version-badge">v1.1.38</div>
 
 <script src="eiken_grade4_words.js"></script>
 <script src="eiken_grade3_words.js"></script>
@@ -1417,7 +1422,6 @@ function checkAnswer(sel, btn) {
             `<div class="quiz-answer-card">
                 <div class="answer-row"><span class="answer-label">問題：</span>${escapeHtml(currentQuizWord.en)}</div>
                 <div class="answer-row"><span class="answer-label">正解：</span>${escapeHtml(correctAnswer)}</div>
-                <div class="answer-row"><span class="answer-label">あなたの答え：</span>${escapeHtml(sel)}</div>
             </div>`,
             [{ label: "次の問題へ", action: () => { closeModal(); progress.quizWordEn = null; progress.quizOptions = []; loadQuizWord(true); } }]
         );
