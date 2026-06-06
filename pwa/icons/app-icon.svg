@@ -1,12 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="英検 魔法の単語帳">
-  <rect width="512" height="512" rx="112" fill="#f7f1fa"/>
-  <path d="M96 356c0-102 66-190 160-190s160 88 160 190c0 32-72 60-160 60S96 388 96 356Z" fill="#e1bee7"/>
-  <path d="M146 160c22-55 63-82 110-82s88 27 110 82c-31-21-68-32-110-32s-79 11-110 32Z" fill="#9c27b0"/>
-  <path d="M163 357c22-24 52-37 93-37s71 13 93 37" fill="none" stroke="#6a1b9a" stroke-width="24" stroke-linecap="round"/>
-  <circle cx="204" cy="242" r="22" fill="#4a235a"/>
-  <circle cx="308" cy="242" r="22" fill="#4a235a"/>
-  <path d="M256 274l17 30h-34l17-30Z" fill="#d81b60"/>
-  <path d="M374 104l18 42 42 18-42 18-18 42-18-42-42-18 42-18 18-42Z" fill="#ffd54f"/>
-  <path d="M120 84l12 28 28 12-28 12-12 28-12-28-28-12 28-12 12-28Z" fill="#64b5f6"/>
-  <text x="256" y="465" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#6a1b9a">英検</text>
+  <defs>
+    <linearGradient id="bg" x1="84" y1="50" x2="430" y2="464" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#12355b"/>
+      <stop offset=".58" stop-color="#0b5d8f"/>
+      <stop offset="1" stop-color="#08223d"/>
+    </linearGradient>
+    <linearGradient id="book" x1="152" y1="130" x2="354" y2="386" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f9fcff"/>
+      <stop offset="1" stop-color="#d9ecfb"/>
+    </linearGradient>
+    <linearGradient id="cover" x1="180" y1="108" x2="348" y2="376" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1b6fa8"/>
+      <stop offset="1" stop-color="#103a67"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#03182b" flood-opacity=".34"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <path d="M108 126c52-36 122-52 210-48 40 2 73 8 98 18" fill="none" stroke="#6bc4f2" stroke-width="10" stroke-linecap="round" opacity=".34"/>
+  <path d="M118 388c74 42 170 49 288 19" fill="none" stroke="#6bc4f2" stroke-width="10" stroke-linecap="round" opacity=".24"/>
+  <g filter="url(#shadow)">
+    <path d="M160 124h174c35 0 64 29 64 64v214H206c-36 0-66-30-66-66V144c0-11 9-20 20-20Z" fill="url(#book)"/>
+    <path d="M178 104h170c35 0 64 29 64 64v214H210c-35 0-64-29-64-64V136c0-18 14-32 32-32Z" fill="url(#cover)"/>
+    <path d="M204 382h208v34H206c-47 0-86-38-86-86V156h38v174c0 29 17 52 46 52Z" fill="#eef7ff"/>
+    <path d="M204 382h208" fill="none" stroke="#93c9ee" stroke-width="8"/>
+    <path d="M210 152h122c16 0 29 13 29 29v20H210z" fill="#0a2747" opacity=".28"/>
+    <path d="M214 251h124" stroke="#f8c846" stroke-width="12" stroke-linecap="round"/>
+    <path d="M214 289h96" stroke="#d9ecfb" stroke-width="10" stroke-linecap="round" opacity=".92"/>
+    <path d="M214 325h120" stroke="#d9ecfb" stroke-width="10" stroke-linecap="round" opacity=".82"/>
+  </g>
+  <path d="M384 76l14 34 34 14-34 14-14 34-14-34-34-14 34-14 14-34Z" fill="#f8c846"/>
+  <path d="M112 270l9 22 22 9-22 9-9 22-9-22-22-9 22-9 9-22Z" fill="#6bc4f2"/>
+  <circle cx="395" cy="194" r="8" fill="#f8c846"/>
+  <text x="274" y="224" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" letter-spacing="0" fill="#ffffff">英検</text>
 </svg>

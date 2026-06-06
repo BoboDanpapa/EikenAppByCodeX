@@ -37,7 +37,9 @@ Read this before product, build, release, PWA, or teacher/microphone work.
 - Treat `Task was cancelled` during context update as transient. Keep the session active and retry latest context quietly.
 - Teacher scope is current-card-only English learning help: meaning, usage, examples, pronunciation, similar words, and exam understanding. Refuse casual/off-topic chat.
 - Students may ask in Japanese or English; the teacher must answer in English.
-- Usage limits are local guardrails: 5 questions per word, 20 minutes per word, 60 minutes per user per local day.
+- Teacher limits are platform-specific local guardrails.
+- PWA/Web teacher uses the question-count guardrail only: 5 questions per word.
+- Android APK Gemini Live teacher uses time guardrails only: 10 minutes per word and 60 minutes per user per local day. Do not add the PWA/Web question-count limit back to APK UI or native Live logic.
 
 ## PWA Teacher
 

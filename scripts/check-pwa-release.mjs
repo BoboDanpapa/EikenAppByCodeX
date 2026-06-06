@@ -98,6 +98,24 @@ for (const forbidden of ["teacher-day-remaining", "<span>のこり</span>"]) {
   assert(!html.includes(forbidden), `Forbidden UI returned: ${forbidden}`);
 }
 
+assert(html.includes("1単語の質問"), "PWA settings must show the per-word question limit");
+assert(html.includes("最大5回"), "PWA settings must show max 5 questions per word");
+for (const forbidden of ["teacher-word-time", "teacher-day-time", "最大10分", "最大20分", "最大60分"]) {
+  assert(!html.includes(forbidden), `PWA must not show teacher time limits: ${forbidden}`);
+}
+
+const androidAssetPath = path.resolve(root, "android-app/app/src/main/assets/EikenStudy.html");
+if (fs.existsSync(androidAssetPath)) {
+  const androidHtml = readText(androidAssetPath);
+  assert(androidHtml.includes("1単語の時間"), "APK settings must show the per-word time limit");
+  assert(androidHtml.includes("最大10分"), "APK settings must show max 10 minutes per word");
+  assert(androidHtml.includes("今日の時間"), "APK settings must show the daily time limit");
+  assert(androidHtml.includes("最大60分"), "APK settings must show max 60 minutes per day");
+  for (const forbidden of ["teacher-turns", "1単語の質問", "最大5問"]) {
+    assert(!androidHtml.includes(forbidden), `APK must not show teacher question limits: ${forbidden}`);
+  }
+}
+
 for (const required of [
   "isNavigationRequest",
   "networkFirst",

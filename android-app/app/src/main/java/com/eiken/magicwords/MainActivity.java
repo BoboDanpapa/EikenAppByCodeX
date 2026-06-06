@@ -69,7 +69,6 @@ public class MainActivity extends Activity {
     private int geminiRequestId = 0;
     private String pendingGeminiContextJson;
     private int teacherTurnCount = 0;
-    private int teacherMaxTurns = 5;
     private boolean pendingStudentQuestion = false;
     private boolean answerSeenForCurrentQuestion = false;
     private String lastStudentTranscript = "";
@@ -284,10 +283,6 @@ public class MainActivity extends Activity {
             notifyGeminiStatus("active", "すでに先生が聞いています。終わるときは「とめる」を押してね。");
             return;
         }
-        if (teacherTurnCount >= teacherMaxTurns) {
-            notifyGeminiStatus("limit_reached", "よくできました。カードの学習にもどろう！", teacherTurnCount);
-            return;
-        }
         if (!hasRecordAudioPermission()) {
             notifyGeminiStatus("permission_required", "マイクの許可を確認しています。");
             requestRecordAudioPermission(contextJson);
@@ -308,7 +303,7 @@ public class MainActivity extends Activity {
 
         try {
             JSONObject context = new JSONObject(contextJson);
-            resetTeacherTurnState(context.optInt("turns", 0), context.optInt("maxTurns", 5));
+            resetTeacherTurnState();
             Content systemInstruction = new Content.Builder()
                     .addText(buildGeminiSystemInstruction(context))
                     .build();
@@ -399,7 +394,7 @@ public class MainActivity extends Activity {
 
     private void resetGeminiConversation(String reason) {
         stopGeminiConversation(reason);
-        resetTeacherTurnState(0, 5);
+        resetTeacherTurnState();
     }
 
     private void updateGeminiContext(String contextJson) {
@@ -419,7 +414,7 @@ public class MainActivity extends Activity {
         contextUpdateInFlight = true;
         try {
             JSONObject context = new JSONObject(contextJson);
-            resetTeacherTurnState(context.optInt("turns", 0), context.optInt("maxTurns", 5));
+            resetTeacherTurnState();
             ListenableFuture<?> sendFuture = session.send(buildGeminiContextUpdate(context));
             Futures.addCallback(sendFuture, new FutureCallback<Object>() {
                 @Override
@@ -504,9 +499,8 @@ public class MainActivity extends Activity {
         return error.contains("task was cancelled") || error.contains("cancelled") || error.contains("canceled");
     }
 
-    private void resetTeacherTurnState(int turns, int maxTurns) {
-        teacherTurnCount = Math.max(0, turns);
-        teacherMaxTurns = Math.max(1, maxTurns);
+    private void resetTeacherTurnState() {
+        teacherTurnCount = 0;
         pendingStudentQuestion = false;
         answerSeenForCurrentQuestion = false;
         lastStudentTranscript = "";
@@ -524,12 +518,8 @@ public class MainActivity extends Activity {
             if (!teacherText.isEmpty() && pendingStudentQuestion && !answerSeenForCurrentQuestion) {
                 answerSeenForCurrentQuestion = true;
                 pendingStudentQuestion = false;
-                teacherTurnCount = Math.min(teacherMaxTurns, teacherTurnCount + 1);
-                notifyGeminiStatus("turn_completed", "質問: " + teacherTurnCount + " / " + teacherMaxTurns, teacherTurnCount);
-                if (teacherTurnCount >= teacherMaxTurns) {
-                    notifyGeminiStatus("limit_reached", "よくできました。カードの学習にもどろう！", teacherTurnCount);
-                    stopGeminiConversation("question limit reached");
-                }
+                teacherTurnCount += 1;
+                notifyGeminiStatus("turn_completed", "続けて質問できます。", teacherTurnCount);
             }
         });
     }

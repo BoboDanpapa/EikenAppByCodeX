@@ -89,7 +89,6 @@ function createSandbox() {
     teacherRecognitionLanguageIndex: 1,
     teacherListening: true,
     teacherTurns: 0,
-    teacherWordSeconds: 0,
     teacherPendingStudentQuestion: null,
     teacherAnswerSeenForPendingQuestion: false,
     teacherRecognitionRestartId: null,
@@ -99,7 +98,6 @@ function createSandbox() {
     TEACHER_RECOGNITION_INTERIM_SUBMIT_MS: 5,
     TEACHER_RECOGNITION_MAX_LISTEN_MS: 25,
     TEACHER_MAX_QUESTIONS: 5,
-    TEACHER_WORD_LIMIT_SECONDS: 20 * 60,
     document: {
       getElementById(id) {
         if (id === "teacher-language-select") return { value: "en-US" };
@@ -109,7 +107,6 @@ function createSandbox() {
     },
     renderTeacherDemo() {},
     stopTeacherTimer() {},
-    getTeacherDailyRemainingSeconds: () => 60,
     answerBrowserTeacherQuestion(question) {
       answeredQuestions.push(question);
       sandbox.teacherAnswerInFlight = true;
