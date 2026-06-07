@@ -64,6 +64,8 @@ python3 -m http.server 8766
 
 Then open `http://localhost:8766/index.html`. For public use, deploy the contents of `pwa/` to any HTTPS static host. PWA installation and service worker caching require HTTPS, except on localhost.
 
+Phone installation instructions for iPhone/iPad and Android are in `PWA_INSTALL_GUIDE.md`.
+
 ## PWA Gemini Backend
 
 The PWA cannot safely store a Gemini API key in browser-visible files. Use `pwa-backend/` as a Cloudflare Worker API for the PWA teacher:
@@ -97,6 +99,7 @@ To build locally, install Android SDK/JDK/Gradle or recreate local build tooling
 
 APK files are distributed as GitHub Release assets:
 
+- `EikenMagicWords-v1.0.0-official.apk`
 - `EikenMagicWords-v1.1.0.apk`
 - `EikenMagicWords-v1.0.0.apk`
 

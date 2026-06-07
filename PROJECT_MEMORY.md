@@ -14,10 +14,10 @@ Read this before product, build, release, PWA, or teacher/microphone work.
 
 ## Current Release State
 
-- Current PWA version: `1.1.39`.
-- Current Android APK version: `1.1.38`; Android `versionCode`: `24`.
-- Latest generated local APK still predates this fix: `releases/eiken-magicwords-v1.1.37-quiz-feedback-final-photo.apk`.
-- `v1.1.39` is a PWA/web fix: it restores the teacher text-question fallback and improves microphone failure messaging. It is not an APK change.
+- Current official release version: `1.0.0`.
+- Current PWA version: `1.0.0`.
+- Current Android APK version: `1.0.0`; Android `versionCode`: `25`.
+- `v1.0.0` is the first formal release. It includes the latest PWA/Web teacher text fallback and microphone messaging, refreshed PWA icons, and the Android/PWA teacher-limit split: PWA/Web keeps 5 questions per word, while Android APK Gemini Live uses 10 minutes per word and 60 minutes per user per local day.
 
 ## Core Product Rules
 
@@ -68,7 +68,7 @@ Read this before product, build, release, PWA, or teacher/microphone work.
 ## Android Release
 
 - For every APK release, increment `versionCode` and `versionName` in `android-app/app/build.gradle`.
-- Build release APK, copy it into `releases/`, and name it with the version and change, for example `releases/eiken-magicwords-v1.1.40-short-description.apk`.
+- Build release APK, copy it into `releases/`, and name it with the version and change, for example `releases/eiken-magicwords-v1.0.0-official.apk`.
 - After building, inspect the APK archive to confirm changed HTML/vocab assets are included.
 - Do not commit APK/AAB build outputs, `android-app/local.properties`, `android-app/keystore/`, `.android-build-tools/`, or `google-services.json`.
 - Gemini Live builds require local `android-app/app/google-services.json`; never commit it. Enable Firebase App Check before public distribution.
