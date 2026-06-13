@@ -360,7 +360,7 @@ function levelUp() {
     let cName = document.getElementById('unlocked-character');
     // 如果 images 文件夹里没有图片，会显示默认的灰色 No Image
     cName.innerHTML = `
-        <img src="images/char_${currentLevelIndex}.jpg" 
+        <img src="images/char_${currentLevelIndex}.png" 
              onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'120\\' height=\\'120\\'><rect width=\\'120\\' height=\\'120\\' fill=\\'#eee\\'/><text x=\\'50%\\' y=\\'50%\\' dominant-baseline=\\'middle\\' text-anchor=\\'middle\\' font-size=\\'14\\'>No Image</text></svg>'" 
              style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:4px solid #ce93d8; box-shadow:0 5px 15px rgba(0,0,0,0.3); margin-bottom:10px;" 
              alt="character">
@@ -389,7 +389,7 @@ function renderGallery() {
         d.className = 'character-card ' + (c.unlocked ? 'unlocked' : '');
         
         if (c.unlocked) {
-            d.style.backgroundImage = `url('images/char_${idx}.jpg')`;
+            d.style.backgroundImage = `url('images/char_${idx}.png')`;
             d.style.backgroundSize = 'cover';
             d.style.backgroundPosition = 'center';
             d.innerHTML = `
@@ -409,7 +409,7 @@ function renderGallery() {
 }
 
 function showFullscreen(idx, title, name) {
-    document.getElementById('fs-img').src = `images/char_${idx}.jpg`;
+    document.getElementById('fs-img').src = `images/char_${idx}.png`;
     // 如果找不到图片，提供一个友好的默认显示
     document.getElementById('fs-img').onerror = function() {
         this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect width='300' height='400' fill='#333'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='white'>Image Not Found</text></svg>";

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "eiken-magicwords-pwa-v1.0.0";
+const CACHE_VERSION = "eiken-magicwords-pwa-v1.0.1";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -13,26 +13,26 @@ const CORE_ASSETS = [
   "./icons/app-icon-192.png",
   "./icons/app-icon-512.png",
   "./icons/app-icon.svg",
-  "./images/char_0.jpg",
-  "./images/char_1.jpg",
-  "./images/char_2.jpg",
-  "./images/char_3.jpg",
-  "./images/char_4.jpg",
-  "./images/char_5.jpg",
-  "./images/char_6.jpg",
-  "./images/char_7.jpg",
-  "./images/char_8.jpg",
-  "./images/char_9.jpg",
-  "./images/char_10.jpg",
-  "./images/char_11.jpg",
-  "./images/char_12.jpg",
-  "./images/char_13.jpg",
-  "./images/char_14.jpg",
-  "./images/char_15.jpg",
-  "./images/char_16.jpg",
-  "./images/char_17.jpg",
-  "./images/char_18.jpg",
-  "./images/char_19.jpg"
+  "./images/char_0.png",
+  "./images/char_1.png",
+  "./images/char_2.png",
+  "./images/char_3.png",
+  "./images/char_4.png",
+  "./images/char_5.png",
+  "./images/char_6.png",
+  "./images/char_7.png",
+  "./images/char_8.png",
+  "./images/char_9.png",
+  "./images/char_10.png",
+  "./images/char_11.png",
+  "./images/char_12.png",
+  "./images/char_13.png",
+  "./images/char_14.png",
+  "./images/char_15.png",
+  "./images/char_16.png",
+  "./images/char_17.png",
+  "./images/char_18.png",
+  "./images/char_19.png"
 ];
 
 self.addEventListener("install", event => {

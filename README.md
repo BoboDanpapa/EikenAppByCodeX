@@ -100,6 +100,7 @@ To build locally, install Android SDK/JDK/Gradle or recreate local build tooling
 APK files are distributed as GitHub Release assets:
 
 - `EikenMagicWords-v1.0.0-official.apk`
+- `eiken-magicwords-v1.0.1-original-characters.apk`
 - `EikenMagicWords-v1.1.0.apk`
 - `EikenMagicWords-v1.0.0.apk`
 
@@ -121,4 +122,4 @@ When generating a new APK, always:
 
 ## Important Note
 
-The current character images and 鬼殺隊-themed reward labels are intended for personal learning use only. Review asset rights before any public distribution.
+The current character images are original PNG assets. Reward labels and any other themed references should still be reviewed before public distribution.

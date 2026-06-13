@@ -419,7 +419,7 @@
     </div>
 </div>
 
-<div class="version-badge">v1.0.0</div>
+<div class="version-badge">v1.0.1</div>
 
 <script src="eiken_grade4_words.js"></script>
 <script src="eiken_grade3_words.js"></script>
@@ -1420,7 +1420,7 @@ function levelUp() {
     openModal(
         `階級昇格：【${lvl.title}】！`,
         "新しい仲間が駆けつけた！",
-        `<img src="images/char_${progress.currentLevelIndex - 1}.jpg" class="reward-preview-img" alt="character" onerror="this.style.display='none';"><br><span style="font-size:28px; color:#4a235a;">${escapeHtml(lvl.reward)}</span>`,
+        `<img src="images/char_${progress.currentLevelIndex - 1}.png" class="reward-preview-img" alt="character" onerror="this.style.display='none';"><br><span style="font-size:28px; color:#4a235a;">${escapeHtml(lvl.reward)}</span>`,
         [{ label: "次の試練へ", action: () => { closeModal(); progress.quizWordEn = null; progress.quizOptions = []; loadQuizWord(true); } }]
     );
 }
@@ -1433,7 +1433,7 @@ function renderGallery() {
         const d = document.createElement("div");
         d.className = "character-card " + (progress.unlocked[idx] ? "unlocked" : "");
         if (progress.unlocked[idx]) {
-            d.style.backgroundImage = `url('images/char_${idx}.jpg')`;
+            d.style.backgroundImage = `url('images/char_${idx}.png')`;
             d.style.backgroundSize = "cover";
             d.style.backgroundPosition = "center";
             d.innerHTML = `
@@ -1451,7 +1451,7 @@ function renderGallery() {
 }
 
 function showFullscreen(idx, title, name) {
-    document.getElementById("fs-img").src = `images/char_${idx}.jpg`;
+    document.getElementById("fs-img").src = `images/char_${idx}.png`;
     document.getElementById("fs-title").innerText = title;
     document.getElementById("fs-name").innerText = name;
     document.getElementById("fullscreen-view").classList.add("active");

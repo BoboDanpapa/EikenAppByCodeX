@@ -1,4 +1,5 @@
 .DS_Store
+images/oldImage/
 
 # Local Android build tools and caches
 .android-build-tools/

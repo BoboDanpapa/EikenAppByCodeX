@@ -14,9 +14,10 @@ Read this before product, build, release, PWA, or teacher/microphone work.
 
 ## Current Release State
 
-- Current official release version: `1.0.0`.
-- Current PWA version: `1.0.0`.
-- Current Android APK version: `1.0.0`; Android `versionCode`: `25`.
+- Current official release version: `1.0.1`.
+- Current PWA version: `1.0.1`.
+- Current Android APK version: `1.0.1`; Android `versionCode`: `26`.
+- `v1.0.1` replaces the reward character images with original PNG assets while keeping the `v1.0.0` app behavior unchanged. The release APK filename is `releases/eiken-magicwords-v1.0.1-original-characters.apk`.
 - `v1.0.0` is the first formal release. It includes the latest PWA/Web teacher text fallback and microphone messaging, refreshed PWA icons, and the Android/PWA teacher-limit split: PWA/Web keeps 5 questions per word, while Android APK Gemini Live uses 10 minutes per word and 60 minutes per user per local day.
 
 ## Core Product Rules
